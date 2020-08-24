@@ -12,31 +12,7 @@ Copyright © 2018, Victor Chang Cardiac Research Institute
 <a href="https://vccri.github.io/starmap/"><img src="QRcodeAndLogo/QR_Code_Star_Map.png" align="right" height="108" alt="starmap"></a>
 starmap is a web-based VR-enabled tool which combines a 3D scatter plot with star plots (radar chart) to visualise hundreds of thousands of multivariate data points, such as single-cell expression data. starmap can be accessed from a desktop, laptop or a mobile device from the following link: [https://vccri.github.io/starmap/](https://vccri.github.io/starmap/), or the QR code. 
 
-## Usage instructions
 
-starmap supports a number of input methods for interacting with the visualisation - keyboard, remote control and voice control. Note that voice control is available only in Google Chrome (desktop and mobile) as voice control utilises the SpeechRecognition API which is currently only supported by Chrome.
-
-A summary of the control scheme for keyboard and voice control is included in the table below.
-
-| Command | keyboard control | voice command |
-| ------- | ---------------- | ------------- |
-| forward | w | forward |
-| backward | s | backward |
-| left | a | left |
-| right | d | right |
-| zoom in | q | in |
-| zoom out | e | out | 
-| rotate Y-axis clockwise | left arrow | N\A |
-| rotate Y-axis anti-clockwise | right arrow | rotate |
-| rotate X-axis clockwise | up arrow | N\A |
-| rotate X-axis anti-clockwise | down arrow | N\A |
-| click on toolbox (VR mode) | N\A | select |
-| reset toolbox (VR mode) | N\A | reset |
-| reset view (VR mode) | N\A | init |
-
-The control scheme for remote control is shown below.
-
-<a href="url"><img src="image/gamepad.png" align="left" alt="control scheme for remote control"></a>
 
 ## Customized Input data
 
@@ -129,3 +105,30 @@ def adataTostarmap_spatial(adata, cord, featureN, valuetoplot, result_path):
 Zip the csv file with the tissue image, StarmapVR can visualize the spatial trancriptomic data in spatial dimensions. An example file can be found in /sampledata/spl.zip.
 ## Visualisation of Image cytometry data
 For image cytometry data with actual cell image, user can zip their cell images(cell_index as the image name) with the requiring csv file, An example file can be found in /sampledata/ato.zip.
+
+## Usage instructions
+
+starmap supports a number of input methods for interacting with the visualisation - keyboard, remote control and voice control. Note that voice control is available only in Google Chrome (desktop and mobile) as voice control utilises the SpeechRecognition API which is currently only supported by Chrome.
+
+A summary of the control scheme for keyboard and voice control is included in the table below.
+
+| Command | keyboard control | voice command |
+| ------- | ---------------- | ------------- |
+| forward | w | forward |
+| backward | s | backward |
+| left | a | left |
+| right | d | right |
+| zoom in | q | in |
+| zoom out | e | out | 
+| rotate Y-axis clockwise | left arrow | N\A |
+| rotate Y-axis anti-clockwise | right arrow | rotate |
+| rotate X-axis clockwise | up arrow | N\A |
+| rotate X-axis anti-clockwise | down arrow | N\A |
+| click on toolbox (VR mode) | N\A | select |
+| reset toolbox (VR mode) | N\A | reset |
+| reset view (VR mode) | N\A | init |
+
+The control scheme for remote control is shown below.
+
+<a href="url"><img src="image/gamepad.png" align="left" alt="control scheme for remote control"></a>
+
