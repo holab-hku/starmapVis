@@ -44,7 +44,7 @@ StarmapVR accepts as input a csv file or a zip-compressed csv file. The csv file
 
 To see an example of input data, please see the sampleData folder which contains two example datasets based on previously published single-cell RNA-seq data and flow cytometry data.
 
-## Platform-compatible single-cell RNA-seq data visualization
+## Platform-compatible single-cell RNA-seq data visualisation
 
 
 To easily visualize your data from single-cell RNA-seq data analysis platform, we provide the funtion that can transform the Scanpy&Seurat result data to the required input for StarmapVR.
@@ -100,7 +100,7 @@ result_path = '~/write/pbmc3k_starmap.csv'
 adataTostarmap(adata, cord, featureN, valuetoplot, result_path)
 ```
 
-## Visualization of spatial transcriptomics data
+## Visualisation of spatial transcriptomics data
 StarmapVR also accecpts spatial transcriptomics data processed by Scanpy.
 ```sh
 def adataTostarmap_spatial(adata, cord, featureN, valuetoplot, result_path):
@@ -127,5 +127,5 @@ def adataTostarmap_spatial(adata, cord, featureN, valuetoplot, result_path):
     adataStarmap.to_csv(result_path,index = None)
 ```
 Zip the csv file with the tissue image, StarmapVR can visualize the spatial trancriptomic data in spatial dimensions. An example file can be found in /sampledata/spl.zip.
-## Visualization of Image cytometry data
+## Visualisation of Image cytometry data
 For image cytometry data with actual cell image, user can zip their cell images(cell_index as the image name) with the requiring csv file, An example file can be found in /sampledata/ato.zip.
