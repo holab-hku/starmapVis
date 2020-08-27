@@ -71,31 +71,7 @@ var UploadFile = function( viewPort ) {
     demoDiv.appendChild(button3);
     sceneEl.appendChild(demoDiv);
     sceneEl.appendChild(sloganDiv);
-
-    var button4 = document.createElement('button');
-    button4.innerHTML = "Demo 3<br />(4513 melanoma-CSOmap)";
-    button4.setAttribute('class','demoButton');
-    button4.addEventListener('click',function( ) {
-        demo('CSOmap_4513melanoma_data');
-    });
-    demoDiv.appendChild(button4);
-
-    var button5 = document.createElement('button');
-    button5.innerHTML = "Demo 3<br />(105k imaging cells)";
-    button5.setAttribute('class','demoButton');
-    button5.addEventListener('click',function( ) {
-        demo('Multi-ATOM_105kimage_data');
-    });
-    demoDiv.appendChild(button5);
-
-    var button6 = document.createElement('button');
-    button6.innerHTML = "Demo 4<br />(4036 spatial lymph)";
-    button6.setAttribute('class','demoButton');
-    button6.addEventListener('click',function( ) {
-        demo('humanlymphnode_4096_data');
-    });
-    demoDiv.appendChild(button6);
-
+    
     function demo(fileName) {
         loader.style.display='block';
         var promise = new JSZip.external.Promise(function (resolve, reject) {
@@ -317,7 +293,7 @@ var UploadFile = function( viewPort ) {
                     fileType = ''
                     mainFileName = ''
                     for (var key of keys) {
-                        var fileExtension = key.split('.').pop().pop();
+                        var fileExtension = key.split('.').pop();
                         if( fileExtension == 'txt' || fileExtension == 'csv' ){
                             fileType = 'csv';
                             mainFileName = key;
@@ -329,8 +305,8 @@ var UploadFile = function( viewPort ) {
                             break;
 
                         }
-                        else if ( fileExtension == 'qpi' ){
-                            fileType = 'qpi';
+                        else if ( fileExtension == 'ato' ){
+                            fileType = 'ato';
                             mainFileName = key;
                             break;
                         }
@@ -362,7 +338,7 @@ var UploadFile = function( viewPort ) {
                                         console.log((width/2).toString()+" "+(height/2).toString()+" "+z.toString())
                                         splImageContainer.setAttribute('height',height.toString());
                                         splImageContainer.setAttribute('width',width.toString());
-                                        splImageContainer.setAttribute('position',(width/2).toString()+" "+(height/2).toString()+" "+(z-10).toString() );
+                                        splImageContainer.setAttribute('position',(width/2).toString()+" "+(height/2).toString()+" "+(z-1).toString() );
                                         splImageContainer.setAttribute('visible',true);
 
                                         zip.files[filename].async('base64').then(function (content) {
@@ -394,7 +370,7 @@ var UploadFile = function( viewPort ) {
                             });
                             
                         }
-                        else if (fileType == 'api'){
+                        else if (fileType == 'ato'){
                             var splImage =  splImageContainer.object3D.children[0]
                             zip.files[mainFileName].async('string').then(function (data) {
                         
