@@ -27,7 +27,7 @@ var UploadFile = function( viewPort ) {
     
     var slogan = this.slogan = document.createElement('h1');
     slogan.setAttribute('class','h1');
-    slogan.innerHTML = '<span style="color:#3e8e41">starmap</span>: Immersive 3D visualisation of single cell data using virtual reality';
+    slogan.innerHTML = '<span style="color:#3e8e41">starmapVR</span>: Immersive spatial visualisation of single cell data';
     sloganDiv.appendChild(slogan);
     
     var demoDiv = this.demoDiv = document.createElement('div');
@@ -71,7 +71,37 @@ var UploadFile = function( viewPort ) {
     demoDiv.appendChild(button3);
     sceneEl.appendChild(demoDiv);
     sceneEl.appendChild(sloganDiv);
-    
+
+    var button4 = document.createElement('button');
+    button4.innerHTML = "Demo 3<br />(4513 melanoma CSOmap)";
+    button4.setAttribute('class','demoButton');
+    button4.addEventListener('click',function( ) {
+        demo('CSOmap_4513melanoma_data');
+    });
+    demoDiv.appendChild(button4);
+    sceneEl.appendChild(demoDiv);
+    sceneEl.appendChild(sloganDiv);
+
+    var button5 = document.createElement('button');
+    button5.innerHTML = "Demo 4<br />(7k imaging cells)";
+    button5.setAttribute('class','demoButton');
+    button5.addEventListener('click',function( ) {
+        demo('Multi-ATOM_7000image_data.qpi');
+    });
+    demoDiv.appendChild(button5);
+    sceneEl.appendChild(demoDiv);
+    sceneEl.appendChild(sloganDiv);
+
+    var button6 = document.createElement('button');
+    button6.innerHTML = "Demo 5<br />(4036 spatial lymph)";
+    button6.setAttribute('class','demoButton');
+    button6.addEventListener('click',function( ) {
+        demo('humanlymphnode_4096_data.spl');
+    });
+    demoDiv.appendChild(button6);
+    sceneEl.appendChild(demoDiv);
+    sceneEl.appendChild(sloganDiv);
+
     function demo(fileName) {
         loader.style.display='block';
         var promise = new JSZip.external.Promise(function (resolve, reject) {
@@ -85,7 +115,123 @@ var UploadFile = function( viewPort ) {
         });
         promise.then(JSZip.loadAsync)                     // 2) chain with the zip promise
         .then(function(zip) {          
-            return zip.file(fileName+".csv").async("string"); // 3) chain with the text content promise
+            //return zip.file(fileName+".csv").async("string"); // 3) chain with the text content promise
+     ////////////////////////////////////////modified/////////////////////////////
+            var keys = Object.keys(zip.files);
+            fileType = ''
+            mainFileName = ''
+            for (var key of keys) {
+            
+                var a = key.split('.');
+                
+                console.log(a) ;
+
+                a.pop();
+                
+                //console.log(a.pop()) ;
+
+                var fileExtension = a.pop();
+
+                console.log(fileExtension);
+
+                //if( fileExtension == 'txt' || fileExtension == 'csv' ){
+                if( fileExtension == 'RNAseq_68kpbmc_data' || fileExtension == 'FlowCytometry_500kUE_data' || fileExtension == 'CSOmap_4513melanoma_data'){
+                    return zip.file(fileName+".csv").async("string");
+                }
+                else if ( fileExtension == 'spl' ){
+                    fileType = 'spl';
+                    mainFileName = key;
+                    break;
+
+                }
+                else if ( fileExtension == 'qpi' ){
+                    fileType = 'qpi';
+                    mainFileName = key;
+                    break;
+                }
+                //else{return zip.file(fileName+".csv").async("string");}
+            }
+            
+            
+                
+            if( fileExtension == '' ){
+                errorMessage.innerHTML = 'File extension is not supported.';
+                    loader.style.display='none';
+                    uploadFileField.value = '';  
+            }
+            if (fileType == 'spl'){
+                var splImage =  splImageContainer.object3D.children[0]
+                zip.files[mainFileName].async('string').then(function (data) {
+                    var uploaded = read_csv(data)
+                    var image_size = ''
+                    Object.keys(zip.files).forEach(function (filename) {
+                        if (filename.includes('.jpg')|| filename.includes('.jpeg')){
+                            image_size = filename.split(".")[0].split("_");
+                            var height = parseFloat(image_size[1]);
+                            var width = parseFloat(image_size[0]);
+                            width = width/normalizeParams.X.max*150
+                            height = height/normalizeParams.Y.max*150
+                            var z = normalizeParams.Z.max*150
+                            console.log((width/2).toString()+" "+(height/2).toString()+" "+z.toString())
+                            splImageContainer.setAttribute('height',height.toString());
+                            splImageContainer.setAttribute('width',width.toString());
+                            splImageContainer.setAttribute('position',(width/2).toString()+" "+(height/2).toString()+" "+(z-10).toString() );
+                            splImageContainer.setAttribute('visible',true);
+
+                            zip.files[filename].async('base64').then(function (content) {
+                                
+                                content =  "data:image/png;base64," + content;
+                                var texture  = THREE.ImageUtils.loadTexture( content );
+
+                                texture.flipY = false;
+                                splImage.material = new THREE.MeshBasicMaterial( {  map: texture, color: 0xffffff, side: THREE.DoubleSide } )
+                                splImage.material_needsUpdate = true;
+                                if (uploaded) fileUploaded();
+                                loader.style.display='none';
+                                uploadFileField.value = '';   
+                                
+                            })
+                        }
+                    })
+
+                })
+
+            }
+
+            else if (fileType == 'qpi'){
+                var splImage =  splImageContainer.object3D.children[0]
+                zip.files[mainFileName].async('string').then(function (data) {
+            
+                    var image_size = ''
+                    var imglen = Object.keys(zip.files).length-1;
+                    var counter = 0;
+                    console.log(imglen)
+                    Object.keys(zip.files).forEach(function (filename) {
+                        if (filename.includes('.jpg') || filename.includes('.jpeg')){
+                            image_size = filename.split(".")[0].split("_");
+                            
+                            zip.files[filename].async('base64').then(function (content) {
+                                counter += 1;
+                                content =  "data:image/png;base64," + content;
+                                textureInfos.push(content);
+                                if(counter == imglen){
+                                    var uploaded = read_csv(data)
+                                    if (uploaded) fileUploaded();
+                                    loader.style.display='none';
+                                    uploadFileField.value = '';   
+                
+                                }
+                                
+                                console.log(counter)
+                            })
+                        }
+                    })
+
+                })
+
+            }
+        
+        
         })
         .then(function success(data) {  
                               // 4) display the result
@@ -263,7 +409,7 @@ var UploadFile = function( viewPort ) {
         var reader = new FileReader();
         //read csv or txt file directly
         if (evt.target.files[0].name.split('.').pop().toLowerCase() != 'zip'){
-         
+            
             normalizeParams = {};  
 
             reader.onload = function(e) {
@@ -288,29 +434,42 @@ var UploadFile = function( viewPort ) {
                 var zip = new JSZip( );
                 zip.loadAsync(contents).then(function (zip) {
                     var keys = Object.keys(zip.files);
-                
-       
                     fileType = ''
                     mainFileName = ''
                     for (var key of keys) {
-                        var fileExtension = key.split('.').pop();
-                        if( fileExtension == 'txt' || fileExtension == 'csv' ){
+                        
+                        var a = key.split('.');
+                        console.log(a) ;
+
+                        a.pop();
+                        
+                        //console.log(a.pop()) ;
+
+                        var fileExtension = a.pop();
+
+                        console.log(fileExtension);
+
+                        //if( fileExtension == 'txt' || fileExtension == 'csv' ){
+                        ///////////////////////Need to modify
+                        if( fileExtension == ''){
                             fileType = 'csv';
                             mainFileName = key;
                             break;
                         }
+
                         else if ( fileExtension == 'spl' ){
                             fileType = 'spl';
                             mainFileName = key;
                             break;
 
                         }
-                        else if ( fileExtension == 'ato' ){
-                            fileType = 'ato';
+                        else if ( fileExtension == 'qpi' ){
+                            fileType = 'qpi';
                             mainFileName = key;
                             break;
                         }
                     }
+                    
                     
                         
                     if( fileExtension == '' ){
@@ -338,7 +497,7 @@ var UploadFile = function( viewPort ) {
                                         console.log((width/2).toString()+" "+(height/2).toString()+" "+z.toString())
                                         splImageContainer.setAttribute('height',height.toString());
                                         splImageContainer.setAttribute('width',width.toString());
-                                        splImageContainer.setAttribute('position',(width/2).toString()+" "+(height/2).toString()+" "+(z-1).toString() );
+                                        splImageContainer.setAttribute('position',(width/2).toString()+" "+(height/2).toString()+" "+(z-10).toString() );
                                         splImageContainer.setAttribute('visible',true);
 
                                         zip.files[filename].async('base64').then(function (content) {
@@ -370,7 +529,7 @@ var UploadFile = function( viewPort ) {
                             });
                             
                         }
-                        else if (fileType == 'ato'){
+                        else if (fileType == 'qpi'){
                             var splImage =  splImageContainer.object3D.children[0]
                             zip.files[mainFileName].async('string').then(function (data) {
                         
