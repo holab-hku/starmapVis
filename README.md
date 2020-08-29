@@ -1,5 +1,5 @@
 <a href="url"><img src="QRcodeAndLogo/logo.png" align="left" height="108" alt="starmap"></a>
-# starmap: Immersive spatial visualisation of single cell omic data
+# starmapVR: Immersive visualisation of single cell spatial omic data
 
 Authors: Andrian Yang, Yu Yao, Xiunan Fang and Joshua W. K. Ho
 
