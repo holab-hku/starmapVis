@@ -1,16 +1,15 @@
 <a href="url"><img src="QRcodeAndLogo/logo.png" align="left" height="108" alt="starmap"></a>
-# starmap: Immersive three dimensional visualisation of single cell data using smartphone-enabled virtual reality
+# starmap: Immersive spatial visualisation of single cell omic data
 
-Authors: Andrian Yang, Yu Yao, Jianfu Li and Joshua W. K. Ho
+Authors: Andrian Yang, Yu Yao, Xiunan Fang and Joshua W. K. Ho
 
-Contact: j.ho@victorchang.edu.au
+Contact: Joshua Ho (jwkho@hku.hk)
 
-Copyright © 2018, Victor Chang Cardiac Research Institute
 
 ## Synopsis
 
 <a href="https://holab-hku.github.io/starmapVR/"><img src="QRcodeAndLogo/QR_Code_StarMapVR.png" align="right" height="108" alt="starmap"></a>
-starmap is a web-based VR-enabled tool which combines a 3D scatter plot with star plots (radar chart) to visualise hundreds of thousands of multivariate data points, such as single-cell expression data. starmap can be accessed from a desktop, laptop or a mobile device from the following link: [https://holab-hku.github.io/starmapVR/](https://holab-hku.github.io/starmapVR/), or the QR code. 
+starmap is a web-based VR-enabled tool which combines a 3D scatter plot with star plots (radar chart) to visualise hundreds of thousands of multivariate data points, such as single-cell expression data, imaging single cell data, spatial transcriptomic data and etc. starmap can be accessed from a desktop, laptop or a mobile device from the following link: [https://holab-hku.github.io/starmapVR/](https://holab-hku.github.io/starmapVR/), or the QR code. 
 ## Input data
 
 starmap accepts as input a csv file or a zip-compressed csv file. The csv file need to contain a header row with the following column names - x, y, z and cluster - corresponding to the 3D coordinates of points and the cluster label assigned for each point (with outliers assigned the value of -1). In addition to the required columns, starmap also accepts extra columns (up to 12) corresponding to features which will be visualised in the star plot. The values for all columns must be of numeric types.
