@@ -83,10 +83,10 @@ var UploadFile = function( viewPort ) {
     sceneEl.appendChild(sloganDiv);
 
     var button5 = document.createElement('button');
-    button5.innerHTML = "Demo 4<br />(7k imaging cells)";
+    button5.innerHTML = "Demo 4<br />(105k imaging cells)";
     button5.setAttribute('class','demoButton');
     button5.addEventListener('click',function( ) {
-        demo('Multi-ATOM_7000image_data.qpi');
+        demo('Multi-ATOM_105kimage_data.qpi');
     });
     demoDiv.appendChild(button5);
     sceneEl.appendChild(demoDiv);
