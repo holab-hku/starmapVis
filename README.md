@@ -67,7 +67,7 @@ import pandas as pd
 result_path = '~/write/pbmc3k_starmap.csv'
 adataTostarmap(adata, cord, featureN, valuetoplot, result_path)
 ```
-An example can be found in /example with Scanpy/Convert from Scanpy.ipynb .
+An example can be found in /Convert from Scanpy or Seurat/Convert from Scanpy.ipynb .
 ## Single-cell RNA-seq data visualisation from Seurat
 ```sh
 library(dplyr)
@@ -91,6 +91,7 @@ pbmc_starmap <- bind_cols(pbmc_starmap, cluster)
 #write the file into your result path
 write.csv(pbmc_starmap,"filtered_gene_bc_matrices/output/pbmc_starmap.csv",row.names=F)
 ```
+An example can be found in /Convert from Scanpy or Seurat/Convert from Seurat.ipynb .
 ## Visualisation of spatial transcriptomics data
 StarmapVR also accecpts spatial transcriptomics data processed by Scanpy.
 ```sh
@@ -116,7 +117,7 @@ def adataTostarmap_spatial(adata, featureN, valuetoplot, result_path):
     adataStarmap = pd.concat([adataStarmap,label['cluster']], axis=1, join='inner')
     adataStarmap.to_csv(result_path,index = None)
 ```
-Zip the csv file with the tissue image, StarmapVR can visualize the spatial trancriptomic data in spatial dimensions. An example can be found in /example with Scanpy/Convert from Scanpy (spatial).ipynb . The example data can be found in /sampleData/humanlymphnode_4096_data.zip.
+Zip the csv file with the tissue image, StarmapVR can visualize the spatial trancriptomic data in spatial dimensions. An example can be found in /Convert from Scanpy or Seurat/Convert from Scanpy (spatial).ipynb . The example data can be found in /sampleData/humanlymphnode_4096_data.zip.
 ## Visualisation of Image cytometry data
 For image cytometry data with actual cell image, user can zip their cell images(cell index as the image name) with the requiring csv file, An example file can be found in /sampleData/Multi-ATOM_105kimage_data.zip.
 
