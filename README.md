@@ -117,9 +117,9 @@ def adataTostarmap_spatial(adata, featureN, valuetoplot, result_path):
     adataStarmap = pd.concat([adataStarmap,label['cluster']], axis=1, join='inner')
     adataStarmap.to_csv(result_path,index = None)
 ```
-Zip the csv file with the tissue image, StarmapVR can visualize the spatial trancriptomic data in spatial dimensions. An example can be found in /Convert from Scanpy or Seurat/Convert from Scanpy (spatial).ipynb . The example data can be found in /sampleData/humanlymphnode_4096_data.zip.
+Zip the csv file with the tissue image, StarmapVR can visualize the spatial trancriptomic data in spatial dimensions. An example can be found in /Convert from Scanpy or Seurat/Convert from Scanpy (spatial).ipynb .The csv file and zip file should add ".sql" before the file extention. The example data can be found in /sampleData/humanlymphnode_4096_data.sql.zip.
 ## Visualisation of Image cytometry data
-For image cytometry data with actual cell image, user can zip their cell images(cell index as the image name) with the requiring csv file, An example file can be found in /sampleData/Multi-ATOM_105kimage_data.zip.
+For image cytometry data with actual cell image, user can zip their cell images(cell index as the image name) with the requiring csv file, the csv file and zip file should add ".qpi" before the file extention. An example file can be found in /sampleData/Multi-ATOM_105kimage_data.qpi.zip.
 
 ## Usage instructions
 
