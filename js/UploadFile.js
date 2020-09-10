@@ -1,4 +1,5 @@
-import { requestMotionAndOrientationPermissions } from "./askPermission.js";
+// import { requestMotionAndOrientationPermissions } from "./askPermission.js";
+
 var UploadFile = function (viewPort) {
   var sceneEl = viewPort.sceneEl;
   var normalizeParams = {};
@@ -95,6 +96,32 @@ var UploadFile = function (viewPort) {
   demoDiv.appendChild(button6);
   sceneEl.appendChild(demoDiv);
   sceneEl.appendChild(sloganDiv);
+
+  function requestMotionAndOrientationPermissions() {
+    if (typeof DeviceMotionEvent.requestPermission === "function") {
+      // iOS 13+
+      DeviceMotionEvent.requestPermission()
+        .then((response) => {
+          if (response == "granted") {
+            window.addEventListener("devicemotion", (e) => {
+              // do something with e
+            });
+          }
+        })
+        .catch(console.error);
+      DeviceOrientationEvent.requestPermission()
+        .then((response) => {
+          if (response == "granted") {
+            window.addEventListener("deviceorientation", (e) => {
+              // do something with e
+            });
+          }
+        })
+        .catch(console.error);
+    } else {
+      // non iOS 13+
+    }
+  }
 
   function demo(fileName) {
     requestMotionAndOrientationPermissions();
