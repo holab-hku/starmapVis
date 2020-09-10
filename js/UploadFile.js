@@ -1,4 +1,4 @@
-import { requestOrientationandMotionPermissions } from "askPermission.js";
+import { requestOrientationandMotionPermissions } from "./askPermission.js";
 var UploadFile = function (viewPort) {
   var sceneEl = viewPort.sceneEl;
   var normalizeParams = {};
