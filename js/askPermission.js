@@ -23,4 +23,4 @@ function requestOrientationandMotionPermissions() {
     // non iOS 13+
   }
 }
-requestOrientationandMotionPermissions();
+export { requestOrientationandMotionPermissions };
