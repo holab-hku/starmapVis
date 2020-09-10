@@ -1,4 +1,4 @@
-import { requestOrientationandMotionPermissions } from "./askPermission.js";
+import { requestMotionAndOrientationPermissions } from "./askPermission.js";
 var UploadFile = function (viewPort) {
   var sceneEl = viewPort.sceneEl;
   var normalizeParams = {};
@@ -97,7 +97,7 @@ var UploadFile = function (viewPort) {
   sceneEl.appendChild(sloganDiv);
 
   function demo(fileName) {
-    requestOrientationandMotionPermissions();
+    requestMotionAndOrientationPermissions();
     loader.style.display = "block";
     var promise = new JSZip.external.Promise(function (resolve, reject) {
       JSZipUtils.getBinaryContent(
