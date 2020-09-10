@@ -1,10 +1,10 @@
-function requestOrientationandMotionPermissions() {
+function requestMotionAndOrientationPermissions() {
   if (typeof DeviceMotionEvent.requestPermission === "function") {
     // iOS 13+
     DeviceMotionEvent.requestPermission()
       .then((response) => {
         if (response == "granted") {
-          window.addEventListener("deviceorientation", (e) => {
+          window.addEventListener("devicemotion", (e) => {
             // do something with e
           });
         }
