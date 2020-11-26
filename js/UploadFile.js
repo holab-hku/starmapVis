@@ -98,7 +98,8 @@ var UploadFile = function (viewPort) {
   sceneEl.appendChild(sloganDiv);
 
   function requestMotionAndOrientationPermissions() {
-    if (typeof DeviceMotionEvent.requestPermission === "function") {
+    // Fix the compatibility problem in safari => by Shichao
+    if (typeof( DeviceMotionEvent ) !== "undefined" && typeof DeviceMotionEvent.requestPermission === "function") {
       // iOS 13+
       DeviceMotionEvent.requestPermission()
         .then((response) => {
