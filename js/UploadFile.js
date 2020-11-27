@@ -78,17 +78,17 @@ var UploadFile = function (viewPort) {
   sceneEl.appendChild(sloganDiv);
 
   var button5 = document.createElement("button");
-  button5.innerHTML = "Demo 4<br />(105k imaging cells)";
+  button5.innerHTML = "Demo 4<br />(7000 imaging cells)";
   button5.setAttribute("class", "demoButton");
   button5.addEventListener("click", function () {
-    demo("Multi-ATOM_105kimage_data.qpi");
+    demo("Multi-ATOM_7000image_data.qpi");
   });
   demoDiv.appendChild(button5);
   sceneEl.appendChild(demoDiv);
   sceneEl.appendChild(sloganDiv);
 
   var button6 = document.createElement("button");
-  button6.innerHTML = "Demo 5<br />(4036 spatial lymph)";
+  button6.innerHTML = "Demo 5<br />(4096 spatial lymph)";
   button6.setAttribute("class", "demoButton");
   button6.addEventListener("click", function () {
     demo("humanlymphnode_4096_data.spl");
