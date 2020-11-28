@@ -474,6 +474,15 @@ ViewPort.prototype = {
         console.log('start to rendering point');
         this.pointContainer.setAttribute('visible',true);
 
+    },
+
+
+    showPath : function ( ) {
+        console.log('showPath function in ViewPort.js')
+    },
+    flyOver : function ( ) {
+        console.log('flyOver function in ViewPort.js')
     }
+
 
 }

@@ -51,7 +51,11 @@ var config = {
     showAllBounding: false,
     clusterList : [],
     boundingBox : {},
-    featureMap : []
+    featureMap : [],
+    showPath: false,
+    flyoverPath: [
+        'a','b','c'
+    ],
 }
 
 // var dataEdit = {

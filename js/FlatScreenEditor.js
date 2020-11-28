@@ -118,6 +118,36 @@ FlatScreenEditor.prototype = {
 
         }
 
+
+
+
+
+        var flyOverFolder = scope.settingGUI.addFolder( 'Flyover', '#FFFFFF' );
+        flyOverFolder.open()
+
+        flyOverFolder.add(config, 'showPath' ).name( "Visualize The Movement" ).listen( ).onChange( function ( ) {
+            console.log('show the curve: ', config.showPath);
+            scope.viewPort.showPath();
+        });
+
+        var flyoverCounter = 0;
+        var flyover = {
+            flyover: function () {
+                scope.viewPort.flyOver(flyoverCounter);
+                flyoverCounter = flyoverCounter + 1;
+                if ( flyoverCounter === config.flyoverPath.length ) {
+                    flyoverCounter = 0;
+                }
+            }
+        };
+
+        flyOverFolder.add(flyover, 'flyover' ).name( "Next Checkpoint" );
+
+
+
+
+
+
         // reset view
         var reset = {
             reset: function () {
