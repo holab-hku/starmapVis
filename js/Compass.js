@@ -3,7 +3,7 @@ var Compass = function(cameraEl, container){
 
     var compassWrapperEl = this.compassWrapperEl = document.createElement('a-entity');
     compassWrapperEl.setAttribute('id','compassWrapper');
-    
+
     var rad = 1.571;
     compassWrapperEl.setAttribute('position','-2 -1.8 -6');
 
@@ -43,14 +43,14 @@ var Compass = function(cameraEl, container){
 
     // xAxis
     var xAxisEl = document.createElement('a-entity');
-    xAxisEl.setAttribute('meshline','path: 0.7 0 0, -0.7 0 0; color: #B22222; lineWidth: 7');
+    xAxisEl.setAttribute('meshline','path: 0.7 0 0, -0.7 0 0; color: #943126; lineWidth: 7');
     // positive X
     var posXEl= document.createElement("a-entity");
-    posXEl.setAttribute( 'points', { positions: [0,0,0] , hasColor : false ,  size:  0.5, textureSrc:'image/posX.png', sizeAttenuation: true, color: '#B22222'} );
+    posXEl.setAttribute( 'points', { positions: [0,0,0] , hasColor : false ,  size:  0.5, textureSrc:'image/posX.png', sizeAttenuation: true, color: '#943126'} );
     posXEl.setAttribute('position','0.85 0 0');
     // negative x
     var negXEl= document.createElement("a-entity");
-    negXEl.setAttribute( 'points', { positions: [0,0,0] , hasColor : false ,  size: 0.5, textureSrc:'image/negX.png', sizeAttenuation: true, color: '#B22222'} );
+    negXEl.setAttribute( 'points', { positions: [0,0,0] , hasColor : false ,  size: 0.5, textureSrc:'image/negX.png', sizeAttenuation: true, color: '#943126'} );
     negXEl.setAttribute('position','-0.85 0 0');
     xAxisEl.appendChild(posXEl);
     xAxisEl.appendChild(negXEl);
@@ -58,14 +58,14 @@ var Compass = function(cameraEl, container){
 
     // yAxis
     var yAxisEl = document.createElement('a-entity');
-    yAxisEl.setAttribute('meshline','path: 0 0.7 0, 0 -0.7 0; color: #006400; lineWidth: 7');
+    yAxisEl.setAttribute('meshline','path: 0 0.7 0, 0 -0.7 0; color: #0E6655; lineWidth: 7');
     // positive y
     var posYEl= document.createElement("a-entity");
-    posYEl.setAttribute( 'points', { positions: [0,0,0] , hasColor : false ,  size: 0.5, textureSrc:'image/posY.png', sizeAttenuation: true,  color: '#006400'} );
+    posYEl.setAttribute( 'points', { positions: [0,0,0] , hasColor : false ,  size: 0.5, textureSrc:'image/posY.png', sizeAttenuation: true,  color: '#0E6655'} );
     posYEl.setAttribute('position','0 0.85 0');
     // negative y
     var negYEl= document.createElement("a-entity");
-    negYEl.setAttribute( 'points', { positions: [0,0,0] , hasColor : false ,  size: 0.5, textureSrc:'image/negY.png', sizeAttenuation: true,  color: '#006400'} );
+    negYEl.setAttribute( 'points', { positions: [0,0,0] , hasColor : false ,  size: 0.5, textureSrc:'image/negY.png', sizeAttenuation: true,  color: '#0E6655'} );
     negYEl.setAttribute('position','0 -0.85 0');
     yAxisEl.appendChild(posYEl);
     yAxisEl.appendChild(negYEl);
@@ -73,14 +73,14 @@ var Compass = function(cameraEl, container){
 
     // zAxis
     var zAxisEl = document.createElement('a-entity');
-    zAxisEl.setAttribute('meshline','path: 0 0 0.7, 0 0 -0.7; color: #0000CD;lineWidth: 7');
+    zAxisEl.setAttribute('meshline','path: 0 0 0.7, 0 0 -0.7; color: #21618C;lineWidth: 7');
     // positive z
     var posZEl= document.createElement("a-entity");
-    posZEl.setAttribute( 'points', { positions: [0,0,0] , hasColor : false , size: 0.5, textureSrc:'image/posZ.png', sizeAttenuation: true, color: '#0000CD'} );
+    posZEl.setAttribute( 'points', { positions: [0,0,0] , hasColor : false , size: 0.5, textureSrc:'image/posZ.png', sizeAttenuation: true, color: '#21618C'} );
     posZEl.setAttribute('position','0 0 0.85');
     // negative z
     var negZEl= document.createElement("a-entity");
-    negZEl.setAttribute( 'points', { positions: [0,0,0] , hasColor : false , size: 0.5, textureSrc:'image/negZ.png', sizeAttenuation: true, color: '#0000CD'} );
+    negZEl.setAttribute( 'points', { positions: [0,0,0] , hasColor : false , size: 0.5, textureSrc:'image/negZ.png', sizeAttenuation: true, color: '#21618C'} );
     negZEl.setAttribute('position','0 0 -0.85');
     zAxisEl.appendChild(posZEl);
     zAxisEl.appendChild(negZEl);
@@ -92,11 +92,11 @@ var Compass = function(cameraEl, container){
     compassWrapperEl.appendChild(coordinateSystemEl);
     cameraEl.appendChild(compassWrapperEl);
 
-    //camera rotation 
+    //camera rotation
     cameraEl.addEventListener('componentchanged', function (evt) {
         if ( evt.detail.name !== 'rotation' ) return;
         var degRotation =  evt.detail.newData;
-        //console.log(degRotation);   
+        //console.log(degRotation);
         // console.log(cameraEl.object3D.getWorldRotation ());
         cameraRotation = { x: THREE.Math.degToRad(degRotation.x), y: THREE.Math.degToRad(degRotation.y), z: THREE.Math.degToRad(degRotation.z) };
 
@@ -104,7 +104,7 @@ var Compass = function(cameraEl, container){
         coordinateSystemEl.object3D.rotation.set( coordinateRotation.x, coordinateRotation.y-cameraRotation.y, coordinateRotation.z-cameraRotation.z  );
         // cameraLookatEl.setAttribute( "rotation",{x:cameraRotation.x,y:0,z:0} );
         // coordinateSystemEl.setAttribute( "rotation",{x:coordinateRotation.x,y:coordinateRotation.y-cameraRotation.y,z:coordinateRotation.z-cameraRotation.z} );
-        
+
     });
 
     container.addEventListener('componentchanged', function (evt) {
@@ -117,7 +117,7 @@ var Compass = function(cameraEl, container){
             z:THREE.Math.degToRad(newRotation.z)
         }
         coordinateSystemEl.object3D.rotation.set( coordinateRotation.x, coordinateRotation.y-cameraRotation.y, coordinateRotation.z-cameraRotation.z  );
-        
+
        // coordinateSystemEl.setAttribute("rotation",{x:coordinateRotation.x,y:coordinateRotation.y-cameraRotation.y,z:coordinateRotation.z-cameraRotation.z});
     });
     compassWrapperEl.setAttribute( 'visible', false );

@@ -16,10 +16,10 @@ Axis.prototype = {
         if (fromX > 0) fromX = 0;
         if (endX < 5 ) endX = 5;
         var xLineEl = document.createElement( 'a-entity' );;
-        xLineEl.setAttribute('line','start: ' + fromX + ' 0 0; end: ' + endX + ' 0 0; color: #B22222' );
-        
+        xLineEl.setAttribute('line','start: ' + fromX + ' 0 0; end: ' + endX + ' 0 0; color: #943126' );
+
         var arrowXEl= document.createElement("a-entity");
-        arrowXEl.setAttribute( 'points', { positions: [endX, 0, 0] , hasColor : false , size:  80, textureSrc:'image/posX.png', sizeAttenuation: false, color: '#B22222'} );
+        arrowXEl.setAttribute( 'points', { positions: [endX, 0, 0] , hasColor : false , size:  80, textureSrc:'image/posX.png', sizeAttenuation: false, color: '#943126'} );
         xLineEl.appendChild(arrowXEl);
         //arrowX.setAttribute("axis","positions:"+toX+",0,0;sizes: 80;textureSrc:posX.png;sizeAttenuation:false");
         this.axisEl.appendChild(xLineEl);
@@ -35,9 +35,9 @@ Axis.prototype = {
         if (fromY > 0) fromY = 0;
         if (endY < 5 ) endY = 5;
         var yLineEl = document.createElement( 'a-entity' );
-        yLineEl.setAttribute('line','start: 0 '+ fromY + ' 0; end: 0 ' + endY + ' 0; color: #006400' );
+        yLineEl.setAttribute('line','start: 0 '+ fromY + ' 0; end: 0 ' + endY + ' 0; color: #0E6655' );
         var arrowYEl= document.createElement("a-entity");
-        arrowYEl.setAttribute( 'points', { positions: [0, endY, 0] , hasColor : false , size:  80, textureSrc:'image/posY.png', sizeAttenuation: false , color: '#006400'} );
+        arrowYEl.setAttribute( 'points', { positions: [0, endY, 0] , hasColor : false , size:  80, textureSrc:'image/posY.png', sizeAttenuation: false , color: '#0E6655'} );
         yLineEl.appendChild(arrowYEl);
         this.axisEl.appendChild(yLineEl);
 
@@ -47,10 +47,10 @@ Axis.prototype = {
         if (fromZ > 0) fromZ = 0;
         if (endZ < 5 ) endZ = 5;
         var zLineEl = document.createElement( 'a-entity' );
-        zLineEl.setAttribute('line','start: 0 0 '+ fromZ + '; end: 0 0 ' + endZ + '; color: #0000CD' );
+        zLineEl.setAttribute('line','start: 0 0 '+ fromZ + '; end: 0 0 ' + endZ + '; color: #21618C' );
         var arrowZEl= document.createElement("a-entity");
-        arrowZEl.setAttribute( 'points', { positions: [0, 0, endZ] , hasColor : false , size:  80, textureSrc:'image/posZ.png', sizeAttenuation: false, color: '#0000CD'} );
-        yLineEl.appendChild(arrowZEl);   
+        arrowZEl.setAttribute( 'points', { positions: [0, 0, endZ] , hasColor : false , size:  80, textureSrc:'image/posZ.png', sizeAttenuation: false, color: '#21618C'} );
+        yLineEl.appendChild(arrowZEl);
         this.axisEl.appendChild(zLineEl);
 
 
