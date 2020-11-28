@@ -12,12 +12,12 @@ var FlatScreenEditor = function (viewPort) {
     this.highDemDetail = viewPort.highDemDetail;
 
     //console.log(this.raycaster);
-     // gamepad helper
+    // gamepad helper
     var keyboardHelpPanel = this.keyboardHelpPanel = document.createElement('a-entity');
-    keyboardHelpPanel.setAttribute("geometry","primitive:plane;height: 4; width: 8");
-    keyboardHelpPanel.setAttribute("material","color:#AAAAAA;transparent:true; opacity:0.7");
-    keyboardHelpPanel.setAttribute("position","0 0 -5.1");
-    keyboardHelpPanel.setAttribute("scale","0 0 0");
+    keyboardHelpPanel.setAttribute("geometry", "primitive:plane;height: 4; width: 8");
+    keyboardHelpPanel.setAttribute("material", "color:#AAAAAA;transparent:true; opacity:0.7");
+    keyboardHelpPanel.setAttribute("position", "0 0 -5.1");
+    keyboardHelpPanel.setAttribute("scale", "0 0 0");
 
     var keyboardHelpPopUp = document.createElement('a-animation');
     keyboardHelpPopUp.setAttribute('begin', 'keyboardhelp');
@@ -35,11 +35,16 @@ var FlatScreenEditor = function (viewPort) {
     keyboardHelpPanel.appendChild(keyboardHelpDisappear);
 
 
-    var gpgeometry = new THREE.PlaneGeometry( 8,4 );
+    var gpgeometry = new THREE.PlaneGeometry(8, 4);
     var gptexture = new THREE.TextureLoader().load('image/keyboard2.png');
-    var gpmaterial = new THREE.MeshBasicMaterial( {map: gptexture,color:0xffffff, side: THREE.FrontSide, alphaTest:0.5} );
-    var gptext = this.gptext =  new THREE.Mesh( gpgeometry, gpmaterial );
-    gptext.position.set(-0.1,0,0.01);
+    var gpmaterial = new THREE.MeshBasicMaterial({
+        map: gptexture,
+        color: 0xffffff,
+        side: THREE.FrontSide,
+        alphaTest: 0.5
+    });
+    var gptext = this.gptext = new THREE.Mesh(gpgeometry, gpmaterial);
+    gptext.position.set(-0.1, 0, 0.01);
     keyboardHelpPanel.object3D.add(gptext);
     this.cameraEl.appendChild(keyboardHelpPanel);
 
@@ -47,21 +52,21 @@ var FlatScreenEditor = function (viewPort) {
 
 FlatScreenEditor.prototype = {
 
-    initFlatScreenUI : function ( ) {
+    initFlatScreenUI: function () {
 
         var scope = this;
 
-        scope.settingGUI = new dat.GUI({ width: 300, closeOnTop:true, name: 'Custom Settings'} );
+        scope.settingGUI = new dat.GUI({width: 300, closeOnTop: true, name: 'Custom Settings'});
 
-        var displayOptionsFolder = scope.settingGUI.addFolder( 'Display Options', '#FFFFFF' );
+        var displayOptionsFolder = scope.settingGUI.addFolder('Display Options', '#FFFFFF');
         displayOptionsFolder.open();
 
         // Show All Points
-        displayOptionsFolder.add(config, 'showAllPoints' ).name( 'Display All Points' ).listen( ).onChange( function ( isDisplay ) {
-            for( var key in config.displayCluster ) {
+        displayOptionsFolder.add(config, 'showAllPoints').name('Display All Points').listen().onChange(function (isDisplay) {
+            for (var key in config.displayCluster) {
                 config.displayCluster[key] = isDisplay;
-                new DisplayDataCommand( viewPort.pointsDict[key], isDisplay );
-                scope.highDemDetail.setVisible(key, isDisplay );
+                new DisplayDataCommand(viewPort.pointsDict[key], isDisplay);
+                scope.highDemDetail.setVisible(key, isDisplay);
             }
 
         });
@@ -78,16 +83,16 @@ FlatScreenEditor.prototype = {
         // });
 
         //  Display Points, Display Bounding, Cluster Color for each cluster
-        for( var cluster in config.color ) {
+        for (var cluster in config.color) {
 
-            config.clusterList.push( cluster );
-            var name = cluster.replace( 'mpoints__','' );
-            if( name != -1 ) var currCluster = 'Cluster ' + name;
+            config.clusterList.push(cluster);
+            var name = cluster.replace('mpoints__', '');
+            if (name != -1) var currCluster = 'Cluster ' + name;
             else var currCluster = 'Outliers';
             //var clusterFolder = scope.settingGUI.addFolder( folderName, config.color[cluster] );
 
-            displayOptionsFolder.add( config.displayCluster, cluster ).name( 'Display '+currCluster,config.color[cluster] ).listen( ).onChange( function ( isDisplay ) {
-                new DisplayDataCommand( viewPort.pointsDict[this.property], isDisplay );
+            displayOptionsFolder.add(config.displayCluster, cluster).name('Display ' + currCluster, config.color[cluster]).listen().onChange(function (isDisplay) {
+                new DisplayDataCommand(viewPort.pointsDict[this.property], isDisplay);
                 scope.highDemDetail.setVisible(this.property, isDisplay);
 
             });
@@ -102,31 +107,29 @@ FlatScreenEditor.prototype = {
         }
 
 
-        var featureMapFolder = scope.settingGUI.addFolder( 'Feature Map', '#FFFFFF' );
+        var featureMapFolder = scope.settingGUI.addFolder('Feature Map', '#FFFFFF');
 
         // featureMapFolder.open();
 
-        for ( var i = 0 ; i < config.featureMap.length ; i += 1 ) {
+        for (var i = 0; i < config.featureMap.length; i += 1) {
             var name = i + 1;
-            featureMapFolder.add(config.featureMap[i] , Object.keys(config.featureMap[i])[0] ).name( name +' -> ' + Object.keys(config.featureMap[i])[0] );
-        // console.log(config.featureMap);
+            featureMapFolder.add(config.featureMap[i], Object.keys(config.featureMap[i])[0]).name(name + ' -> ' + Object.keys(config.featureMap[i])[0]);
+            // console.log(config.featureMap);
 
         }
 
-    // reset view
-    var reset =  {
-        reset: function(){
-            scope.viewPort.reset();
+        // reset view
+        var reset = {
+            reset: function () {
+                scope.viewPort.reset();
+            }
+        };
 
-        }
-
-    };
-
-    scope.settingGUI.add(reset, 'reset' ).name( "Reset Camera" );
+        scope.settingGUI.add(reset, 'reset').name("Reset Camera");
 
         var helpStarted = false;
-        var keyboardHelp =  {
-            help: function(){
+        var keyboardHelp = {
+            help: function () {
                 if (helpStarted) return;
                 helpStarted = true;
                 scope.keyboardHelpPanel.emit('keyboardhelp');
@@ -136,41 +139,40 @@ FlatScreenEditor.prototype = {
                     helpStarted = false;
                     scope.keyboardHelpPanel.emit('keyboardhelpend');
 
-                },10000);
+                }, 10000);
             }
 
         };
 
-        scope.settingGUI.add(keyboardHelp, 'help' ).name( "Help" );
+        scope.settingGUI.add(keyboardHelp, 'help').name("Help");
         //window.location.reload(true);
 
 
-
         var exitParam = {
-            exit : function() {
+            exit: function () {
                 window.location.reload(true);
             }
         }
 
-        scope.settingGUI.add(exitParam,'exit').name('Exit');
+        scope.settingGUI.add(exitParam, 'exit').name('Exit');
     },
 
-    removeFlatScreenUI : function ( ) {
-        console.log( 'destroy FlatScreen UI' );
-        this.settingGUI.destroy( );
-      //  this.dataEditorGUI.destroy( );
+    removeFlatScreenUI: function () {
+        console.log('destroy FlatScreen UI');
+        this.settingGUI.destroy();
+        //  this.dataEditorGUI.destroy( );
     },
 
-    hideFlatScreenUI : function ( ) {
-        console.log( 'hide FlatScreen UI' );
+    hideFlatScreenUI: function () {
+        console.log('hide FlatScreen UI');
         //this.dataEditorGUI.hide( );
-        this.settingGUI.hide( );
+        this.settingGUI.hide();
     },
 
-    displayFlatScreenUI : function ( ) {
-        console.log( 'show FlatScreen UI' );
+    displayFlatScreenUI: function () {
+        console.log('show FlatScreen UI');
         //this.dataEditorGUI.show( );
-        this.settingGUI.show( );
+        this.settingGUI.show();
     }
 
 }

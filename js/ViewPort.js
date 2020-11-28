@@ -463,12 +463,10 @@ ViewPort.prototype = {
 
     reset : function( ) {
         this.cameraWrapperEl.object3D.position.copy(this.initCameraPosition);
+        this.cameraWrapperEl.setAttribute('rotation','0 0 0');
         this.cameraEl.setAttribute('rotation','0 0 0');
         this.cameraWrapperEl.object3D.updateMatrixWorld ( true );
-        //this.cameraWrapperEl.object3D.updateMatrix (  );
-        //this.cameraWrapperEl.setAttribute( 'position', this.initCameraPosition );
-
-
+        this.container.setAttribute('rotation', '0 0 0');
     },
 
     renderingBoundingSphere : function( ) {
