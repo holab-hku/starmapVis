@@ -185,7 +185,7 @@ ViewPort.prototype = {
         // }
         for ( var [currCluster, points] of Object.entries(this.fileData)) {
 
-            if( currCluster == -1 || viewPort.pointsDict['mpoints__'+currCluster].visible == false) continue;
+            if( currCluster === -1 || viewPort.pointsDict['mpoints__'+currCluster].visible === false) continue;
             if( points.boundingSphere.center.distanceTo(centerPoint) - points.boundingSphere.radius > this.sqrtThreshhold ) continue;
 
                 var l = points.getSurrendingPoints(this.threshhold, centerPoint);
@@ -387,7 +387,7 @@ ViewPort.prototype = {
             }
             boundingBox = calculateBoundingBox( boundingBox, boundingSphere );
 
-            if (counter == clusterNum) {
+            if (counter === clusterNum) {
 
                 config.boundingBox = {
                     width : Math.round((boundingBox.maxX - boundingBox.minX)*1.3),
@@ -467,6 +467,9 @@ ViewPort.prototype = {
         this.cameraEl.setAttribute('rotation','0 0 0');
         this.cameraWrapperEl.object3D.updateMatrixWorld ( true );
         this.container.setAttribute('rotation', '0 0 0');
+
+        console.log('Check the points: ', this.pointsDict['mpoints__1']);
+        console.log('Check the length: ', Object.keys(this.pointsDict['mpoints__1']).length);
     },
 
     renderingBoundingSphere : function( ) {

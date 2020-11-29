@@ -94,7 +94,6 @@ FlatScreenEditor.prototype = {
             displayOptionsFolder.add(config.displayCluster, cluster).name('Display ' + currCluster, config.color[cluster]).listen().onChange(function (isDisplay) {
                 new DisplayDataCommand(viewPort.pointsDict[this.property], isDisplay);
                 scope.highDemDetail.setVisible(this.property, isDisplay);
-
             });
 
             // if(name != -1) {
@@ -121,27 +120,30 @@ FlatScreenEditor.prototype = {
 
 
 
+        if (config.is3D) {
+            var flyOverFolder = scope.settingGUI.addFolder( 'Flyover', '#FFFFFF' );
+            flyOverFolder.open();
 
-        var flyOverFolder = scope.settingGUI.addFolder( 'Flyover', '#FFFFFF' );
-        flyOverFolder.open()
+            flyOverFolder.add(config, 'showPath' ).name( "Visualize The Movement" ).listen( ).onChange( function ( ) {
+                console.log('show the curve: ', config.showPath);
+                scope.viewPort.showPath();
+            });
 
-        flyOverFolder.add(config, 'showPath' ).name( "Visualize The Movement" ).listen( ).onChange( function ( ) {
-            console.log('show the curve: ', config.showPath);
-            scope.viewPort.showPath();
-        });
-
-        var flyoverCounter = 0;
-        var flyover = {
-            flyover: function () {
-                scope.viewPort.flyOver(flyoverCounter);
-                flyoverCounter = flyoverCounter + 1;
-                if ( flyoverCounter === config.flyoverPath.length ) {
-                    flyoverCounter = 0;
+            var flyoverCounter = 0;
+            var flyover = {
+                flyover: function () {
+                    scope.viewPort.flyOver(flyoverCounter);
+                    flyoverCounter = flyoverCounter + 1;
+                    if ( flyoverCounter === config.flyoverPath.length ) {
+                        flyoverCounter = 0;
+                    }
                 }
-            }
+            };
+
+            flyOverFolder.add(flyover, 'flyover' ).name( "Next Checkpoint" );
         };
 
-        flyOverFolder.add(flyover, 'flyover' ).name( "Next Checkpoint" );
+
 
 
 

@@ -185,6 +185,7 @@ var UploadFile = function (viewPort) {
           uploadFileField.value = "";
         }
         if (fileType === "spl") {
+          config.is3D = false;
           var splImage = splImageContainer.object3D.children[0];
           zip.files[mainFileName].async("string").then(function (data) {
             var uploaded = read_csv(data);

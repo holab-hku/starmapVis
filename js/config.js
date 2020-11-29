@@ -56,6 +56,7 @@ var config = {
     flyoverPath: [
         'a','b','c'
     ],
+    is3D: true,
 }
 
 // var dataEdit = {
