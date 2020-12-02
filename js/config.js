@@ -53,9 +53,7 @@ var config = {
     boundingBox : {},
     featureMap : [],
     showPath: false,
-    flyoverPath: [
-        'a','b','c'
-    ],
+    flyoverPath: [],
     is3D: true,
 }
 

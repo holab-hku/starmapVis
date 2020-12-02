@@ -163,6 +163,7 @@ var ViewPort = function() {
         scope.vrControl.enableVrControl(false);
     });
 
+    this.curveGroup = document.createElement('a-entity');
 
 };
 
@@ -319,8 +320,8 @@ ViewPort.prototype = {
             var object = evt.detail.object;
             var boundingSphere = object.geometry.boundingSphere;
             scope.pointsDict[id] = evt.detail.object;
-            console.log(id);
-            console.log(boundingSphere)
+
+            config.flyoverPath.push(boundingSphere.center)
             //evt.detail.object.visible = false;
 
             renderBoundingSphere( id, boundingSphere, 0);
@@ -438,6 +439,30 @@ ViewPort.prototype = {
 
         }
 
+
+
+        console.log('hohoho', config.flyoverPath)
+        // Show curve section
+        let i;
+        for (i = 0; i < config.flyoverPath.length ; i++) {
+            let curve = document.createElement('a-entity');
+            let a = i;
+            let b = i + 1;
+            if (b === config.flyoverPath.length) {
+                b = 0;
+            };
+            pointVec1 = config.flyoverPath[a];
+            posStr1 = pointVec1.x + ', ' + pointVec1.y + ', ' + pointVec1.z;
+            pointVec2 = config.flyoverPath[b];
+            posStr2 = pointVec2.x + ', ' + pointVec2.y + ', ' + pointVec2.z;
+            console.log('the curve path: ', posStr1, ' ==> ', posStr2 )
+            curve.setAttribute('line', 'start: '+posStr1+'; end: '+posStr2+'; color: white');
+            this.curveGroup.appendChild(curve);
+        };
+        this.curveGroup.setAttribute('visible', false);
+        this.container.appendChild(this.curveGroup);
+
+
     },
 
     swithToFlatScreenMode : function(  ) {
@@ -482,8 +507,15 @@ ViewPort.prototype = {
 
     showPath : function ( ) {
         console.log('showPath function in ViewPort.js');
-        console.log(this.fileData['0'].boundingSphere.center);
+        if (config.showPath) {
+            this.curveGroup.setAttribute('visible', true);
+            console.log('Check the curve group children: ', this.curveGroup.children)
+        } else {
+            this.curveGroup.setAttribute('visible', false);
+            console.log('Check the curve group children: ', this.curveGroup.children)
+        }
     },
+
     flyOver : function ( ) {
         console.log('flyOver function in ViewPort.js');
     },
