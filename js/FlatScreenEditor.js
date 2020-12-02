@@ -141,12 +141,28 @@ FlatScreenEditor.prototype = {
             };
 
             flyOverFolder.add(flyover, 'flyover' ).name( "Next Checkpoint" );
+
+
+            var flyoverAbout = {
+                flyoverAbout: function () {
+                    console.log('flyover instructions')
+                }
+            };
+            flyOverFolder.add(flyoverAbout, 'flyoverAbout' ).name( "About" );
         };
 
 
 
 
 
+        // screenShot
+        var screenShot =  {
+            screenShot: function(){
+                scope.viewPort.screenShot();
+            }
+        };
+
+        scope.settingGUI.add(screenShot, 'screenShot' ).name( "Screenshot" );
 
 
 

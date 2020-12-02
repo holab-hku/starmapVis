@@ -481,10 +481,16 @@ ViewPort.prototype = {
 
 
     showPath : function ( ) {
-        console.log('showPath function in ViewPort.js')
+        console.log('showPath function in ViewPort.js');
+        console.log(this.fileData['0'].boundingSphere.center);
     },
     flyOver : function ( ) {
-        console.log('flyOver function in ViewPort.js')
+        console.log('flyOver function in ViewPort.js');
+    },
+
+
+    screenShot: function ( ) {
+        this.sceneEl.components.screenshot.capture('perspective');
     }
 
 
