@@ -65,7 +65,7 @@ var ViewPort = function() {
 
     var axis = this.axis = new Axis(this);
 
-
+    var curveGroup = this.curveGroup = document.createElement('a-entity');
 
     var cameraWrapperEl = this.cameraWrapperEl = document.createElement('a-entity');
     cameraWrapperEl.setAttribute('position','0 0 0');
@@ -163,7 +163,6 @@ var ViewPort = function() {
         scope.vrControl.enableVrControl(false);
     });
 
-    this.curveGroup = document.createElement('a-entity');
 
 };
 
@@ -441,7 +440,6 @@ ViewPort.prototype = {
 
 
 
-        console.log('hohoho', config.flyoverPath)
         // Show curve section
         let i;
         for (i = 0; i < config.flyoverPath.length ; i++) {
@@ -460,7 +458,8 @@ ViewPort.prototype = {
             this.curveGroup.appendChild(curve);
         };
         this.curveGroup.setAttribute('visible', false);
-        this.container.appendChild(this.curveGroup);
+        // this.container.appendChild(this.curveGroup);
+        this.boundingSphereContainer.appendChild(this.curveGroup);
 
 
     },
