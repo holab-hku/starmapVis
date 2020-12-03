@@ -293,7 +293,6 @@ ViewPort.prototype = {
 
     initRendering : function( ){
 
-
         var counter = 0;
         var scope = this;
         scope.sceneEl.removeChild(scope.logo);
@@ -313,6 +312,31 @@ ViewPort.prototype = {
             maxZ: -Infinity
         };
 
+
+        // var counter;
+        // for (counter = 0; counter < Object.keys(fileData).length; counter++) {
+        //     console.log('check this out: ', this.fileData[counter.toString()].positions);
+        //
+        //     // var firList = [];
+        //     // var secList = [];
+        //     // var thiList = [];
+        //     //
+        //     // var counter2;
+        //     // for (counter2 = 0; counter2 < currCluster.positions.length; counter2++) {
+        //     //     if (counter2 % 3 === 0) {
+        //     //
+        //     //     } else if (counter2 % 3 === 1) {
+        //     //         // console.log('2');
+        //     //     } else if (counter2 % 3 === 2) {
+        //     //         // console.log('3');
+        //     //     }
+        //     // }
+        //
+        // }
+
+
+
+
         scope.pointsEl.addEventListener('object3dset', function(evt){
 
             var id = evt.detail.type;
@@ -320,7 +344,12 @@ ViewPort.prototype = {
             var boundingSphere = object.geometry.boundingSphere;
             scope.pointsDict[id] = evt.detail.object;
 
-            config.flyoverPath.push(boundingSphere.center)
+
+            config.flyoverPath.push(boundingSphere.center);
+            console.log('the center: ', boundingSphere.center);
+
+
+
             //evt.detail.object.visible = false;
 
             renderBoundingSphere( id, boundingSphere, 0);
@@ -358,6 +387,22 @@ ViewPort.prototype = {
                     config.color[id] = config.defaultColor[colorCount];
                     config.displayBoundingSphere[id] = true;
                     scope.pointsEl.setAttribute( id, { positions: currCluster.positions ,featuresNum: scope.featuresNum, size: 2, color: config.defaultColor[colorCount] } );
+
+                    // var firList = [];
+                    // var secList = [];
+                    // var thiList = [];
+                    //
+                    // var counter;
+                    // for (counter = 0; counter < currCluster.positions.length; counter++) {
+                    //     if (counter % 3 === 0) {
+                    //         // console.log('1');
+                    //     } else if (counter % 3 === 1) {
+                    //         // console.log('2');
+                    //     } else if (counter % 3 === 2) {
+                    //         // console.log('3');
+                    //     }
+                    // }
+
                 }
 
             }
@@ -508,15 +553,51 @@ ViewPort.prototype = {
         console.log('showPath function in ViewPort.js');
         if (config.showPath) {
             this.curveGroup.setAttribute('visible', true);
-            console.log('Check the curve group children: ', this.curveGroup.children)
         } else {
             this.curveGroup.setAttribute('visible', false);
-            console.log('Check the curve group children: ', this.curveGroup.children)
         }
     },
 
-    flyOver : function ( ) {
+    flyOver : function ( counter ) {
         console.log('flyOver function in ViewPort.js');
+
+        var flyoverAnimation = document.createElement( 'a-animation' );
+        flyoverAnimation.setAttribute('attribute', 'position');
+        pointVec = config.flyoverPath[counter];
+        posStr = pointVec.x + ' ' + pointVec.y + ' ' + pointVec.z
+        flyoverAnimation.setAttribute('to', posStr);
+        flyoverAnimation.setAttribute('dur', '3500');
+
+        var theta = Math.atan2(pointVec.y, pointVec.z);
+        theta *= 180 / Math.PI;
+
+        var theta2 = Math.atan2(pointVec.x, pointVec.z);
+        theta2 *= 180 / Math.PI;
+
+        // if (theta <= -90) {
+        //     theta = theta + 90
+        // } else if (theta >= 90) {
+        //     theta = theta - 90
+        // }
+        // if (theta2 <= -90) {
+        //     theta2 = theta2 + 90
+        // } else if (theta2 >= 90) {
+        //     theta2 = theta2 - 90
+        // }
+
+
+        console.log('check the angles: ', - theta, ', ', theta2);
+
+        var rotateAnimation = document.createElement( 'a-animation' );
+        rotateAnimation.setAttribute('attribute', 'rotation');
+        rotateAnimation.setAttribute('to', - theta + ' ' + theta2 + ' 0');
+        rotateAnimation.setAttribute('dur', '2000');
+        this.cameraEl.appendChild(rotateAnimation);
+
+
+
+        this.cameraWrapperEl.appendChild(flyoverAnimation);
+
     },
 
 

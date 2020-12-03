@@ -54,9 +54,6 @@ KeyboardControl.prototype = {
 
     init: function () {
 
-        console.log('hohoho', this.curveGroup)
-        console.log('hehehe', this.axis)
-
         var scope = this;
 
         var preScale = 1;
@@ -154,6 +151,8 @@ KeyboardControl.prototype = {
                 cameraWrapper.position.y -= direction.y*scope.MOVESPEED;
                 cameraWrapper.position.z -= direction.z*scope.MOVESPEED;
                 map = {};
+
+                console.log('move forward: ', viewPort.cameraEl.getAttribute('rotation'));
 
             }
             // MOVE BACKWARD

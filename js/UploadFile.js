@@ -277,6 +277,7 @@ var UploadFile = function (viewPort) {
       );
   }
 
+
   function convertToMatrix(rows) {
     var keys = Object.keys(normalizeParams);
     var clusterIndex = keys.indexOf("CLUSTER");
@@ -329,6 +330,9 @@ var UploadFile = function (viewPort) {
 
     return true;
   }
+
+
+
 
   function prepareRenderingData(clusterRecord, features) {
     features.splice(features.indexOf("X"), 1);
