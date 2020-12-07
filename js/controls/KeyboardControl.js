@@ -2,28 +2,28 @@
 function setSpriteScale(spritePool, dumyPool, preScale, newScale ) {
 
     for ( var i = 0; i < spritePool.length ; i += 1 ) {
-        
+
         if( spritePool[i].visible == false ) break;
         var pos = dumyPool[i].position;
         pos.x = pos.x / preScale * newScale;
         pos.y = pos.y / preScale * newScale;
         pos.z = pos.z / preScale * newScale;
- 
+
         spritePool[i].position.copy(dumyPool[i].getWorldPosition());
-       
-        
+
+
     }
 }
 
 var prePos = new THREE.Vector3(0,0,0);
 function setSpriteRotate(spritePool,dumyPool ) {
-  
-    
+
+
     for ( var i = 0; i < spritePool.length ; i += 1 ) {
 
         if( spritePool[i].visible == false ) break;
         spritePool[i].position.copy(dumyPool[i].getWorldPosition());
-        
+
     }
 }
 
@@ -39,36 +39,37 @@ var KeyboardControl = function(viewPort){
     this.boundingSphere = this.viewPort.boundingSphereContainer.object3D;
     this.splImage = this.viewPort.splImageContainer.object3D;
     this.container = this.viewPort.container;
-    
+
+    this.curveGroup = this.viewPort.curveGroup;
+
     this.unitVector = new THREE.Vector3( 0, 1, 0 );
     this.MAXSCALE = 10;
     this.MINSCALE = 0.5;
-    
+
 
 
 };
 
 KeyboardControl.prototype = {
-    
+
     init: function () {
-        
-    
+
         var scope = this;
 
         var preScale = 1;
         var container = scope.container;
         var cameraWrapper = scope.viewPort.cameraWrapperEl.object3D;
         var camera = scope.viewPort.cameraEl.object3D;
-        var points = scope.viewPort.pointsEl.object3D;        
+        var points = scope.viewPort.pointsEl.object3D;
         var boundingSphere = scope.boundingSphere;
         var axis = scope.axis;
         var outlier = scope.outlier.children[0];
         var spritePool = scope.viewPort.highDemDetail.spritePool;
         var dumyPool = scope.viewPort.highDemDetail.dumyPool;
         var splImage = scope.splImage;
-        
-        
-        
+        var curveGroup = scope.curveGroup;
+
+
         var onkeydown = function onkeydown ( e ) {
 
             // if(points == undefined) {
@@ -79,17 +80,17 @@ KeyboardControl.prototype = {
             //     spritePool = document.querySelector('#container').object3D.getObjectByName ( 'spritePool' );
             //     boundingSphere = document.querySelector('#boundingSphereContainer').object3D;
             //     axis = document.querySelector('#axis').object3D;
-                
-            
+
+
             // }
            e.preventDefault( );
-            
-            
-   
+
+
+
             e = e ||window.event; // to deal with IE
             var map = {};
             map[e.keyCode] = e.type == 'keydown';
-            
+
             /*
             ROTATE
             */
@@ -106,7 +107,7 @@ KeyboardControl.prototype = {
             }
             // ROTATE RIGHT
             else if(map[39]){
-                
+
                 var rotate = container.getAttribute('rotation');
                 rotate.y += scope.ROTATESPEED;
                 container.setAttribute('rotation', rotate.x+' '+rotate.y+ ' '+rotate.z);
@@ -128,7 +129,7 @@ KeyboardControl.prototype = {
             }
             // ROTATE DOWN
             else if(map[40]){
-                
+
                 var rotate = container.getAttribute('rotation');
                 rotate.x += scope.ROTATESPEED;
                 container.setAttribute('rotation', rotate.x+' '+rotate.y+ ' '+rotate.z);
@@ -137,7 +138,7 @@ KeyboardControl.prototype = {
                 map = {};
 
             }
-        
+
             /*
             MOVE
             */
@@ -146,19 +147,32 @@ KeyboardControl.prototype = {
             else if(map[87]){
 
                 var direction = camera.getWorldDirection();
-                cameraWrapper.position.x -= direction.x*scope.MOVESPEED;
-                cameraWrapper.position.y -= direction.y*scope.MOVESPEED;
-                cameraWrapper.position.z -= direction.z*scope.MOVESPEED;
+                // cameraWrapper.position.x -= direction.x*scope.MOVESPEED;
+                // cameraWrapper.position.y -= direction.y*scope.MOVESPEED;
+                // cameraWrapper.position.z -= direction.z*scope.MOVESPEED;
+
+                const dx = cameraWrapper.position.x - direction.x*scope.MOVESPEED;
+                const dy = cameraWrapper.position.y - direction.y*scope.MOVESPEED;
+                const dz = cameraWrapper.position.z - direction.z*scope.MOVESPEED;
+                scope.viewPort.cameraWrapperEl.setAttribute('position', dx + ' ' + dy + ' ' + dz);
+
                 map = {};
 
+                // console.log('move forward: ', viewPort.cameraEl.getAttribute('rotation'));
             }
             // MOVE BACKWARD
             else if(map[83]){
 
                 var direction = camera.getWorldDirection();
-                cameraWrapper.position.x += direction.x*scope.MOVESPEED;
-                cameraWrapper.position.y += direction.y*scope.MOVESPEED;
-                cameraWrapper.position.z += direction.z*scope.MOVESPEED;
+                // cameraWrapper.position.x += direction.x*scope.MOVESPEED;
+                // cameraWrapper.position.y += direction.y*scope.MOVESPEED;
+                // cameraWrapper.position.z += direction.z*scope.MOVESPEED;
+
+                const dx = cameraWrapper.position.x + direction.x*scope.MOVESPEED;
+                const dy = cameraWrapper.position.y + direction.y*scope.MOVESPEED;
+                const dz = cameraWrapper.position.z + direction.z*scope.MOVESPEED;
+                scope.viewPort.cameraWrapperEl.setAttribute('position', dx + ' ' + dy + ' ' + dz);
+
                 map = {};
 
             }
@@ -169,8 +183,14 @@ KeyboardControl.prototype = {
                 var angle = Math.PI / 2;
                 direction.applyAxisAngle( scope.unitVector, angle );
 								var len = Math.sqrt(direction.x*direction.x + direction.z*direction.z);
-                cameraWrapper.position.x -= direction.x*scope.MOVESPEED/len;
-                cameraWrapper.position.z -= direction.z*scope.MOVESPEED/len;
+                // cameraWrapper.position.x -= direction.x*scope.MOVESPEED/len;
+                // cameraWrapper.position.z -= direction.z*scope.MOVESPEED/len;
+
+                const dx = cameraWrapper.position.x - direction.x*scope.MOVESPEED/len;
+                const dy = cameraWrapper.position.y;
+                const dz = cameraWrapper.position.z - direction.z*scope.MOVESPEED/len;
+                scope.viewPort.cameraWrapperEl.setAttribute('position', dx + ' ' + dy + ' ' + dz);
+
                 map = {};
 
             }
@@ -181,8 +201,14 @@ KeyboardControl.prototype = {
                 var angle = Math.PI / 2;
                 direction.applyAxisAngle( scope.unitVector, angle );
 								var len = Math.sqrt(direction.x*direction.x + direction.z*direction.z);
-                cameraWrapper.position.x += direction.x*scope.MOVESPEED/len;
-                cameraWrapper.position.z += direction.z*scope.MOVESPEED/len;
+                // cameraWrapper.position.x += direction.x*scope.MOVESPEED/len;
+                // cameraWrapper.position.z += direction.z*scope.MOVESPEED/len;
+
+                const dx = cameraWrapper.position.x + direction.x*scope.MOVESPEED/len;
+                const dy = cameraWrapper.position.y;
+                const dz = cameraWrapper.position.z + direction.z*scope.MOVESPEED/len;
+                scope.viewPort.cameraWrapperEl.setAttribute('position', dx + ' ' + dy + ' ' + dz);
+
                 map = {};
             }
 
@@ -190,6 +216,11 @@ KeyboardControl.prototype = {
             else if(map[88]){
 
                 cameraWrapper.position.y += scope.MOVESPEED;
+
+                const dx = cameraWrapper.position.x;
+                const dy = cameraWrapper.position.y + scope.MOVESPEED;
+                const dz = cameraWrapper.position.z;
+                scope.viewPort.cameraWrapperEl.setAttribute('position', dx + ' ' + dy + ' ' + dz);
                 map = {};
 
             }
@@ -197,10 +228,15 @@ KeyboardControl.prototype = {
             else if(map[90]){
 
                 cameraWrapper.position.y -= scope.MOVESPEED;
+
+                const dx = cameraWrapper.position.x;
+                const dy = cameraWrapper.position.y - scope.MOVESPEED;
+                const dz = cameraWrapper.position.z;
+                scope.viewPort.cameraWrapperEl.setAttribute('position', dx + ' ' + dy + ' ' + dz);
                 map = {};
 
             }
-            
+
             /*
             scale
             */
@@ -209,7 +245,7 @@ KeyboardControl.prototype = {
             else if(map[81]){
                 if (splImage.visible == true) return;
                 var newScale = preScale + scope.SCALESPEED;
-                
+
                 if( newScale > scope.MAXSCALE ) return;
                 // scale point
                 for ( var i = 0; i< points.children.length;i ++ ){
@@ -220,7 +256,7 @@ KeyboardControl.prototype = {
                 boundingSphere.scale.set(newScale,newScale,newScale);
                 axis.scale.set(newScale,newScale,newScale);
                 setSpriteScale(spritePool, dumyPool, preScale, newScale );
-                
+
                 preScale = newScale;
                 map = {};
 
@@ -236,8 +272,7 @@ KeyboardControl.prototype = {
                 if( outlier != undefined ) outlier.scale.set(newScale,newScale,newScale);
                 boundingSphere.scale.set(newScale,newScale,newScale);
                 axis.scale.set(newScale,newScale,newScale);
-                
-               
+
                 setSpriteScale(spritePool, dumyPool, preScale, newScale );
                 //spritePool.scale.set(newScale,newScale,newScale);
                 preScale = newScale;
@@ -245,22 +280,22 @@ KeyboardControl.prototype = {
 
             }
         }
-        
+
         this.onkeydownHandler = onkeydown.bind(this);
-        
+
        // this.onkeydown = this.clicked.bind(this);
-        
+
     },
-    
+
     enableKeyboardControl : function (bool) {
-             
+
         if( bool ) {  document.addEventListener( 'keydown', this.onkeydownHandler, false);
                 console.log('keyboardEnabled');
         }
 
-    
+
         else{  document.removeEventListener( 'keydown', this.onkeydownHandler, false);
-        
+
             console.log('keyboardDisabled');
         }
     }

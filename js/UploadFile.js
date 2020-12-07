@@ -27,7 +27,7 @@ var UploadFile = function (viewPort) {
   var slogan = (this.slogan = document.createElement("h1"));
   slogan.setAttribute("class", "h1");
   slogan.innerHTML =
-    '<span style="color:#3e8e41">starmapVR</span>: Immersive spatial visualisation of single cell data';
+    '<span style="color:#45B39D">StarmapVR</span>: Immersive spatial visualisation of single cell data';
   sloganDiv.appendChild(slogan);
 
   var demoDiv = (this.demoDiv = document.createElement("div"));
@@ -78,17 +78,17 @@ var UploadFile = function (viewPort) {
   sceneEl.appendChild(sloganDiv);
 
   var button5 = document.createElement("button");
-  button5.innerHTML = "Demo 4<br />(105k imaging cells)";
+  button5.innerHTML = "Demo 4<br />(7000 imaging cells)";
   button5.setAttribute("class", "demoButton");
   button5.addEventListener("click", function () {
-    demo("Multi-ATOM_105kimage_data.qpi");
+    demo("Multi-ATOM_7000image_data.qpi");
   });
   demoDiv.appendChild(button5);
   sceneEl.appendChild(demoDiv);
   sceneEl.appendChild(sloganDiv);
 
   var button6 = document.createElement("button");
-  button6.innerHTML = "Demo 5<br />(4036 spatial lymph)";
+  button6.innerHTML = "Demo 5<br />(4096 spatial lymph)";
   button6.setAttribute("class", "demoButton");
   button6.addEventListener("click", function () {
     demo("humanlymphnode_4096_data.spl");
@@ -98,11 +98,12 @@ var UploadFile = function (viewPort) {
   sceneEl.appendChild(sloganDiv);
 
   function requestMotionAndOrientationPermissions() {
-    if (typeof DeviceMotionEvent.requestPermission === "function") {
+    // Fix the compatibility problem in safari => by Shichao
+    if (typeof( DeviceMotionEvent ) !== "undefined" && typeof DeviceMotionEvent.requestPermission === "function") {
       // iOS 13+
       DeviceMotionEvent.requestPermission()
         .then((response) => {
-          if (response == "granted") {
+          if (response === "granted") {
             window.addEventListener("devicemotion", (e) => {
               // do something with e
             });
@@ -111,7 +112,7 @@ var UploadFile = function (viewPort) {
         .catch(console.error);
       DeviceOrientationEvent.requestPermission()
         .then((response) => {
-          if (response == "granted") {
+          if (response === "granted") {
             window.addEventListener("deviceorientation", (e) => {
               // do something with e
             });
@@ -161,16 +162,16 @@ var UploadFile = function (viewPort) {
 
           //if( fileExtension == 'txt' || fileExtension == 'csv' ){
           if (
-            fileExtension == "RNAseq_68kpbmc_data" ||
-            fileExtension == "FlowCytometry_500kUE_data" ||
-            fileExtension == "CSOmap_4513melanoma_data"
+            fileExtension === "RNAseq_68kpbmc_data" ||
+            fileExtension === "FlowCytometry_500kUE_data" ||
+            fileExtension === "CSOmap_4513melanoma_data"
           ) {
             return zip.file(fileName + ".csv").async("string");
-          } else if (fileExtension == "spl") {
+          } else if (fileExtension === "spl") {
             fileType = "spl";
             mainFileName = key;
             break;
-          } else if (fileExtension == "qpi") {
+          } else if (fileExtension === "qpi") {
             fileType = "qpi";
             mainFileName = key;
             break;
@@ -178,12 +179,13 @@ var UploadFile = function (viewPort) {
           //else{return zip.file(fileName+".csv").async("string");}
         }
 
-        if (fileExtension == "") {
+        if (fileExtension === "") {
           errorMessage.innerHTML = "File extension is not supported.";
           loader.style.display = "none";
           uploadFileField.value = "";
         }
-        if (fileType == "spl") {
+        if (fileType === "spl") {
+          config.is3D = false;
           var splImage = splImageContainer.object3D.children[0];
           zip.files[mainFileName].async("string").then(function (data) {
             var uploaded = read_csv(data);
@@ -233,7 +235,7 @@ var UploadFile = function (viewPort) {
               }
             });
           });
-        } else if (fileType == "qpi") {
+        } else if (fileType === "qpi") {
           var splImage = splImageContainer.object3D.children[0];
           zip.files[mainFileName].async("string").then(function (data) {
             var image_size = "";
@@ -248,7 +250,7 @@ var UploadFile = function (viewPort) {
                   counter += 1;
                   content = "data:image/png;base64," + content;
                   textureInfos.push(content);
-                  if (counter == imglen) {
+                  if (counter === imglen) {
                     var uploaded = read_csv(data);
                     if (uploaded) fileUploaded();
                     loader.style.display = "none";
@@ -266,6 +268,7 @@ var UploadFile = function (viewPort) {
         function success(data) {
           // 4) display the result
           read_csv(data);
+          calculateTheCenters();
           sceneEl.removeChild(demoDiv);
           sceneEl.removeChild(sloganDiv);
           loader.style.display = "none";
@@ -274,6 +277,7 @@ var UploadFile = function (viewPort) {
         function error(e) {}
       );
   }
+
 
   function convertToMatrix(rows) {
     var keys = Object.keys(normalizeParams);
@@ -289,12 +293,12 @@ var UploadFile = function (viewPort) {
       if (!fileData.hasOwnProperty(newCluster)) {
         fileData[newCluster] = new Points();
         for (var key of keys) {
-          if (key == "X" || key == "Y" || key == "Z") continue;
+          if (key === "X" || key === "Y" || key === "Z") continue;
           fileData[newCluster].features[key] = [];
         }
       }
 
-      if (columns.length == 0) continue;
+      if (columns.length === 0) continue;
 
       for (var j = 0; j < keys.length; j += 1) {
         var currFeature = normalizeParams[keys[j]];
@@ -311,10 +315,9 @@ var UploadFile = function (viewPort) {
     for (var i = 0; i < keys.length; i += 1) {
       var currFeature = normalizeParams[keys[i]];
       njMatrix = nj.array(currFeature.data);
-      if (keys[i] == "X" || keys[i] == "Y" || keys[i] == "Z") {
+      if (keys[i] === "X" || keys[i] === "Y" || keys[i] === "Z") {
         console.log(currFeature.max);
         njMatrix = njMatrix.divide(currFeature.max).multiply(150);
-        console.log(njMatrix);
       } else
         njMatrix = njMatrix
           .subtract(currFeature.min)
@@ -327,6 +330,9 @@ var UploadFile = function (viewPort) {
 
     return true;
   }
+
+
+
 
   function prepareRenderingData(clusterRecord, features) {
     features.splice(features.indexOf("X"), 1);
@@ -349,7 +355,7 @@ var UploadFile = function (viewPort) {
 
       for (var feature of features) {
         //console.log(feature);
-        if (clusterRecord[i] != -1) {
+        if (clusterRecord[i] !== -1) {
           currCluster.features[feature].push(normalizeParams[feature].data[i]);
         }
       }
@@ -362,23 +368,23 @@ var UploadFile = function (viewPort) {
     errorMessage.innerHTML = "";
     //console.log(headerList);
 
-    if (headerList.indexOf("X") == -1) {
+    if (headerList.indexOf("X") === -1) {
       errorMessage.innerHTML += " X";
       error = 1;
     }
-    if (headerList.indexOf("Y") == -1) {
+    if (headerList.indexOf("Y") === -1) {
       errorMessage.innerHTML += " Y";
       error = 1;
     }
-    if (headerList.indexOf("Z") == -1) {
+    if (headerList.indexOf("Z") === -1) {
       errorMessage.innerHTML += " Z";
       error = 1;
     }
-    if (headerList.indexOf("CLUSTER") == -1) {
+    if (headerList.indexOf("CLUSTER") === -1) {
       errorMessage.innerHTML += " ClUSTER";
       error = 1;
     }
-    if (error == 1) {
+    if (error === 1) {
       errorMessage.innerHTML =
         "File must contain required Attributes: " + errorMessage.innerHTML;
       return false;
@@ -386,12 +392,12 @@ var UploadFile = function (viewPort) {
 
     for (var i = 0; i < headerList.length; i += 1) {
       var currFeature = headerList[i];
-      if (currFeature.length == 0 || currFeature == '""') continue;
+      if (currFeature.length === 0 || currFeature === '""') continue;
       if (
-        currFeature != "X" &&
-        currFeature != "Y" &&
-        currFeature != "Z" &&
-        currFeature != "CLUSTER"
+        currFeature !== "X" &&
+        currFeature !== "Y" &&
+        currFeature !== "Z" &&
+        currFeature !== "CLUSTER"
       ) {
         var feature = {};
         feature[currFeature] = function () {};
@@ -403,7 +409,7 @@ var UploadFile = function (viewPort) {
       normalizeParams[currFeature].max = -Infinity;
       normalizeParams[currFeature].min = Infinity;
     }
-    if (Object.keys(normalizeParams).length == 4) {
+    if (Object.keys(normalizeParams).length === 4) {
       addAxisAsFeature();
     }
     //console.log(normalizeParams)
@@ -437,7 +443,7 @@ var UploadFile = function (viewPort) {
     var inputFile = evt.target.files[0];
     var reader = new FileReader();
     //read csv or txt file directly
-    if (evt.target.files[0].name.split(".").pop().toLowerCase() != "zip") {
+    if (evt.target.files[0].name.split(".").pop().toLowerCase() !== "zip") {
       normalizeParams = {};
 
       reader.onload = function (e) {
@@ -478,27 +484,27 @@ var UploadFile = function (viewPort) {
 
               //if( fileExtension == 'txt' || fileExtension == 'csv' ){
               ///////////////////////Need to modify
-              if (fileExtension == "") {
+              if (fileExtension === "") {
                 fileType = "csv";
                 mainFileName = key;
                 break;
-              } else if (fileExtension == "spl") {
+              } else if (fileExtension === "spl") {
                 fileType = "spl";
                 mainFileName = key;
                 break;
-              } else if (fileExtension == "qpi") {
+              } else if (fileExtension === "qpi") {
                 fileType = "qpi";
                 mainFileName = key;
                 break;
               }
             }
 
-            if (fileExtension == "") {
+            if (fileExtension === "") {
               errorMessage.innerHTML = "File extension is not supported.";
               loader.style.display = "none";
               uploadFileField.value = "";
             } else {
-              if (fileType == "spl") {
+              if (fileType === "spl") {
                 var splImage = splImageContainer.object3D.children[0];
                 zip.files[mainFileName].async("string").then(function (data) {
                   var uploaded = read_csv(data);
@@ -556,14 +562,14 @@ var UploadFile = function (viewPort) {
                     }
                   });
                 });
-              } else if (fileType == "csv") {
+              } else if (fileType === "csv") {
                 zip.files[mainFileName].async("string").then(function (data) {
                   var uploaded = read_csv(data);
                   if (uploaded) fileUploaded();
                   loader.style.display = "none";
                   uploadFileField.value = "";
                 });
-              } else if (fileType == "qpi") {
+              } else if (fileType === "qpi") {
                 var splImage = splImageContainer.object3D.children[0];
                 zip.files[mainFileName].async("string").then(function (data) {
                   var image_size = "";
@@ -583,7 +589,7 @@ var UploadFile = function (viewPort) {
                           counter += 1;
                           content = "data:image/png;base64," + content;
                           textureInfos.push(content);
-                          if (counter == imglen) {
+                          if (counter === imglen) {
                             var uploaded = read_csv(data);
                             if (uploaded) fileUploaded();
                             loader.style.display = "none";
@@ -622,10 +628,37 @@ var UploadFile = function (viewPort) {
   };
 
   var fileUploaded = function () {
+
+    calculateTheCenters();
+
     sceneEl.removeChild(demoDiv);
     sceneEl.removeChild(sloganDiv);
     sceneEl.removeChild(errorMessageDiv);
     viewPort.initControlUIAndRendering();
+  };
+
+  var calculateTheCenters = function () {
+    for (const [key, value] of Object.entries(fileData)) {
+      const positionList = value.positions;
+      var firList = [];
+      var secList = [];
+      var thiList = [];
+      var counter;
+      for (counter = 0; counter < positionList.length; counter++) {
+        if (counter % 3 === 0) {
+          firList.push(positionList[counter]);
+        } else if (counter % 3 === 1) {
+          secList.push(positionList[counter]);
+        } else if (counter % 3 === 2) {
+          thiList.push(positionList[counter]);
+        }
+      }
+      config.flyoverPath.push(new THREE.Vector3(average(firList), average(secList), average(thiList)));
+    }
+  };
+
+  function average(nums) {
+    return nums.reduce((a, b) => a + b) / nums.length;
   };
 
   // var confirmLogic = { startToExplore : fileUploaded };

@@ -2,7 +2,7 @@ var ViewPort = function() {
     this.pointsDict = {};
 
     this.boundingSphereDict = {};
-    
+
     this.boundingBox = {};
     this.fileData = {};
     this.NUMOFSP = 20;
@@ -20,27 +20,27 @@ var ViewPort = function() {
     this.sceneEl.appendChild(light);
 
     // create demo UI
-    
+
     var geometry = new THREE.SphereGeometry( 3, 6, 3 );
     var logo = this.logo = document.createElement('a-entity');
     logo.setAttribute('logo','');
-    
+
     this.sceneEl.appendChild(logo);
 
 
-    
+
 
     var container = this.container = document.createElement('a-entity');
     container.setAttribute('id','container');
     this.sceneEl.appendChild(container);
-    
+
 
     var boundingSphereContainer= this.boundingSphereContainer = document.createElement('a-entity');
     boundingSphereContainer.setAttribute('id','boundingSphereContainer');
     boundingSphereContainer.setAttribute( 'position','0 0 0' );
     boundingSphereContainer.setAttribute( 'visible',true );
     container.appendChild(boundingSphereContainer);
-    
+
     var pointContainer= this.pointContainer = document.createElement('a-entity');
     pointContainer.setAttribute('id','pointContainer');
     pointContainer.setAttribute('position','0 0 0');
@@ -65,34 +65,34 @@ var ViewPort = function() {
 
     var axis = this.axis = new Axis(this);
 
-
+    var curveGroup = this.curveGroup = document.createElement('a-entity');
 
     var cameraWrapperEl = this.cameraWrapperEl = document.createElement('a-entity');
     cameraWrapperEl.setAttribute('position','0 0 0');
-  
+
     cameraWrapperEl.setAttribute('id','cameraWrapper');
 
     var cameraEl = this.cameraEl = document.createElement('a-camera');
     cameraEl.setAttribute('id','camera');
-    
+
     cameraEl.setAttribute('wasd-controls-enabled','false');
     cameraEl.setAttribute('look-controls-enabled','false');
     cameraEl.setAttribute('user-height','0');
     cameraEl.setAttribute('near','5');
-    
+
     this.hiddenChild = new THREE.Group();
     this.hiddenChild.position.set(3,0,-6);
     cameraEl.object3D.add(this.hiddenChild);
-    
+
     var cursorEl = this.cursorEl = document.createElement('a-entity');
 
     cursorEl.setAttribute('raycaster','interval: 500; objects: .clickable; far:300;');
     cursorEl.setAttribute('cursor','fuse: true');
-    
+
     cursorEl.setAttribute ('position', '0 0 -5.04');
     cursorEl.setAttribute ('geometry', 'primitive: ring; radiusInner: 0.140; radiusOuter: 0.175;thetaLength: 0; thetaStart: 90');
     cursorEl.setAttribute ('material', 'color: cyan; shader: flat;transparent:true; opacity:0.7');
-    
+
     cursorEl.addEventListener('ableHover',function(e){
         cursorEl.setAttribute('cursor','fuse:'+ e.detail.bool);
     });
@@ -103,13 +103,13 @@ var ViewPort = function() {
     fusingStartAnimation.setAttribute('fill','forwards');
     fusingStartAnimation.setAttribute('from','0');
     fusingStartAnimation.setAttribute('to','360');
-    fusingStartAnimation.setAttribute('dur','1500');   
+    fusingStartAnimation.setAttribute('dur','1500');
     fusingStartAnimation.setAttribute('end','mouseleave');
-    
+
     cursorEl.appendChild(fusingStartAnimation);
 
-    
-    
+
+
     var cursorCenter =  this.cursorCenter = document.createElement('a-entity');
     cursorCenter.setAttribute('position','0 0 0');
     cursorCenter.setAttribute('geometry','primitive: ring; radiusOuter: 0.120; radiusInner: 0.070');
@@ -117,19 +117,19 @@ var ViewPort = function() {
     cursorEl.appendChild(cursorCenter);
 
     this.isVrCursor(false);
-    
+
     cameraEl.appendChild(cursorEl);
 
-    this.compass = new Compass(cameraEl,container); 
     cameraWrapperEl.appendChild(cameraEl);
     this.sceneEl.appendChild(cameraWrapperEl);
+    this.compass = new Compass(cameraEl,container,cameraWrapperEl);
 
     document.querySelector('body').appendChild(this.sceneEl);
 
     var mouseControl = this.mouseControl = new MouseControl( this );
     var highDemDetail  = this.highDemDetail = new HighDemDetail( this );
     var flatScreenEditor = this.flatScreenEditor = new FlatScreenEditor( this );
-    
+
     var vrEditor= this.vrEditor = new VrEditor(this);
 
 
@@ -137,7 +137,7 @@ var ViewPort = function() {
     var voiceControl  = this.voiceControl = new VoiceControl(this);
     var vrControl  = this.vrControl = new VrControl(this);
     var scope = this;
-    
+
 
     this.sceneEl.addEventListener('enter-vr',function(){
 
@@ -149,7 +149,7 @@ var ViewPort = function() {
         scope.voiceControl.enableVoiceControl(true);
         scope.vrControl.enableVrControl(true);
 
-        
+
     });
 
     this.sceneEl.addEventListener('exit-vr',function(){
@@ -168,13 +168,13 @@ var ViewPort = function() {
 
 
 
-ViewPort.prototype = { 
-    
-    
+ViewPort.prototype = {
+
+
     findSurrendingPoints: function(pointIndex, cluster){
-        
+
         // find the point
-        
+
         var centerPoint = this.fileData[cluster].findPoint(pointIndex);
         var surrendingPoints = {};
         var totalPointsLength = 0;
@@ -185,99 +185,99 @@ ViewPort.prototype = {
         // }
         for ( var [currCluster, points] of Object.entries(this.fileData)) {
 
-            if( currCluster == -1 || viewPort.pointsDict['mpoints__'+currCluster].visible == false) continue;
+            if( currCluster === -1 || viewPort.pointsDict['mpoints__'+currCluster].visible === false) continue;
             if( points.boundingSphere.center.distanceTo(centerPoint) - points.boundingSphere.radius > this.sqrtThreshhold ) continue;
-            
+
                 var l = points.getSurrendingPoints(this.threshhold, centerPoint);
-             
+
                 if(l.length > 0 ) {
                     surrendingPoints[currCluster] = l;
                     totalPointsLength += l.length;
                 }
-            
+
         }
-        
+
         if(totalPointsLength > this.NUMOFSP) {
-         
+
             var deleteNum = totalPointsLength - this.NUMOFSP;
            // console.log('Needdelete' + deleteNum);
             var keys =Object.keys( surrendingPoints );
            //init heap
             var heap = new Heap(function(a, b) { return b.d - a.d});
-            
+
             for (var i = 0 ; i < keys.length ; i += 1 ){
-               
+
                var currPoints = surrendingPoints[keys[i]];
                heap.push( { k: keys[i], d: currPoints[currPoints.length - 1].d } );
-               
-            
+
+
             }
-               
+
             for ( ; deleteNum > 0; deleteNum -= 1 ) {
-            
+
                 var deleteItem = heap.pop();
                 var clusterNeedPop = deleteItem.k;
                 var surrendingCluster = surrendingPoints[clusterNeedPop];
                 surrendingPoints[clusterNeedPop].pop();
-                
+
                 if(surrendingCluster.length == 0) {
-                    
-                    delete surrendingPoints[clusterNeedPop]; 
+
+                    delete surrendingPoints[clusterNeedPop];
                     continue;
-            
+
                 }
-            
+
                 heap.push( { k: clusterNeedPop, d: surrendingCluster[surrendingCluster.length - 1].d } );
                 //
             }
 
-            
+
         }
-            
+
        this.highDemDetail.showHighDemDetail(surrendingPoints);
-        
+
     },
 
     isVrCursor: function(bool) {
-        
-        
+
+
         var scope = this;
-        
+
         scope.cursorEl.setAttribute('visible', bool);
-        
+
         var clickHandler = function(evt) {
-            
+
             var intersection = evt.detail.intersection;
             scope.findSurrendingPoints(intersection.index,intersection.object.name);
-           
+
         };
-        
+
         var mouseLeaveHandler = function(evt) {
             scope.cursorCenter.setAttribute('material', 'color', '#2ADD2A');
             scope.cursorEl.setAttribute('geometry', 'thetaLength', '0');
         };
-        
+
         var fusingStartAnimationHandler = function() {
             scope.cursorCenter.setAttribute('material','color', '#ff0000');
-         
+
         };
-        
- 
+
+
         if( bool == true ){
-            
+
             scope.cursorEl.addEventListener('mouseleave', mouseLeaveHandler);
             scope.cursorEl.addEventListener('click', clickHandler);
             //scope.cursorEl.appendChild(scope.fusingStartAnimation);
             scope.fusingStartAnimation.addEventListener('animationstart', fusingStartAnimationHandler);
 
-        
+
         }
         else{
-            
+
             scope.cursorEl.removeEventListener('mouseleave', mouseLeaveHandler);
             scope.cursorEl.removeEventListener('click', clickHandler);
             scope.fusingStartAnimation.removeEventListener('animationstart', fusingStartAnimationHandler);
-            
+
         }
     },
 
@@ -292,13 +292,12 @@ ViewPort.prototype = {
     },
 
     initRendering : function( ){
-        
-        
+
         var counter = 0;
         var scope = this;
         scope.sceneEl.removeChild(scope.logo);
-        
-    
+
+
         var fileData = scope.fileData;
         var clusterNum = Object.keys(fileData).length;
         var outlierEl = this.outlierEl;
@@ -312,82 +311,106 @@ ViewPort.prototype = {
             maxY: -Infinity,
             maxZ: -Infinity
         };
-        
-        scope.pointsEl.addEventListener('object3dset', function(evt){ 
+
+
+        // var counter;
+        // for (counter = 0; counter < Object.keys(fileData).length; counter++) {
+        //     console.log('check this out: ', this.fileData[counter.toString()].positions);
+        //
+        //     // var firList = [];
+        //     // var secList = [];
+        //     // var thiList = [];
+        //     //
+        //     // var counter2;
+        //     // for (counter2 = 0; counter2 < currCluster.positions.length; counter2++) {
+        //     //     if (counter2 % 3 === 0) {
+        //     //
+        //     //     } else if (counter2 % 3 === 1) {
+        //     //         // console.log('2');
+        //     //     } else if (counter2 % 3 === 2) {
+        //     //         // console.log('3');
+        //     //     }
+        //     // }
+        //
+        // }
+
+
+
+
+        scope.pointsEl.addEventListener('object3dset', function(evt){
 
             var id = evt.detail.type;
             var object = evt.detail.object;
             var boundingSphere = object.geometry.boundingSphere;
             scope.pointsDict[id] = evt.detail.object;
-            console.log(id);
-            console.log(boundingSphere)
             //evt.detail.object.visible = false;
-        
             renderBoundingSphere( id, boundingSphere, 0);
-        
+
         });
-        
-        outlierEl.addEventListener('object3dset', function(evt){ 
+
+        outlierEl.addEventListener('object3dset', function(evt){
 
             var id = evt.detail.type;
             var object = evt.detail.object;
             var boundingSphere = object.geometry.boundingSphere;
             //console.log(boundingSphere);
             scope.pointsDict[id] = evt.detail.object;
-           
+
            // console.log(evt.detail.object);
             //evt.detail.object.visible = false;
             renderBoundingSphere( id, boundingSphere, 1);
-        
+
         });
-        
+
         var colorCount = 0;
         for( var key in this.fileData ) {
-           
+
             if( this.fileData.hasOwnProperty( key ) ) {
-                
+
                 var currCluster = this.fileData[key];
                 var id = 'mpoints__'+key;
                 //console.log(key);
-                config.displayCluster[id] = true; 
+                config.displayCluster[id] = true;
                 if(key == -1){
                    // console.log("outlier");
                     config.color[id] = '#035A75';
                     outlierEl.setAttribute( id, { positions: currCluster.positions , size: 1, color: config.color[id], textureSrc: 'null', sizeAttenuation: false } );
                 }else{
                     config.color[id] = config.defaultColor[colorCount];
-                    config.displayBoundingSphere[id] = true; 
+                    config.displayBoundingSphere[id] = true;
                     scope.pointsEl.setAttribute( id, { positions: currCluster.positions ,featuresNum: scope.featuresNum, size: 2, color: config.defaultColor[colorCount] } );
+
+
                 }
-                
+
             }
             colorCount += 1;
-           
+
         }
-     
+
 
         function renderBoundingSphere (id, boundingSphere, outlier ){
-            
+
             counter += 1;
             if (outlier != 1) {
                 // var key = id.replace('mpoints__','');
                 // var boundingSphereEl = document.createElement( 'a-entity' );
-    
+
                 // boundingSphereEl.setAttribute( 'id', 'bounding' + id );
-             
-                // if( boundingSphere.radius != 0 ) 
+
+                // if( boundingSphere.radius != 0 )
                 //     boundingSphereEl.setAttribute( 'geometry', 'primitive: sphere; radius: ' + boundingSphere.radius );
                 // else boundingSphereEl.setAttribute( 'geometry', 'primitive: sphere; radius: 2' );
                 // boundingSphereEl.setAttribute( 'position', boundingSphere.center.x +' '+boundingSphere.center.y+' '+boundingSphere.center.z );
                 // boundingSphereEl.setAttribute( 'material', 'transparent:true; opacity: 0.4; color: '+ config.color[id]);
-            
+
                 fileData[key].boundingSphere = boundingSphere;
                 // scope.boundingSphereDict[id] = boundingSphereEl;
                 // scope.boundingSphereContainer.appendChild( boundingSphereEl );
             }
             boundingBox = calculateBoundingBox( boundingBox, boundingSphere );
 
-            if (counter == clusterNum) {
+            if (counter === clusterNum) {
 
                 config.boundingBox = {
                     width : Math.round((boundingBox.maxX - boundingBox.minX)*1.3),
@@ -397,11 +420,12 @@ ViewPort.prototype = {
                     minCoor : Math.min( boundingBox.minX, boundingBox.minY, boundingBox.minZ ),
                     center : new THREE.Vector3( (boundingBox.maxX + boundingBox.minX)/2, (boundingBox.maxY + boundingBox.minY)/2, (boundingBox.maxZ + boundingBox.minZ)/2 )
 
-                    
+
                 };
                 scope.axis.renderAxis(boundingBox);
                 var cameraLookatDistance = 1.2*Math.max( config.boundingBox.width,config.boundingBox.height,config.boundingBox.depth );
-                scope.cameraWrapperEl.setAttribute( 'position', '0 0 ' + cameraLookatDistance );
+                // Change the initial position of camera to fit lymph data => by Shichao
+                scope.cameraWrapperEl.setAttribute( 'position', '70 70 ' + cameraLookatDistance );
                 scope.initCameraPosition = scope.cameraWrapperEl.object3D.position.clone();
                 //scope.cursorEl.components.raycaster.refreshObjects();
                 scope.flatScreenEditor.initFlatScreenUI();
@@ -414,7 +438,7 @@ ViewPort.prototype = {
                 scope.mouseControl.enableMouseControl(true);
 
              }
-       
+
         }
 
         function calculateBoundingBox( boundingBox, boundingSphere ){
@@ -437,13 +461,36 @@ ViewPort.prototype = {
 
         }
 
+
+
+        // Show curve section
+        let i;
+        for (i = 0; i < config.flyoverPath.length ; i++) {
+            let curve = document.createElement('a-entity');
+            let a = i;
+            let b = i + 1;
+            if (b === config.flyoverPath.length) {
+                b = 0;
+            };
+            pointVec1 = config.flyoverPath[a];
+            posStr1 = pointVec1.x + ', ' + pointVec1.y + ', ' + pointVec1.z;
+            pointVec2 = config.flyoverPath[b];
+            posStr2 = pointVec2.x + ', ' + pointVec2.y + ', ' + pointVec2.z;
+            curve.setAttribute('line', 'start: '+posStr1+'; end: '+posStr2+'; color: #ECF0F1');
+            this.curveGroup.appendChild(curve);
+        };
+        this.curveGroup.setAttribute('visible', false);
+        // this.container.appendChild(this.curveGroup);
+        this.boundingSphereContainer.appendChild(this.curveGroup);
+
+
     },
 
     swithToFlatScreenMode : function(  ) {
 
        // var scope = this;
         this.sceneEl.setAttribute('vr-mode-ui','enabled: false');
-        
+
     },
 
 
@@ -458,16 +505,15 @@ ViewPort.prototype = {
        // var scope = this;
         this.pointContainer.setAttribute('visible',false);
 
-    },  
+    },
 
     reset : function( ) {
         this.cameraWrapperEl.object3D.position.copy(this.initCameraPosition);
+        this.cameraWrapperEl.setAttribute('position', this.initCameraPosition);
+        this.cameraWrapperEl.setAttribute('rotation','0 0 0');
         this.cameraEl.setAttribute('rotation','0 0 0');
-        this.cameraWrapperEl.object3D.updateMatrixWorld ( true ); 
-        //this.cameraWrapperEl.object3D.updateMatrix (  );
-        //this.cameraWrapperEl.setAttribute( 'position', this.initCameraPosition );
-        
-
+        this.cameraWrapperEl.object3D.updateMatrixWorld ( true );
+        this.container.setAttribute('rotation', '0 0 0');
     },
 
     renderingBoundingSphere : function( ) {
@@ -475,6 +521,66 @@ ViewPort.prototype = {
         console.log('start to rendering point');
         this.pointContainer.setAttribute('visible',true);
 
+    },
+
+
+    showPath : function ( ) {
+        console.log('showPath function in ViewPort.js');
+        if (config.showPath) {
+            this.curveGroup.setAttribute('visible', true);
+        } else {
+            this.curveGroup.setAttribute('visible', false);
+        }
+    },
+
+    flyOver : function ( counter ) {
+        console.log('flyOver function in ViewPort.js');
+
+        var flyoverAnimation = document.createElement( 'a-animation' );
+        flyoverAnimation.setAttribute('attribute', 'position');
+        pointVec = config.flyoverPath[counter];
+        posStr = pointVec.x + ' ' + pointVec.y + ' ' + pointVec.z
+        flyoverAnimation.setAttribute('to', posStr);
+        flyoverAnimation.setAttribute('dur', '4000');
+
+        var theta = - Math.atan2(pointVec.y, pointVec.z);
+        theta *= 180 / Math.PI;
+
+        var theta2 = Math.atan2(pointVec.x, pointVec.z);
+        theta2 *= 180 / Math.PI;
+
+        if (theta <= -90) {
+            theta = theta + 90
+        }
+        // else if (theta >= 90) {
+        //     theta = theta - 90
+        // }
+        if (theta2 <= -90) {
+            theta2 = theta2 + 90
+        }
+        // else if (theta2 >= 90) {
+        //     theta2 = theta2 - 90
+        // }
+
+
+        // console.log('check the angles: ', theta, ', ', theta2);
+
+        var rotateAnimation = document.createElement( 'a-animation' );
+        rotateAnimation.setAttribute('attribute', 'rotation');
+        rotateAnimation.setAttribute('to', theta + ' ' + theta2 + ' 0');
+        rotateAnimation.setAttribute('dur', '3000');
+        this.cameraEl.appendChild(rotateAnimation);
+
+
+
+        this.cameraWrapperEl.appendChild(flyoverAnimation);
+
+    },
+
+
+    screenShot: function ( ) {
+        this.sceneEl.components.screenshot.capture('perspective');
     }
+
 
 }
