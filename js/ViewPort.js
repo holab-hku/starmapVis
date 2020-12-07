@@ -343,15 +343,7 @@ ViewPort.prototype = {
             var object = evt.detail.object;
             var boundingSphere = object.geometry.boundingSphere;
             scope.pointsDict[id] = evt.detail.object;
-
-
-            config.flyoverPath.push(boundingSphere.center);
-            console.log('the center: ', boundingSphere.center);
-
-
-
             //evt.detail.object.visible = false;
-
             renderBoundingSphere( id, boundingSphere, 0);
 
         });
@@ -388,20 +380,6 @@ ViewPort.prototype = {
                     config.displayBoundingSphere[id] = true;
                     scope.pointsEl.setAttribute( id, { positions: currCluster.positions ,featuresNum: scope.featuresNum, size: 2, color: config.defaultColor[colorCount] } );
 
-                    // var firList = [];
-                    // var secList = [];
-                    // var thiList = [];
-                    //
-                    // var counter;
-                    // for (counter = 0; counter < currCluster.positions.length; counter++) {
-                    //     if (counter % 3 === 0) {
-                    //         // console.log('1');
-                    //     } else if (counter % 3 === 1) {
-                    //         // console.log('2');
-                    //     } else if (counter % 3 === 2) {
-                    //         // console.log('3');
-                    //     }
-                    // }
 
                 }
 
@@ -498,7 +476,6 @@ ViewPort.prototype = {
             posStr1 = pointVec1.x + ', ' + pointVec1.y + ', ' + pointVec1.z;
             pointVec2 = config.flyoverPath[b];
             posStr2 = pointVec2.x + ', ' + pointVec2.y + ', ' + pointVec2.z;
-            console.log('the curve path: ', posStr1, ' ==> ', posStr2 )
             curve.setAttribute('line', 'start: '+posStr1+'; end: '+posStr2+'; color: white');
             this.curveGroup.appendChild(curve);
         };
@@ -568,29 +545,31 @@ ViewPort.prototype = {
         flyoverAnimation.setAttribute('to', posStr);
         flyoverAnimation.setAttribute('dur', '3500');
 
-        var theta = Math.atan2(pointVec.y, pointVec.z);
+        var theta = - Math.atan2(pointVec.y, pointVec.z);
         theta *= 180 / Math.PI;
 
         var theta2 = Math.atan2(pointVec.x, pointVec.z);
         theta2 *= 180 / Math.PI;
 
-        // if (theta <= -90) {
-        //     theta = theta + 90
-        // } else if (theta >= 90) {
+        if (theta <= -90) {
+            theta = theta + 90
+        }
+        // else if (theta >= 90) {
         //     theta = theta - 90
         // }
-        // if (theta2 <= -90) {
-        //     theta2 = theta2 + 90
-        // } else if (theta2 >= 90) {
+        if (theta2 <= -90) {
+            theta2 = theta2 + 90
+        }
+        // else if (theta2 >= 90) {
         //     theta2 = theta2 - 90
         // }
 
 
-        console.log('check the angles: ', - theta, ', ', theta2);
+        console.log('check the angles: ', theta, ', ', theta2);
 
         var rotateAnimation = document.createElement( 'a-animation' );
         rotateAnimation.setAttribute('attribute', 'rotation');
-        rotateAnimation.setAttribute('to', - theta + ' ' + theta2 + ' 0');
+        rotateAnimation.setAttribute('to', theta + ' ' + theta2 + ' 0');
         rotateAnimation.setAttribute('dur', '2000');
         this.cameraEl.appendChild(rotateAnimation);
 

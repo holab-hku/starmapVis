@@ -268,6 +268,7 @@ var UploadFile = function (viewPort) {
         function success(data) {
           // 4) display the result
           read_csv(data);
+          calculateTheCenters();
           sceneEl.removeChild(demoDiv);
           sceneEl.removeChild(sloganDiv);
           loader.style.display = "none";
@@ -317,7 +318,6 @@ var UploadFile = function (viewPort) {
       if (keys[i] === "X" || keys[i] === "Y" || keys[i] === "Z") {
         console.log(currFeature.max);
         njMatrix = njMatrix.divide(currFeature.max).multiply(150);
-        console.log(njMatrix);
       } else
         njMatrix = njMatrix
           .subtract(currFeature.min)
@@ -628,10 +628,37 @@ var UploadFile = function (viewPort) {
   };
 
   var fileUploaded = function () {
+
+    calculateTheCenters();
+
     sceneEl.removeChild(demoDiv);
     sceneEl.removeChild(sloganDiv);
     sceneEl.removeChild(errorMessageDiv);
     viewPort.initControlUIAndRendering();
+  };
+
+  var calculateTheCenters = function () {
+    for (const [key, value] of Object.entries(fileData)) {
+      const positionList = value.positions;
+      var firList = [];
+      var secList = [];
+      var thiList = [];
+      var counter;
+      for (counter = 0; counter < positionList.length; counter++) {
+        if (counter % 3 === 0) {
+          firList.push(positionList[counter]);
+        } else if (counter % 3 === 1) {
+          secList.push(positionList[counter]);
+        } else if (counter % 3 === 2) {
+          thiList.push(positionList[counter]);
+        }
+      }
+      config.flyoverPath.push(new THREE.Vector3(average(firList), average(secList), average(thiList)));
+    }
+  };
+
+  function average(nums) {
+    return nums.reduce((a, b) => a + b) / nums.length;
   };
 
   // var confirmLogic = { startToExplore : fileUploaded };

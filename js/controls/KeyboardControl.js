@@ -152,8 +152,7 @@ KeyboardControl.prototype = {
                 cameraWrapper.position.z -= direction.z*scope.MOVESPEED;
                 map = {};
 
-                console.log('move forward: ', viewPort.cameraEl.getAttribute('rotation'));
-
+                // console.log('move forward: ', viewPort.cameraEl.getAttribute('rotation'));
             }
             // MOVE BACKWARD
             else if(map[83]){
