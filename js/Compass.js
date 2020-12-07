@@ -102,7 +102,11 @@ var Compass = function(cameraEl, container, cameraWrapperEl){
 
 
     cameraWrapperEl.addEventListener('componentchanged', function (evt) {
-        console.log('currPos change: ', evt.detail);
+        console.log('currPos change: ', evt.detail.newData);
+        x = Math.round(evt.detail.newData.x);
+        y = Math.round(evt.detail.newData.y);
+        z = Math.round(evt.detail.newData.z);
+        locLabel.setAttribute( 'text', "value: "+x+' '+y+' '+z+" ; color: #ECF0F1");
     });
 
 
