@@ -55,6 +55,7 @@ var config = {
     showPath: false,
     flyoverPath: [],
     is3D: true,
+    currPos: '',
 }
 
 // var dataEdit = {

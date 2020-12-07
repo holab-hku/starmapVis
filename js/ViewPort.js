@@ -120,9 +120,9 @@ var ViewPort = function() {
 
     cameraEl.appendChild(cursorEl);
 
-    this.compass = new Compass(cameraEl,container);
     cameraWrapperEl.appendChild(cameraEl);
     this.sceneEl.appendChild(cameraWrapperEl);
+    this.compass = new Compass(cameraEl,container,cameraWrapperEl);
 
     document.querySelector('body').appendChild(this.sceneEl);
 
@@ -476,7 +476,7 @@ ViewPort.prototype = {
             posStr1 = pointVec1.x + ', ' + pointVec1.y + ', ' + pointVec1.z;
             pointVec2 = config.flyoverPath[b];
             posStr2 = pointVec2.x + ', ' + pointVec2.y + ', ' + pointVec2.z;
-            curve.setAttribute('line', 'start: '+posStr1+'; end: '+posStr2+'; color: white');
+            curve.setAttribute('line', 'start: '+posStr1+'; end: '+posStr2+'; color: #ECF0F1');
             this.curveGroup.appendChild(curve);
         };
         this.curveGroup.setAttribute('visible', false);
@@ -513,9 +513,6 @@ ViewPort.prototype = {
         this.cameraEl.setAttribute('rotation','0 0 0');
         this.cameraWrapperEl.object3D.updateMatrixWorld ( true );
         this.container.setAttribute('rotation', '0 0 0');
-
-        console.log('Check the points: ', this.pointsDict['mpoints__1']);
-        console.log('Check the length: ', Object.keys(this.pointsDict['mpoints__1']).length);
     },
 
     renderingBoundingSphere : function( ) {
@@ -543,7 +540,7 @@ ViewPort.prototype = {
         pointVec = config.flyoverPath[counter];
         posStr = pointVec.x + ' ' + pointVec.y + ' ' + pointVec.z
         flyoverAnimation.setAttribute('to', posStr);
-        flyoverAnimation.setAttribute('dur', '3500');
+        flyoverAnimation.setAttribute('dur', '4000');
 
         var theta = - Math.atan2(pointVec.y, pointVec.z);
         theta *= 180 / Math.PI;
@@ -565,12 +562,12 @@ ViewPort.prototype = {
         // }
 
 
-        console.log('check the angles: ', theta, ', ', theta2);
+        // console.log('check the angles: ', theta, ', ', theta2);
 
         var rotateAnimation = document.createElement( 'a-animation' );
         rotateAnimation.setAttribute('attribute', 'rotation');
         rotateAnimation.setAttribute('to', theta + ' ' + theta2 + ' 0');
-        rotateAnimation.setAttribute('dur', '2000');
+        rotateAnimation.setAttribute('dur', '3000');
         this.cameraEl.appendChild(rotateAnimation);
 
 

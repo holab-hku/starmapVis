@@ -147,9 +147,15 @@ KeyboardControl.prototype = {
             else if(map[87]){
 
                 var direction = camera.getWorldDirection();
-                cameraWrapper.position.x -= direction.x*scope.MOVESPEED;
-                cameraWrapper.position.y -= direction.y*scope.MOVESPEED;
-                cameraWrapper.position.z -= direction.z*scope.MOVESPEED;
+                // cameraWrapper.position.x -= direction.x*scope.MOVESPEED;
+                // cameraWrapper.position.y -= direction.y*scope.MOVESPEED;
+                // cameraWrapper.position.z -= direction.z*scope.MOVESPEED;
+
+                const dx = cameraWrapper.position.x - direction.x*scope.MOVESPEED;
+                const dy = cameraWrapper.position.y - direction.y*scope.MOVESPEED;
+                const dz = cameraWrapper.position.z - direction.z*scope.MOVESPEED;
+                scope.viewPort.cameraWrapperEl.setAttribute('position', dx + ' ' + dy + ' ' + dz);
+
                 map = {};
 
                 // console.log('move forward: ', viewPort.cameraEl.getAttribute('rotation'));
@@ -158,9 +164,15 @@ KeyboardControl.prototype = {
             else if(map[83]){
 
                 var direction = camera.getWorldDirection();
-                cameraWrapper.position.x += direction.x*scope.MOVESPEED;
-                cameraWrapper.position.y += direction.y*scope.MOVESPEED;
-                cameraWrapper.position.z += direction.z*scope.MOVESPEED;
+                // cameraWrapper.position.x += direction.x*scope.MOVESPEED;
+                // cameraWrapper.position.y += direction.y*scope.MOVESPEED;
+                // cameraWrapper.position.z += direction.z*scope.MOVESPEED;
+
+                const dx = cameraWrapper.position.x + direction.x*scope.MOVESPEED;
+                const dy = cameraWrapper.position.y + direction.y*scope.MOVESPEED;
+                const dz = cameraWrapper.position.z + direction.z*scope.MOVESPEED;
+                scope.viewPort.cameraWrapperEl.setAttribute('position', dx + ' ' + dy + ' ' + dz);
+
                 map = {};
 
             }
@@ -171,8 +183,14 @@ KeyboardControl.prototype = {
                 var angle = Math.PI / 2;
                 direction.applyAxisAngle( scope.unitVector, angle );
 								var len = Math.sqrt(direction.x*direction.x + direction.z*direction.z);
-                cameraWrapper.position.x -= direction.x*scope.MOVESPEED/len;
-                cameraWrapper.position.z -= direction.z*scope.MOVESPEED/len;
+                // cameraWrapper.position.x -= direction.x*scope.MOVESPEED/len;
+                // cameraWrapper.position.z -= direction.z*scope.MOVESPEED/len;
+
+                const dx = cameraWrapper.position.x - direction.x*scope.MOVESPEED/len;
+                const dy = cameraWrapper.position.y;
+                const dz = cameraWrapper.position.z - direction.z*scope.MOVESPEED/len;
+                scope.viewPort.cameraWrapperEl.setAttribute('position', dx + ' ' + dy + ' ' + dz);
+
                 map = {};
 
             }
@@ -183,8 +201,14 @@ KeyboardControl.prototype = {
                 var angle = Math.PI / 2;
                 direction.applyAxisAngle( scope.unitVector, angle );
 								var len = Math.sqrt(direction.x*direction.x + direction.z*direction.z);
-                cameraWrapper.position.x += direction.x*scope.MOVESPEED/len;
-                cameraWrapper.position.z += direction.z*scope.MOVESPEED/len;
+                // cameraWrapper.position.x += direction.x*scope.MOVESPEED/len;
+                // cameraWrapper.position.z += direction.z*scope.MOVESPEED/len;
+
+                const dx = cameraWrapper.position.x + direction.x*scope.MOVESPEED/len;
+                const dy = cameraWrapper.position.y;
+                const dz = cameraWrapper.position.z + direction.z*scope.MOVESPEED/len;
+                scope.viewPort.cameraWrapperEl.setAttribute('position', dx + ' ' + dy + ' ' + dz);
+
                 map = {};
             }
 
@@ -192,6 +216,11 @@ KeyboardControl.prototype = {
             else if(map[88]){
 
                 cameraWrapper.position.y += scope.MOVESPEED;
+
+                const dx = cameraWrapper.position.x;
+                const dy = cameraWrapper.position.y + scope.MOVESPEED;
+                const dz = cameraWrapper.position.z;
+                scope.viewPort.cameraWrapperEl.setAttribute('position', dx + ' ' + dy + ' ' + dz);
                 map = {};
 
             }
@@ -199,6 +228,11 @@ KeyboardControl.prototype = {
             else if(map[90]){
 
                 cameraWrapper.position.y -= scope.MOVESPEED;
+
+                const dx = cameraWrapper.position.x;
+                const dy = cameraWrapper.position.y - scope.MOVESPEED;
+                const dz = cameraWrapper.position.z;
+                scope.viewPort.cameraWrapperEl.setAttribute('position', dx + ' ' + dy + ' ' + dz);
                 map = {};
 
             }

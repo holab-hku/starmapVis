@@ -145,7 +145,8 @@ FlatScreenEditor.prototype = {
 
             var flyoverAbout = {
                 flyoverAbout: function () {
-                    console.log('flyover instructions')
+                    console.log('flyover instructions');
+                    console.log('current pos: ', viewPort.cameraWrapperEl.getAttribute('position'));
                 }
             };
             flyOverFolder.add(flyoverAbout, 'flyoverAbout' ).name( "About" );

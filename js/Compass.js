@@ -1,11 +1,11 @@
 
-var Compass = function(cameraEl, container){
+var Compass = function(cameraEl, container, cameraWrapperEl){
 
     var compassWrapperEl = this.compassWrapperEl = document.createElement('a-entity');
     compassWrapperEl.setAttribute('id','compassWrapper');
 
     var rad = 1.571;
-    compassWrapperEl.setAttribute('position','-2 -1.8 -6');
+    compassWrapperEl.setAttribute('position','-3 -1.8 -6');
 
 
 
@@ -89,8 +89,23 @@ var Compass = function(cameraEl, container){
     coordinateSystemEl.appendChild(yAxisEl);
     coordinateSystemEl.appendChild(zAxisEl);
 
+
+    var locLabel = document.createElement("a-entity");
+    locLabel.setAttribute( 'text', "value: 100, 100, 100 ; color: #ECF0F1");
+    locLabel.setAttribute('position','2 -0.8 0.85');
+    locLabel.setAttribute('scale','3 3 3');
+
+
     compassWrapperEl.appendChild(coordinateSystemEl);
+    compassWrapperEl.appendChild(locLabel);
     cameraEl.appendChild(compassWrapperEl);
+
+
+    cameraWrapperEl.addEventListener('componentchanged', function (evt) {
+        console.log('currPos change: ', evt.detail);
+    });
+
+
 
     //camera rotation
     cameraEl.addEventListener('componentchanged', function (evt) {
