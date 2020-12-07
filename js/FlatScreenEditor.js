@@ -140,13 +140,18 @@ FlatScreenEditor.prototype = {
                 }
             };
 
-            flyOverFolder.add(flyover, 'flyover' ).name( "Next Checkpoint" );
+            flyOverFolder.add(flyover, 'flyover' ).name( "Next Center ("+config.flyoverPath.length+" in total)");
+
+
+
+
 
 
             var flyoverAbout = {
                 flyoverAbout: function () {
                     console.log('flyover instructions');
-                    console.log('current pos: ', viewPort.cameraWrapperEl.getAttribute('position'));
+                    window.alert("The Flyover function will take you travel through centers of all clusters with smooth and wonderful animation. Please enjoy your time of swimming in the data.");
+                    // console.log('current pos: ', viewPort.cameraWrapperEl.getAttribute('position'));
                 }
             };
             flyOverFolder.add(flyoverAbout, 'flyoverAbout' ).name( "About" );

@@ -92,7 +92,7 @@ var Compass = function(cameraEl, container, cameraWrapperEl){
 
     var locLabel = document.createElement("a-entity");
     locLabel.setAttribute( 'text', "value: 100, 100, 100 ; color: #ECF0F1");
-    locLabel.setAttribute('position','2 -0.8 0.85');
+    locLabel.setAttribute('position','1 -0.8 0.85');
     locLabel.setAttribute('scale','3 3 3');
 
 
@@ -102,11 +102,10 @@ var Compass = function(cameraEl, container, cameraWrapperEl){
 
 
     cameraWrapperEl.addEventListener('componentchanged', function (evt) {
-        console.log('currPos change: ', evt.detail.newData);
         x = Math.round(evt.detail.newData.x);
         y = Math.round(evt.detail.newData.y);
         z = Math.round(evt.detail.newData.z);
-        locLabel.setAttribute( 'text', "value: "+x+' '+y+' '+z+" ; color: #ECF0F1");
+        locLabel.setAttribute( 'text', "value: Your Position: [ X: "+x+' Y: '+y+' Z: '+z+" ] ; color: #ECF0F1");
     });
 
 
