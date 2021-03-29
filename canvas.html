@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>StarmapVR | Space</title>
+        <script src="packages/aframe-v1.2.0.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+        <script type="text/javascript" src="packages/aframe-meshline-component.min.js"></script>
+        <script type="text/javascript" src="components/pointsComponent.js"></script>
+        <script type="text/javascript" src="components/Compass.js"></script>
+        <script type="text/javascript" src="packages/papaparse.min.js"></script>
+        <script type="text/javascript" src="components/Loader.js"></script>
+        <script type="text/javascript" src="globalData.js"></script>
+        <script type="text/javascript" src="packages/aframe-look-at-component.min.js"></script>
+        <script type="text/javascript" src="components/KeyboardControl.js"></script>
+        <script type="text/javascript" src="components/Minimap.js"></script>
+        <script type="text/javascript" src="packages/dat.gui.min.js"></script>
+        <script type="text/javascript" src="components/ControlPanel.js"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    </head>
+
+    <body>
+
+    <div id="theSpinner" class="d-flex justify-content-center" style="height: 100%; align-items: center; background-color: #F4F6F6">
+        <div class="spinner-grow m-3" style="background-color: #943126">
+        </div>
+        <div class="spinner-grow m-3" style="background-color: #0E6655">
+        </div>
+        <div class="spinner-grow m-3" style="background-color: #21618C">
+        </div>
+    </div>
+
+    <div class="modal fade bd-example-modal-lg" id="theModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Help</h5>
+                </div>
+                <div class="modal-body">
+                    <p> Haven't done yet ...  </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="$('#theModal').modal('toggle');">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </body>
+
+
+    <script type="text/javascript" src="components/Axis.js"></script>
+
+    <script>
+
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const target = urlParams.get('target');
+        console.log(target);
+        // make sure that the user follows the correct flow
+        if (target === null) {
+            location.href = "index.html";
+        }
+
+        // Loading starts
+        // Fetch input files
+        // Decode
+        // Rendering
+            // axis
+            // camera elements
+                // minimap
+                // compass
+            // data points
+            // trajectory
+            // control board
+        // todo Construct the control flow
+        // Loading ends & set the scene visible
+
+        let spinner = document.getElementById('theSpinner');
+        let environment = document.createElement('a-entity');
+        let sky = document.createElement('a-sky');
+        sky.setAttribute('color', '#F4F6F6');
+
+        let container = document.createElement('a-entity');
+        container.setAttribute('position', '0 0 0');
+
+        let camera = document.createElement('a-camera');
+        camera.setAttribute('look-controls');
+        camera.setAttribute("wasd-controls", "acceleration: 270; fly: true");
+        camera.setAttribute("position", "0 0 250");
+
+        // TODO here is a bug
+        let cursor = document.createElement('a-entity');
+        cursor.setAttribute('cursor', "rayOrigin:mouse");
+        cursor.setAttribute('raycaster', "objects: [data-raycastable]");
+        camera.appendChild(cursor);
+
+        fetch('packages/batlow100.txt')
+            .then(response => response.text())
+            .then(text => {
+                globalData.batlowColormap = text.split("\n");
+            })
+
+        // load the axis element
+        let axis = new Axis(container);
+        axis.renderAxis();
+
+        // load the compass element
+        let compass = new Compass(camera, container);
+
+        // load the first csv file
+        let loader = new Loader(container, 'cellData');
+        loader.loadCSV('Sample/'+ target +'/input1.csv', 'cellData');
+
+        // load keyboard controller
+        let keyboard = new KeyboardControl(container);
+        keyboard.init();
+        keyboard.enableKeyboardControl(true);
+
+        setTimeout(function (){
+            // load the second csv file
+            let loader2 = new Loader(container, 'trajectory');
+            loader2.registerComp();
+            loader2.loadCSV('Sample/'+ target +'/input2.csv', 'trajectory');
+
+            setTimeout(function (){
+                // load the minimap
+                let minimap = new Minimap(camera);
+                minimap.renderMinimap();
+
+                // load the control panel
+                let controlPanel = new ControlPanel();
+                controlPanel.init();
+            }, 100);
+
+            // spinner.remove();
+
+            let scene = document.createElement('a-scene');
+            scene.setAttribute('id', "scene");
+            scene.appendChild(environment);
+            scene.appendChild(container);
+            scene.appendChild(camera);
+
+            document.querySelector('body').appendChild(scene);
+
+            $(document).ready(function() {
+                spinner.style.visibility = "hidden";
+            });
+
+        }, 100);
+
+    </script>
+
+
+    <style>
+        html, body {
+            height: 100%;
+        }
+    </style>
+</html>
