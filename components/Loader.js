@@ -139,10 +139,18 @@ Loader.prototype = {
 
     renderTrajectory: function ( data ) {
         data.forEach(element => {
+            let color = '#943126';
+            let radius = '0.3';
+            // Root has distinct color and radius.
+            if (element.root) {
+                color = '#F39C12'
+                radius = '0.4';
+                globalData.destinationCheckpoint = {x:element.x*globalData.scaleUp, y:element.y*globalData.scaleUp, z:element.z*globalData.scaleUp};
+            }
             let aSphere = document.createElement('a-sphere');
             aSphere.setAttribute('id', element.edges);
-            aSphere.setAttribute('color', '#943126');
-            aSphere.setAttribute('radius', '0.3');
+            aSphere.setAttribute('color', color);
+            aSphere.setAttribute('radius', radius);
             const x = element.x*globalData.scaleUp;
             const y = element.y*globalData.scaleUp;
             const z = element.z*globalData.scaleUp;

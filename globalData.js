@@ -10,4 +10,9 @@ let globalData = {
     geneMarkersList: [],
     curGeneMarker: { GeneMarker: '' },
     categoricalColorDict: {},
+
+
+    // TODO for the movement ...
+    destinationCheckpoint: {},
+    doTheMovement: false,
 };

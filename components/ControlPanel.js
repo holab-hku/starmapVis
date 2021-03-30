@@ -40,11 +40,14 @@ ControlPanel.prototype = {
             //  if is equal, than update the config.nextPoint and move to the next
             //  until a choice is required to be made <== recursive ???
 
-            flyover: function () {  },
+            flyover: function () {
+                // console.log(globalData.destinationCheckpoint);
+                movementController.move(camera, container, globalData.destinationCheckpoint);
+            },
 
         };
 
-        flyoverFolder.add(flyover, 'flyover' ).name( "Continue / Pause");
+        flyoverFolder.add(flyover, 'flyover' ).name( "Continue");
 
         flyoverFolder.open();
 
@@ -57,15 +60,17 @@ ControlPanel.prototype = {
                 camera.setAttribute('position', '0 0 250');
                 container.setAttribute('rotation', '0 0 0');
 
-                // TODO here is a bug
-                // camera.setAttribute('look-at', new THREE.Vector3(0, 0, 0));
-
                 let degRotation = camera.getAttribute('rotation');
                 let cameraRotation = { x: THREE.Math.degToRad(degRotation.x), y: THREE.Math.degToRad(degRotation.y), z: THREE.Math.degToRad(degRotation.z) };
                 console.log(cameraRotation);
-                camera.setAttribute('rotation', {x:0, y: 0, z:0})
-                console.log(camera.getAttribute('rotation'));
+                // TODO set rotation
 
+            }
+        };
+
+        let screenShot =  {
+            screenShot: function(){
+                document.getElementById('scene').components.screenshot.capture('perspective');
             }
         };
 
@@ -83,6 +88,7 @@ ControlPanel.prototype = {
         };
 
         this.gui.add(reset, 'reset').name("Reset Camera");
+        this.gui.add(screenShot, 'screenShot').name("Screenshot");
         this.gui.add(help, 'help').name("Help");
         this.gui.add(exit, 'exit').name('Exit');
     },
