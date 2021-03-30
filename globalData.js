@@ -9,4 +9,5 @@ let globalData = {
     hasInputPath: true,
     geneMarkersList: [],
     curGeneMarker: { GeneMarker: '' },
+    categoricalColorDict: {},
 };

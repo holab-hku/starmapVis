@@ -29,6 +29,8 @@ Loader.prototype = {
 
     renderPoints: function( data, flag = false ){
 
+        globalData.categoricalColorDict = {};
+
         let attributesList = Object.keys(data[0]);
         const idStr = attributesList[0];
         const featureList = attributesList.splice(4, attributesList.length - 4);
@@ -36,21 +38,29 @@ Loader.prototype = {
         let curGeneMarker = '';
         if (flag) {
 
-            // TODO Loading starts
             console.log('Reloading starts');
-
             curGeneMarker = globalData.curGeneMarker.GeneMarker;
-
             let oldCellData = document.getElementById('cellData');
             oldCellData.innerHTML = '';
 
         } else {
+
             curGeneMarker = featureList[0];
             globalData.curGeneMarker.GeneMarker = curGeneMarker;
+
         }
 
-        console.log(curGeneMarker);
-        // globalData.curGeneMarker.GeneMarker = curGeneMarker;
+        console.log('Current Gene Marker: ', curGeneMarker);
+
+        // deal with non-numerical attributes
+        let isStr = false;
+        let strSet = [];
+        let strToNumDict = {};
+        let strToNumIndex = 0;
+        if (typeof(data[0][curGeneMarker]) === 'string') {
+            console.log('this gene marker contains strings');
+            isStr = true;
+        }
 
         let edgeValue = 0;
         let featureMax = 0;
@@ -64,38 +74,65 @@ Loader.prototype = {
             if (Math.abs(data[i].z) > edgeValue) {
                 edgeValue = Math.abs(data[i].z);
             }
-            if (data[i][curGeneMarker] > featureMax) {
-                featureMax = data[i][curGeneMarker];
+
+            if (isStr) {
+                if ( !strSet.includes(data[i][curGeneMarker]) && data[i][curGeneMarker] ){
+                    strSet.push(data[i][curGeneMarker]);
+                    strToNumDict[data[i][curGeneMarker]] = strToNumIndex;
+                    strToNumIndex = strToNumIndex + 1;
+                }
+                featureMax = strToNumIndex;
+            } else {
+                if (data[i][curGeneMarker] > featureMax) {
+                    featureMax = data[i][curGeneMarker];
+                }
             }
         }
         globalData.scaleUp = 150/edgeValue;
         globalData.scaleDown = 1/edgeValue;
 
         const featureNorm = 100/featureMax;
+
         data.forEach(element => {
-            let colorIndex = element[curGeneMarker] * featureNorm;
+
+            let colorIndex;
+            if (isStr) {
+                colorIndex = strToNumDict[element[curGeneMarker]] * featureNorm;
+            } else {
+                colorIndex = element[curGeneMarker] * featureNorm;
+            }
+
             if (Math.round(colorIndex) > 99) {colorIndex = 99}
             const colorStr = globalData.batlowColormap[Math.round(colorIndex)];
             let aSphere = document.createElement('a-sphere');
             aSphere.setAttribute('id', element[idStr]);
             if (colorStr) {
                 aSphere.setAttribute('color', colorStr);
+                if (isStr) {
+                    globalData.categoricalColorDict[element[curGeneMarker]] = colorStr;
+                }
             }
             aSphere.setAttribute('radius', '0.7');
             aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + element.y*globalData.scaleUp + ' ' + element.z*globalData.scaleUp)
             this.innerContainer.appendChild(aSphere);
-        });
 
-        // TODO Loading ends
-        // console.log('Reloading ends');
-        // window.onload = function() {
-        //     //After everything is loaded
-        //     console.log('Reloading ends');
-        // };
+        });
 
         $(document).ready(function() {
             console.log('Reloading ends');
             document.getElementById('theSpinner').style.visibility = 'hidden';
+            if (isStr) {
+               let colormapSection = document.getElementById('categoricalColormap');
+               colormapSection.innerHTML = '';
+                Object.keys(globalData.categoricalColorDict).forEach(function(key) {
+                    let row = document.createElement('p');
+                    row.innerHTML = key;
+                    row.setAttribute('style', 'color: white; background-color: '+globalData.categoricalColorDict[key]);
+                    row.setAttribute('class', 'ps-3');
+                    colormapSection.appendChild(row);
+                });
+                $('#categoricalModal').modal('toggle');
+            }
         });
 
     },

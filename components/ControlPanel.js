@@ -71,7 +71,6 @@ ControlPanel.prototype = {
 
         let help = {
             help: function () {
-                // TODO show a modal?
                 console.log('show the help modal');
                 $('#theModal').modal('toggle');
             }
