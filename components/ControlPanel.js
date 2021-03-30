@@ -60,10 +60,11 @@ ControlPanel.prototype = {
                 camera.setAttribute('position', '0 0 250');
                 container.setAttribute('rotation', '0 0 0');
 
-                let degRotation = camera.getAttribute('rotation');
-                let cameraRotation = { x: THREE.Math.degToRad(degRotation.x), y: THREE.Math.degToRad(degRotation.y), z: THREE.Math.degToRad(degRotation.z) };
+                let cameraRotation = camera.getAttribute('rotation');
+                const originalRotStr = cameraRotation.x + ' ' + cameraRotation.y + ' ' + cameraRotation.z;
                 console.log(cameraRotation);
-                // TODO set rotation
+                // TODO set camera rotation, here is a bug ...
+                camera.setAttribute('animation', "property: rotation; from: " + originalRotStr + "; to: 0 0 0 ; dur: 150; easing: linear");
 
             }
         };

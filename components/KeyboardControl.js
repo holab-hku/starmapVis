@@ -16,37 +16,41 @@ KeyboardControl.prototype = {
             // ROTATE LEFT
             if(map[37]){
                 e.stopImmediatePropagation();
-                var rotate = container.getAttribute('rotation');
+                let rotate = container.getAttribute('rotation');
+                const originStr = rotate.x + ' ' + rotate.y + ' ' + rotate.z;
                 rotate.y -= this.ROTATESPEED;
-                container.setAttribute('rotation', rotate.x+' '+rotate.y+ ' '+rotate.z);
-                // container.setAttribute('animation', "property: rotation; to: "+ rotate.x+' '+rotate.y+ ' '+rotate.z +"; dur: 150; easing: linear");
+                // container.setAttribute('rotation', rotate.x+' '+rotate.y+ ' '+rotate.z);
+                container.setAttribute('animation', "property: rotation; from: "+originStr+"; to: "+ rotate.x+' '+rotate.y+ ' '+rotate.z +"; dur: 150; easing: linear");
                 map = {};
             }
             // ROTATE RIGHT
             else if(map[39]){
                 e.stopImmediatePropagation();
-                var rotate = container.getAttribute('rotation');
+                let rotate = container.getAttribute('rotation');
+                const originStr = rotate.x + ' ' + rotate.y + ' ' + rotate.z;
                 rotate.y += this.ROTATESPEED;
-                container.setAttribute('rotation', rotate.x+' '+rotate.y+ ' '+rotate.z);
-                // container.setAttribute('animation', "property: rotation; to: "+ rotate.x+' '+rotate.y+ ' '+rotate.z +"; dur: 150; easing: linear");
+                // container.setAttribute('rotation', rotate.x+' '+rotate.y+ ' '+rotate.z);
+                container.setAttribute('animation', "property: rotation; from: "+originStr+"; to: "+ rotate.x+' '+rotate.y+ ' '+rotate.z +"; dur: 150; easing: linear");
                 map = {};
             }
             // ROTATE UP
             else if(map[38]){
                 e.stopImmediatePropagation();
-                var rotate = container.getAttribute('rotation');
+                let rotate = container.getAttribute('rotation');
+                const originStr = rotate.x + ' ' + rotate.y + ' ' + rotate.z;
                 rotate.x -= this.ROTATESPEED;
-                container.setAttribute('rotation', rotate.x+' '+rotate.y+ ' '+rotate.z);
-                // container.setAttribute('animation', "property: rotation; to: "+ rotate.x+' '+rotate.y+ ' '+rotate.z +"; dur: 150; easing: linear");
+                // container.setAttribute('rotation', rotate.x+' '+rotate.y+ ' '+rotate.z);
+                container.setAttribute('animation', "property: rotation; from: "+originStr+"; to: "+ rotate.x+' '+rotate.y+ ' '+rotate.z +"; dur: 150; easing: linear");
                 map = {};
             }
             // ROTATE DOWN
             else if(map[40]){
                 e.stopImmediatePropagation();
-                var rotate = container.getAttribute('rotation');
+                let rotate = container.getAttribute('rotation');
+                const originStr = rotate.x + ' ' + rotate.y + ' ' + rotate.z;
                 rotate.x += this.ROTATESPEED;
-                container.setAttribute('rotation', rotate.x+' '+rotate.y+ ' '+rotate.z)
-                // container.setAttribute('animation', "property: rotation; to: "+ rotate.x+' '+rotate.y+ ' '+rotate.z +"; dur: 150; easing: linear");
+                // container.setAttribute('rotation', rotate.x+' '+rotate.y+ ' '+rotate.z)
+                container.setAttribute('animation', "property: rotation; from: "+originStr+"; to: "+ rotate.x+' '+rotate.y+ ' '+rotate.z +"; dur: 150; easing: linear");
                 map = {};
             }
         }
