@@ -98,7 +98,7 @@ Loader.prototype = {
                     globalData.categoricalColorDict[element[curGeneMarker]] = colorStr;
                 }
             }
-            aSphere.setAttribute('radius', '0.5');
+            aSphere.setAttribute('radius', '0.6');
             aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + element.y*globalData.scaleUp + ' ' + element.z*globalData.scaleUp)
             this.innerContainer.appendChild(aSphere);
         });

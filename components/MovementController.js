@@ -1,4 +1,7 @@
 let MovementController = function( ) {
+    this.rotationAnimationDur = 2700;
+    this.positionAnimationDur = 3500;
+    this.animationInterval = this.positionAnimationDur + 50;
 }
 
 MovementController.prototype = {
@@ -9,13 +12,13 @@ MovementController.prototype = {
         let modelRotation = container.getAttribute('rotation');
         if (modelRotation.x !== 0 || modelRotation.y !== 0 || modelRotation.z !== 0) {
             let rotStr = modelRotation.x + ' ' + modelRotation.y + ' ' + modelRotation.z;
-            container.setAttribute('animation', 'property: rotation; from: ' + rotStr + '; to: 0 0 0; dur: 3000');
+            container.setAttribute('animation', 'property: rotation; from: ' + rotStr + '; to: 0 0 0; dur: '+this.rotationAnimationDur);
         }
         // Move the camera to the destination
         let originalPos = camera.getAttribute('position');
         let originalPosStr = originalPos.x + ' ' + originalPos.y + ' ' + originalPos.z;
         let posStr = destination.x+ ' ' + destination.y + ' ' + destination.z;
-        camera.setAttribute('animation', 'property: position; from: ' + originalPosStr + '; to: '+ posStr +'; dur: 4000; easing: easeInOutSine');
+        camera.setAttribute('animation', 'property: position; from: ' + originalPosStr + '; to: '+ posStr +'; dur: '+this.positionAnimationDur+'; easing: easeInOutSine');
     },
 
     moveThroughPath: function ( camera, container, pathList ) {
@@ -32,10 +35,6 @@ MovementController.prototype = {
         document.getElementById('trajectory').setAttribute('visible', ''+globalData.showTrajectory);
         let pathEntity = this.generatePath(pathList);
         container.appendChild(pathEntity);
-        setTimeout(function (){
-            globalData.showData = false;
-            document.getElementById('cellData').setAttribute('visible', ''+globalData.showData);
-        }, 2000)
         controlPanel.gui.close();
 
 
@@ -56,12 +55,10 @@ MovementController.prototype = {
             }
 
             // 4 secs after the click
-            globalData.showData = true;
-            document.getElementById('cellData').setAttribute('visible', ''+globalData.showData);
             that.move(camera, container, that.getPosStr(pathList[counter]));
             document.getElementById('animationProgressBar').style.width = Math.round(counter/lenOfPathList*100)+ '%';
             counter = counter + 1;
-        }, 4050)
+        }, this.animationInterval)
     },
 
     getPosStr: function ( id ) {
@@ -82,7 +79,7 @@ MovementController.prototype = {
             let endPoint = postPos.x + ' ' + postPos.y + ' ' + postPos.z;
             let pathEntity = document.createElement('a-entity');
             // pathEntity.setAttribute('line', 'start: '+startPoint+'; end: '+endPoint+'; color: #283747');
-            pathEntity.setAttribute('meshline', "lineWidth: 10; path: "+startPoint+", "+endPoint+"; color: #5bc0de")
+            pathEntity.setAttribute('meshline', "lineWidth: 14; path: "+startPoint+", "+endPoint+"; color: #5bc0de")
             pathContainer.appendChild(pathEntity);
             prePos = postPos;
         }
