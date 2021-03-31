@@ -17,6 +17,7 @@ ControlPanel.prototype = {
         changeGeneMarker.onChange( function () {
 
             console.log('gene marker: ', globalData.curGeneMarker);
+            document.getElementById('theSpinner').style.height = '100%';
             document.getElementById('theSpinner').style.visibility = 'visible';
 
             setTimeout(function (){
@@ -34,25 +35,30 @@ ControlPanel.prototype = {
         });
 
         let flyover = {
-
-            // TODO if current position is not equal to the config.nextPoint.coordinates
-            //  move to there
-            //  if is equal, than update the config.nextPoint and move to the next
-            //  until a choice is required to be made <== recursive ???
-
             flyover: function () {
                 // console.log(globalData.destinationCheckpoint);
                 movementController.move(camera, container, globalData.destinationCheckpoint);
             },
-
         };
 
         flyoverFolder.add(flyover, 'flyover' ).name( "Continue");
 
         flyoverFolder.open();
 
-        if (globalData.hasInputPath) {
-            let defaultPathFolder = this.gui.addFolder('Default Path', '#FFFFFF');
+        let animationWithPath = {
+            animationWithPath: function () {
+            },
+        };
+        if (globalData.hasAnimationPath) {
+            let defaultPathFolder = this.gui.addFolder('Animation Path', '#FFFFFF');
+            Object.keys(globalData.curAnimationPath).forEach(function(key) {
+                // console.log(key, globalData.curAnimationPath[key]);
+                defaultPathFolder.add(animationWithPath, 'animationWithPath').name( key ).listen( ).onChange( function ( ) {
+                    // TODO highlight the path, perhaps hidden the control panel ?
+                    let pathList = globalData.curAnimationPath[key].split(' ');
+                    movementController.moveThroughPath(camera, container, pathList);
+                });
+            });
         }
 
         let reset = {

@@ -63,6 +63,10 @@
         </div>
     </div>
 
+    <div id="animationProgressContainer" class="progress fixed-bottom m-5" style="z-index: 1100; height: 10px; width: 75%; visibility: hidden">
+        <div id="animationProgressBar" class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+
     </body>
 
 
@@ -74,6 +78,14 @@
         const urlParams = new URLSearchParams(queryString);
         const target = urlParams.get('target');
         console.log(target);
+
+        // determine whether has animation path section
+        if (target === 's1') {
+            console.log(target + ' has animation section');
+            globalData.hasAnimationPath = true;
+            globalData.curAnimationPath = globalData.sampleAnimationPath[target];
+        }
+
         // make sure that the user follows the correct flow
         if (target === null) {
             location.href = "index.html";
@@ -90,7 +102,7 @@
             // data points
             // trajectory
             // control board
-        // todo Construct the control flow
+        // Construct the control flow
         // Loading ends & set the scene visible
 
         let spinner = document.getElementById('theSpinner');
@@ -137,6 +149,8 @@
         // load movement controller
         let movementController = new MovementController();
 
+        let controlPanel;
+
         setTimeout(function (){
             // load the second csv file
             let loader2 = new Loader(container, 'trajectory');
@@ -149,7 +163,7 @@
                 minimap.renderMinimap();
 
                 // load the control panel
-                let controlPanel = new ControlPanel();
+                controlPanel = new ControlPanel();
                 controlPanel.init();
             }, 100);
 
@@ -157,10 +171,12 @@
 
             let scene = document.createElement('a-scene');
             scene.setAttribute('id', "scene");
+            // scene.setAttribute('style', 'position: absolute; height: 100%; width: 100%;');
             scene.appendChild(environment);
             scene.appendChild(container);
             scene.appendChild(camera);
 
+            // document.querySelector('body').setAttribute('style', 'position: absolute; height: 100%; width: 100%;');
             document.querySelector('body').appendChild(scene);
 
             $(document).ready(function() {

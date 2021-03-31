@@ -28,30 +28,22 @@ Loader.prototype = {
     },
 
     renderPoints: function( data, flag = false ){
-
         globalData.categoricalColorDict = {};
-
         let attributesList = Object.keys(data[0]);
         const idStr = attributesList[0];
         const featureList = attributesList.splice(4, attributesList.length - 4);
         globalData.geneMarkersList = featureList;
         let curGeneMarker = '';
         if (flag) {
-
             console.log('Reloading starts');
             curGeneMarker = globalData.curGeneMarker.GeneMarker;
             let oldCellData = document.getElementById('cellData');
             oldCellData.innerHTML = '';
-
         } else {
-
             curGeneMarker = featureList[0];
             globalData.curGeneMarker.GeneMarker = curGeneMarker;
-
         }
-
         console.log('Current Gene Marker: ', curGeneMarker);
-
         // deal with non-numerical attributes
         let isStr = false;
         let strSet = [];
@@ -61,7 +53,6 @@ Loader.prototype = {
             console.log('this gene marker contains strings');
             isStr = true;
         }
-
         let edgeValue = 0;
         let featureMax = 0;
         for (let i = 0; i < data.length; i++) {
@@ -74,7 +65,6 @@ Loader.prototype = {
             if (Math.abs(data[i].z) > edgeValue) {
                 edgeValue = Math.abs(data[i].z);
             }
-
             if (isStr) {
                 if ( !strSet.includes(data[i][curGeneMarker]) && data[i][curGeneMarker] ){
                     strSet.push(data[i][curGeneMarker]);
@@ -90,18 +80,14 @@ Loader.prototype = {
         }
         globalData.scaleUp = 150/edgeValue;
         globalData.scaleDown = 1/edgeValue;
-
         const featureNorm = 100/featureMax;
-
         data.forEach(element => {
-
             let colorIndex;
             if (isStr) {
                 colorIndex = strToNumDict[element[curGeneMarker]] * featureNorm;
             } else {
                 colorIndex = element[curGeneMarker] * featureNorm;
             }
-
             if (Math.round(colorIndex) > 99) {colorIndex = 99}
             const colorStr = globalData.batlowColormap[Math.round(colorIndex)];
             let aSphere = document.createElement('a-sphere');
@@ -112,15 +98,16 @@ Loader.prototype = {
                     globalData.categoricalColorDict[element[curGeneMarker]] = colorStr;
                 }
             }
-            aSphere.setAttribute('radius', '0.7');
+            aSphere.setAttribute('radius', '0.5');
             aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + element.y*globalData.scaleUp + ' ' + element.z*globalData.scaleUp)
             this.innerContainer.appendChild(aSphere);
-
         });
-
         $(document).ready(function() {
+            // After rerendering, hide the spinner
             console.log('Reloading ends');
+            document.getElementById('theSpinner').style.height = '0';
             document.getElementById('theSpinner').style.visibility = 'hidden';
+            // If its category, show a popup window
             if (isStr) {
                let colormapSection = document.getElementById('categoricalColormap');
                colormapSection.innerHTML = '';
@@ -134,13 +121,12 @@ Loader.prototype = {
                 $('#categoricalModal').modal('toggle');
             }
         });
-
     },
 
     renderTrajectory: function ( data ) {
         data.forEach(element => {
             let color = '#943126';
-            let radius = '0.3';
+            let radius = '0.15';
             // Root has distinct color and radius.
             if (element.root) {
                 color = '#F39C12'
@@ -174,7 +160,7 @@ Loader.prototype = {
 
                         this.innerContainer.appendChild(path);
 
-                        if (childrenList.length > 1) {
+                        if (childrenList.length > 0) {
                             const x_e_half = (x+x_e)/2;
                             const y_e_half = (y+y_e)/2;
                             const z_e_half = (z+z_e)/2;
@@ -203,13 +189,13 @@ Loader.prototype = {
         let objectWrapper = document.createElement('a-entity');
         let object = document.createElement('a-cone');
         object.setAttribute('color', '#943126');
-        object.setAttribute('radius-bottom', '0.3');
+        object.setAttribute('radius-bottom', '0.15');
         object.setAttribute('radius-top', '0');
         object.setAttribute('height', '1.2');
         objectWrapper.setAttribute('position', x+' '+y+' '+z);
         object.setAttribute('rotation', '90 0 0');
 
-        object.setAttribute('clickhandler', "txt:"+name);
+        object.setAttribute('clickhandler', "txt:"+destination.x+' '+destination.y+' '+destination.z);
         object.setAttribute('data-raycastable');
 
         objectWrapper.appendChild(object);
@@ -223,10 +209,13 @@ Loader.prototype = {
                 txt: {default:'default'}
             },
             init: function () {
-                var data = this.data;
-                var el = this.el;
+                let data = this.data;
+                let el = this.el;
                 el.addEventListener('click', function () {
-                    console.log(data.txt);
+                    const desList = data.txt.split(' ');
+                    globalData.destinationCheckpoint = {x: desList[0], y: desList[1], z: desList[2]};
+                    console.log('new destination: ', globalData.destinationCheckpoint);
+                    movementController.move(camera, container, globalData.destinationCheckpoint);
                 });
             }
         });
