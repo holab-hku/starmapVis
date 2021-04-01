@@ -10,13 +10,13 @@ ControlPanel.prototype = {
             document.getElementById('cellData').setAttribute('visible', ''+globalData.showData);
         });
 
-        let geneMarkerFolder = this.gui.addFolder('Gene Markers', '#FFFFFF');
+        let geneMarkerFolder = this.gui.addFolder('MarkerGene', '#FFFFFF');
 
-        const changeGeneMarker = geneMarkerFolder.add( globalData.curGeneMarker, 'GeneMarker' ).options( globalData.geneMarkersList );
+        const changeGeneMarker = geneMarkerFolder.add( globalData.curMarkerGene, 'MarkerGene' ).options( globalData.markerGeneList );
 
         changeGeneMarker.onChange( function () {
 
-            console.log('gene marker: ', globalData.curGeneMarker);
+            console.log('gene marker: ', globalData.curMarkerGene);
             document.getElementById('theSpinner').style.height = '100%';
             document.getElementById('theSpinner').style.visibility = 'visible';
 
@@ -54,7 +54,6 @@ ControlPanel.prototype = {
             Object.keys(globalData.curAnimationPath).forEach(function(key) {
                 // console.log(key, globalData.curAnimationPath[key]);
                 defaultPathFolder.add(animationWithPath, 'animationWithPath').name( key ).listen( ).onChange( function ( ) {
-                    // TODO highlight the path, perhaps hidden the control panel ?
                     let pathList = globalData.curAnimationPath[key].split(' ');
                     movementController.moveThroughPath(camera, container, pathList);
                 });
@@ -63,6 +62,12 @@ ControlPanel.prototype = {
 
         let reset = {
             reset: function () {
+
+                // let modelRotation = container.getAttribute('rotation');
+                // let rotStr = modelRotation.x + ' ' + modelRotation.y + ' ' + modelRotation.z;
+                // let originalPos = camera.getAttribute('position');
+                // let originalPosStr = originalPos.x + ' ' + originalPos.y + ' ' + originalPos.z;
+
                 camera.setAttribute('position', '0 0 250');
                 container.setAttribute('rotation', '0 0 0');
 
@@ -70,7 +75,7 @@ ControlPanel.prototype = {
                 const originalRotStr = cameraRotation.x + ' ' + cameraRotation.y + ' ' + cameraRotation.z;
                 console.log(cameraRotation);
                 // TODO set camera rotation, here is a bug ...
-                camera.setAttribute('animation', "property: rotation; from: " + originalRotStr + "; to: 0 0 0 ; dur: 150; easing: linear");
+                // camera.setAttribute('animation', "property: rotation; from: " + originalRotStr + "; to: 0 0 0 ; dur: 150; easing: linear");
 
             }
         };

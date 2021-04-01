@@ -7,8 +7,8 @@ let globalData = {
     showData: true,
     showTrajectory: true,
     hasInputPath: true,
-    geneMarkersList: [],
-    curGeneMarker: { GeneMarker: '' },
+    markerGeneList: [],
+    curMarkerGene: { MarkerGene: '' },
     categoricalColorDict: {},
 
 

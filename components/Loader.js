@@ -32,24 +32,24 @@ Loader.prototype = {
         let attributesList = Object.keys(data[0]);
         const idStr = attributesList[0];
         const featureList = attributesList.splice(4, attributesList.length - 4);
-        globalData.geneMarkersList = featureList;
-        let curGeneMarker = '';
+        globalData.markerGeneList = featureList;
+        let curMarkerGene = '';
         if (flag) {
             console.log('Reloading starts');
-            curGeneMarker = globalData.curGeneMarker.GeneMarker;
+            curMarkerGene = globalData.curMarkerGene.MarkerGene;
             let oldCellData = document.getElementById('cellData');
             oldCellData.innerHTML = '';
         } else {
-            curGeneMarker = featureList[0];
-            globalData.curGeneMarker.GeneMarker = curGeneMarker;
+            curMarkerGene = featureList[0];
+            globalData.curMarkerGene.MarkerGene = curMarkerGene;
         }
-        console.log('Current Gene Marker: ', curGeneMarker);
+        console.log('Current MarkerGene: ', curMarkerGene);
         // deal with non-numerical attributes
         let isStr = false;
         let strSet = [];
         let strToNumDict = {};
         let strToNumIndex = 0;
-        if (typeof(data[0][curGeneMarker]) === 'string') {
+        if (typeof(data[0][curMarkerGene]) === 'string') {
             console.log('this gene marker contains strings');
             isStr = true;
         }
@@ -66,15 +66,15 @@ Loader.prototype = {
                 edgeValue = Math.abs(data[i].z);
             }
             if (isStr) {
-                if ( !strSet.includes(data[i][curGeneMarker]) && data[i][curGeneMarker] ){
-                    strSet.push(data[i][curGeneMarker]);
-                    strToNumDict[data[i][curGeneMarker]] = strToNumIndex;
+                if ( !strSet.includes(data[i][curMarkerGene]) && data[i][curMarkerGene] ){
+                    strSet.push(data[i][curMarkerGene]);
+                    strToNumDict[data[i][curMarkerGene]] = strToNumIndex;
                     strToNumIndex = strToNumIndex + 1;
                 }
                 featureMax = strToNumIndex;
             } else {
-                if (data[i][curGeneMarker] > featureMax) {
-                    featureMax = data[i][curGeneMarker];
+                if (data[i][curMarkerGene] > featureMax) {
+                    featureMax = data[i][curMarkerGene];
                 }
             }
         }
@@ -84,9 +84,9 @@ Loader.prototype = {
         data.forEach(element => {
             let colorIndex;
             if (isStr) {
-                colorIndex = strToNumDict[element[curGeneMarker]] * featureNorm;
+                colorIndex = strToNumDict[element[curMarkerGene]] * featureNorm;
             } else {
-                colorIndex = element[curGeneMarker] * featureNorm;
+                colorIndex = element[curMarkerGene] * featureNorm;
             }
             if (Math.round(colorIndex) > 99) {colorIndex = 99}
             const colorStr = globalData.batlowColormap[Math.round(colorIndex)];
@@ -95,7 +95,7 @@ Loader.prototype = {
             if (colorStr) {
                 aSphere.setAttribute('color', colorStr);
                 if (isStr) {
-                    globalData.categoricalColorDict[element[curGeneMarker]] = colorStr;
+                    globalData.categoricalColorDict[element[curMarkerGene]] = colorStr;
                 }
             }
             aSphere.setAttribute('radius', '0.6');
