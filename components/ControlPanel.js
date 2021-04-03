@@ -10,6 +10,20 @@ ControlPanel.prototype = {
             document.getElementById('cellData').setAttribute('visible', ''+globalData.showData);
         });
 
+        this.gui.add(globalData, 'showCompass' ).name( "ShowCompass" ).listen( ).onChange( function ( ) {
+            console.log('show compass: ', globalData.showCompass);
+            compass.showCompass(globalData.showCompass);
+        });
+
+        this.gui.add(globalData, 'showColormap' ).name( "ColomapInfo" ).listen( ).onChange( function ( ) {
+            console.log('show colormap: ', globalData.showColormap);
+            if (globalData.showColormap) {
+                $('#colormapToast').toast('show');
+            } else {
+                $('#colormapToast').toast('hide');
+            }
+        });
+
         let geneMarkerFolder = this.gui.addFolder('MarkerGene', '#FFFFFF');
 
         const changeGeneMarker = geneMarkerFolder.add( globalData.curMarkerGene, 'MarkerGene' ).options( globalData.markerGeneList );
@@ -28,31 +42,30 @@ ControlPanel.prototype = {
 
         geneMarkerFolder.open();
 
-        let flyoverFolder = this.gui.addFolder('Flyover', '#FFFFFF');
-        flyoverFolder.add(globalData, 'showTrajectory' ).name( "ShowTrajectory" ).listen( ).onChange( function ( ) {
+        let trajectoryFolder = this.gui.addFolder('Trajectory', '#FFFFFF');
+        trajectoryFolder.add(globalData, 'showTrajectory' ).name( "ShowTrajectory" ).listen( ).onChange( function ( ) {
             console.log('show the trajectory: ', globalData.showTrajectory);
             document.getElementById('trajectory').setAttribute('visible', ''+globalData.showTrajectory);
         });
 
-        let flyover = {
-            flyover: function () {
+        let trajMove = {
+            trajMove: function () {
                 // console.log(globalData.destinationCheckpoint);
                 movementController.move(camera, container, globalData.destinationCheckpoint);
             },
         };
 
-        flyoverFolder.add(flyover, 'flyover' ).name( "Continue");
+        trajectoryFolder.add(trajMove, 'trajMove' ).name( "Continue");
 
-        flyoverFolder.open();
+        trajectoryFolder.open();
 
         let animationWithPath = {
             animationWithPath: function () {
             },
         };
         if (globalData.hasAnimationPath) {
-            let defaultPathFolder = this.gui.addFolder('Animation Path', '#FFFFFF');
+            let defaultPathFolder = this.gui.addFolder('Flyover', '#FFFFFF');
             Object.keys(globalData.curAnimationPath).forEach(function(key) {
-                // console.log(key, globalData.curAnimationPath[key]);
                 defaultPathFolder.add(animationWithPath, 'animationWithPath').name( key ).listen( ).onChange( function ( ) {
                     let pathList = globalData.curAnimationPath[key].split(' ');
                     movementController.moveThroughPath(camera, container, pathList);
@@ -62,11 +75,6 @@ ControlPanel.prototype = {
 
         let reset = {
             reset: function () {
-
-                // let modelRotation = container.getAttribute('rotation');
-                // let rotStr = modelRotation.x + ' ' + modelRotation.y + ' ' + modelRotation.z;
-                // let originalPos = camera.getAttribute('position');
-                // let originalPosStr = originalPos.x + ' ' + originalPos.y + ' ' + originalPos.z;
 
                 camera.setAttribute('position', '0 0 250');
                 container.setAttribute('rotation', '0 0 0');
@@ -100,7 +108,7 @@ ControlPanel.prototype = {
         };
 
         this.gui.add(reset, 'reset').name("Reset Camera");
-        this.gui.add(screenShot, 'screenShot').name("Screenshot");
+        // this.gui.add(screenShot, 'screenShot').name("Screenshot");
         this.gui.add(help, 'help').name("Help");
         this.gui.add(exit, 'exit').name('Exit');
     },

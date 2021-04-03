@@ -5,11 +5,15 @@ let globalData = {
     scaleUp: 0,
     scaleDown: 0,
     showData: true,
+    showCompass: true,
     showTrajectory: true,
+    showColormap: false,
     hasInputPath: true,
     markerGeneList: [],
     curMarkerGene: { MarkerGene: '' },
     categoricalColorDict: {},
+
+    featureMAX: 0,
 
 
     // for the movement ...

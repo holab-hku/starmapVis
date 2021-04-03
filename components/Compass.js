@@ -1,6 +1,6 @@
 let Compass = function(cameraEl, container){
 
-    let compassWrapperEl = document.createElement('a-entity');
+    let compassWrapperEl = this.compassWrapper = document.createElement('a-entity');
     compassWrapperEl.setAttribute('id','compassWrapper');
 
     const rad = 1.571;
@@ -116,4 +116,10 @@ let Compass = function(cameraEl, container){
 
     compassWrapperEl.setAttribute( 'scale', '0.85 0.85 0.85' );
     compassWrapperEl.setAttribute( 'visible', 'true' );
+}
+
+Compass.prototype = {
+    showCompass: function ( bool ) {
+        this.compassWrapper.setAttribute( 'visible', bool );
+    }
 }

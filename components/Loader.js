@@ -52,6 +52,10 @@ Loader.prototype = {
         if (typeof(data[0][curMarkerGene]) === 'string') {
             console.log('this gene marker contains strings');
             isStr = true;
+            // have a different colormap info block
+            document.getElementById('colormapToastBody').setAttribute('style', 'display: none');
+        } else {
+            document.getElementById('colormapToastBody').setAttribute('style', 'display: block');
         }
         let edgeValue = 0;
         let featureMax = 0;
@@ -78,6 +82,9 @@ Loader.prototype = {
                 }
             }
         }
+        globalData.featureMAX = featureMax;
+        document.getElementById('colormapMAX').innerText = "MAX: " + globalData.featureMAX.toFixed(2);
+        console.log('max value: ', globalData.featureMAX);
         globalData.scaleUp = 150/edgeValue;
         globalData.scaleDown = 1/edgeValue;
         const featureNorm = 100/featureMax;
@@ -107,9 +114,9 @@ Loader.prototype = {
             console.log('Reloading ends');
             document.getElementById('theSpinner').style.height = '0';
             document.getElementById('theSpinner').style.visibility = 'hidden';
-            // If its category, show a popup window
+            // Change colormap information to category
             if (isStr) {
-               let colormapSection = document.getElementById('categoricalColormap');
+               let colormapSection = document.getElementById('colormapToastBodyCategory');
                colormapSection.innerHTML = '';
                 Object.keys(globalData.categoricalColorDict).forEach(function(key) {
                     let row = document.createElement('p');
@@ -118,7 +125,10 @@ Loader.prototype = {
                     row.setAttribute('class', 'ps-3');
                     colormapSection.appendChild(row);
                 });
-                $('#categoricalModal').modal('toggle');
+                colormapSection.setAttribute('style', 'display: block; max-height: 200px; overflow-y: scroll');
+            } else {
+                document.getElementById('colormapToastBodyCategory').innerHTML = '';
+                document.getElementById('colormapToastBodyCategory').setAttribute('style', 'display: none');
             }
         });
     },

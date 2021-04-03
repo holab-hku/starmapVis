@@ -22,38 +22,33 @@ MovementController.prototype = {
     },
 
     moveThroughPath: function ( camera, container, pathList ) {
-
         let counter = 0;
         const lenOfPathList = pathList.length - 1;
-
         let that = this
-
         that.move(camera, container, {x:0,y:100,z:200});
-
         // Right after the click
         globalData.showTrajectory = false;
         document.getElementById('trajectory').setAttribute('visible', ''+globalData.showTrajectory);
         let pathEntity = this.generatePath(pathList);
         container.appendChild(pathEntity);
         controlPanel.gui.close();
-
-
         document.getElementById('animationProgressBar').style.width = '0%';
         document.getElementById('animationProgressContainer').style.visibility = 'visible';
-
         let timer = setInterval(function (){
             if (counter >= lenOfPathList) {
                 clearInterval(timer);
                 document.getElementById('animationProgressContainer').style.visibility = 'hidden';
-
                 // After the travel
                 pathEntity.remove();
                 globalData.showTrajectory = true;
                 document.getElementById('trajectory').setAttribute('visible', ''+globalData.showTrajectory);
                 controlPanel.gui.open();
 
-            }
 
+                $('#liveToast').toast('show');
+
+
+            }
             // 4 secs after the click
             that.move(camera, container, that.getPosStr(pathList[counter]));
             document.getElementById('animationProgressBar').style.width = Math.round(counter/lenOfPathList*100)+ '%';
@@ -79,11 +74,10 @@ MovementController.prototype = {
             let endPoint = postPos.x + ' ' + postPos.y + ' ' + postPos.z;
             let pathEntity = document.createElement('a-entity');
             // pathEntity.setAttribute('line', 'start: '+startPoint+'; end: '+endPoint+'; color: #283747');
-            pathEntity.setAttribute('meshline', "lineWidth: 14; path: "+startPoint+", "+endPoint+"; color: #5bc0de")
+            pathEntity.setAttribute('meshline', "lineWidth: 14; path: "+startPoint+", "+endPoint+"; color: #5bc0de");
             pathContainer.appendChild(pathEntity);
             prePos = postPos;
         }
         return pathContainer;
     },
-
 }
