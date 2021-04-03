@@ -7,7 +7,7 @@ let globalData = {
     showData: true,
     showCompass: true,
     showTrajectory: true,
-    showColormap: false,
+    showColormap: true,
     hasInputPath: true,
     markerGeneList: [],
     curMarkerGene: { MarkerGene: '' },
