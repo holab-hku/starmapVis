@@ -50,7 +50,10 @@ ControlPanel.prototype = {
 
         let trajMove = {
             trajMove: function () {
-                // console.log(globalData.destinationCheckpoint);
+                loader2.traObjectsContainer.setAttribute('visible', 'false');
+                setTimeout(function (){
+                    loader2.traObjectsContainer.setAttribute('visible', 'true');
+                }, movementController.positionAnimationDur)
                 movementController.move(camera, container, globalData.destinationCheckpoint);
             },
         };

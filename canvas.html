@@ -168,9 +168,11 @@
 
         let controlPanel;
 
+        let loader2;
+
         setTimeout(function (){
             // load the second csv file
-            let loader2 = new Loader(container, 'trajectory');
+            loader2 = new Loader(container, 'trajectory');
             loader2.registerComp();
             loader2.loadCSV('Sample/'+ target +'/input2.csv', 'trajectory');
 

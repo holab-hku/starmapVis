@@ -95,9 +95,6 @@ let Compass = function(cameraEl, container){
             let z = Math.round(position.z);
 
             locLabel.setAttribute( 'text', "value: Your Position: [ X: "+x+' Y: '+y+' Z: '+z+" ] ; color: #1B2631");
-
-            // console.log(cameraEl.getAttribute('rotation'));
-
         }
     });
 

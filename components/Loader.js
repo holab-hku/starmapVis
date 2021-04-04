@@ -4,6 +4,9 @@ let Loader = function( container, id ) {
     this.innerContainer.setAttribute('id', id);
     container.appendChild(this.innerContainer);
 
+    // For trajectory only
+    this.traObjectsContainer = document.createElement( 'a-entity' );
+
 }
 
 Loader.prototype = {
@@ -151,7 +154,7 @@ Loader.prototype = {
             const y = element.y*globalData.scaleUp;
             const z = element.z*globalData.scaleUp;
             aSphere.setAttribute('position', x + ' ' + y+ ' ' + z)
-            this.innerContainer.appendChild(aSphere);
+            this.traObjectsContainer.appendChild(aSphere);
 
             if (element.children) {
                 let childrenList = element.children.split(",");
@@ -175,13 +178,16 @@ Loader.prototype = {
                             const y_e_half = (y+y_e)/2;
                             const z_e_half = (z+z_e)/2;
                             let directionChoice = this.addDirection((x+x_e_half)/2,(y+y_e_half)/2,(z+z_e_half)/2,  new THREE.Vector3(x_e, y_e, z_e), element.edges+'-'+element2);
-                            this.innerContainer.appendChild(directionChoice);
+                            // this.innerContainer.appendChild(directionChoice);
+                            this.traObjectsContainer.appendChild(directionChoice);
                         }
-
                     }
                 )
             }
+
         })
+
+        this.innerContainer.appendChild(this.traObjectsContainer);
     },
 
     getObjectFromID : function( data, id ) {
@@ -214,6 +220,7 @@ Loader.prototype = {
     },
 
     registerComp : function () {
+        let that = this;
         AFRAME.registerComponent('clickhandler', {
             schema: {
                 txt: {default:'default'}
@@ -226,6 +233,13 @@ Loader.prototype = {
                     globalData.destinationCheckpoint = {x: desList[0], y: desList[1], z: desList[2]};
                     console.log('new destination: ', globalData.destinationCheckpoint);
                     movementController.move(camera, container, globalData.destinationCheckpoint);
+
+                    // invisualize the spheres and cones in the trajectory system when the movement starts
+                    that.traObjectsContainer.setAttribute('visible', 'false');
+                    setTimeout(function (){
+                        that.traObjectsContainer.setAttribute('visible', 'true');
+                    }, movementController.positionAnimationDur)
+
                 });
             }
         });
