@@ -82,11 +82,8 @@ ControlPanel.prototype = {
                 camera.setAttribute('position', '0 0 250');
                 container.setAttribute('rotation', '0 0 0');
 
-                let cameraRotation = camera.getAttribute('rotation');
-                const originalRotStr = cameraRotation.x + ' ' + cameraRotation.y + ' ' + cameraRotation.z;
-                console.log(cameraRotation);
-                // TODO set camera rotation, here is a bug ...
-                // camera.setAttribute('animation', "property: rotation; from: " + originalRotStr + "; to: 0 0 0 ; dur: 150; easing: linear");
+                camera.components["look-controls"].pitchObject.rotation.x = 0;
+                camera.components["look-controls"].yawObject.rotation.y = 0;
 
             }
         };
