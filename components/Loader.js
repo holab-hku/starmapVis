@@ -13,21 +13,28 @@ Loader.prototype = {
 
     loadCSV: function ( path, id) {
         let that = this;
-        Papa.parse(path, {
-            header: true,
-            download: true,
-            dynamicTyping: true,
-            complete: function(results) {
-                let data = results.data;
-                if (id === 'cellData') {
-                    that.renderPoints(data);
-                    globalData.cellData = data;
-                } else if (id === 'trajectory') {
-                    that.renderTrajectory(data)
-                    globalData.trajectoryData = data;
+
+        return new Promise((resolve, reject) => {
+            Papa.parse(path, {
+                header: true,
+                download: true,
+                dynamicTyping: true,
+                complete: function(results) {
+                    let data = results.data;
+                    if (id === 'cellData') {
+                        that.renderPoints(data);
+                        globalData.cellData = data;
+                    } else if (id === 'trajectory') {
+                        that.renderTrajectory(data)
+                        globalData.trajectoryData = data;
+                    }
+                    resolve(results.data)
+                },
+                error: function (err) {
+                    reject(err)
                 }
-            }
-        });
+            })
+        })
     },
 
     renderPoints: function( data, flag = false ){

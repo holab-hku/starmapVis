@@ -174,20 +174,33 @@
             // load the second csv file
             loader2 = new Loader(container, 'trajectory');
             loader2.registerComp();
-            loader2.loadCSV('Sample/'+ target +'/input2.csv', 'trajectory');
+            loader2.loadCSV('Sample/'+ target +'/input2.csv', 'trajectory').then(function (){
+                    // load the minimap
+                    let minimap = new Minimap(camera);
+                    minimap.renderMinimap();
 
-            setTimeout(function (){
-                // load the minimap
-                let minimap = new Minimap(camera);
-                minimap.renderMinimap();
+                    // load the control panel
+                    controlPanel = new ControlPanel();
+                    controlPanel.init();
 
-                // load the control panel
-                controlPanel = new ControlPanel();
-                controlPanel.init();
+                    // show the colormapInfo
+                    $('#colormapToast').toast('show');
+                }
 
-                // show the colormapInfo
-                $('#colormapToast').toast('show');
-            }, 100);
+            )
+
+            // setTimeout(function (){
+            //     // load the minimap
+            //     let minimap = new Minimap(camera);
+            //     minimap.renderMinimap();
+            //
+            //     // load the control panel
+            //     controlPanel = new ControlPanel();
+            //     controlPanel.init();
+            //
+            //     // show the colormapInfo
+            //     $('#colormapToast').toast('show');
+            // }, 100);
 
             // spinner.remove();
 
