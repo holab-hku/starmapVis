@@ -142,22 +142,12 @@
         camera.appendChild(cursor);
 
 
-        // added the setTimeout outside the fetching of batlow
-        setTimeout(function (){
-            fetch('packages/batlow100.txt')
-                .then(response => response.text())
-                .then(text => {
-                    globalData.batlowColormap = text.split("\n");
-                })
-        }, 1);
+        fetch('packages/batlow100.txt')
+            .then(response => response.text())
+            .then(text => {
+                globalData.batlowColormap = text.split("\n");
+            })
 
-
-
-        // fetch('packages/batlow100.txt')
-        //     .then(response => response.text())
-        //     .then(text => {
-        //         globalData.batlowColormap = text.split("\n");
-        //     })
 
         // load the axis element
         let axis = new Axis(container);
@@ -216,6 +206,9 @@
 
             // spinner.remove();
 
+
+
+
             let scene = document.createElement('a-scene');
             scene.setAttribute('id', "scene");
             // scene.setAttribute('style', 'position: absolute; height: 100%; width: 100%;');
@@ -227,6 +220,7 @@
             document.querySelector('body').appendChild(scene);
 
             $(document).ready(function() {
+                loader.renderPoints(globalData.cellData, true);
                 spinner.style.visibility = "hidden";
             });
 
