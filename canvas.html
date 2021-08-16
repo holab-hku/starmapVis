@@ -141,11 +141,23 @@
         cursor.setAttribute('raycaster', "objects: [data-raycastable]");
         camera.appendChild(cursor);
 
-        fetch('packages/batlow100.txt')
-            .then(response => response.text())
-            .then(text => {
-                globalData.batlowColormap = text.split("\n");
-            })
+
+        // added the setTimeout outside the fetching of batlow
+        setTimeout(function (){
+            fetch('packages/batlow100.txt')
+                .then(response => response.text())
+                .then(text => {
+                    globalData.batlowColormap = text.split("\n");
+                })
+        }, 1);
+
+
+
+        // fetch('packages/batlow100.txt')
+        //     .then(response => response.text())
+        //     .then(text => {
+        //         globalData.batlowColormap = text.split("\n");
+        //     })
 
         // load the axis element
         let axis = new Axis(container);

@@ -1,5 +1,8 @@
 let Loader = function( container, id ) {
 
+    // texture.minFilter = THREE.LinearFilter;
+
+
     this.innerContainer = document.createElement( 'a-entity' );
     this.innerContainer.setAttribute('id', id);
     container.appendChild(this.innerContainer);
