@@ -98,6 +98,9 @@ Loader.prototype = {
         globalData.scaleUp = 150/edgeValue;
         globalData.scaleDown = 1/edgeValue;
         const featureNorm = 100/featureMax;
+
+
+
         data.forEach(element => {
             let colorIndex;
             if (isStr) {
@@ -107,6 +110,8 @@ Loader.prototype = {
             }
             if (Math.round(colorIndex) > 99) {colorIndex = 99}
             const colorStr = globalData.batlowColormap[Math.round(colorIndex)];
+
+
             let aSphere = document.createElement('a-sphere');
             aSphere.setAttribute('id', element[idStr]);
             if (colorStr) {
@@ -117,8 +122,20 @@ Loader.prototype = {
             }
             aSphere.setAttribute('radius', '0.6');
             aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + element.y*globalData.scaleUp + ' ' + element.z*globalData.scaleUp)
+
+
+
+
+
             this.innerContainer.appendChild(aSphere);
         });
+
+
+
+
+
+
+
         $(document).ready(function() {
             // After rerendering, hide the spinner
             console.log('Reloading ends');
