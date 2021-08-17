@@ -29,4 +29,7 @@ let globalData = {
       s2: {
       },
     },
+    mcCounter: 0,
+    mcLenOfPathList: 0,
+    onMovement: false,
 };

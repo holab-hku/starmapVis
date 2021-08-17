@@ -29,5 +29,10 @@ Axis.prototype = {
         arrowZEl.setAttribute( 'points', { positions: [0, 0, end] , hasColor : false , size:  80, textureSrc:'image/posZ.png', sizeAttenuation: false, color: '#21618C'} );
         this.axisEl.appendChild(zLineEl);
 
+    },
+
+    showAxis: function ( bool ) {
+        console.log('show axis: ', bool);
+        this.axisEl.setAttribute( 'visible', bool );
     }
 }

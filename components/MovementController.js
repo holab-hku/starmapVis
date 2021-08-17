@@ -2,6 +2,10 @@ let MovementController = function( ) {
     this.rotationAnimationDur = 2700;
     this.positionAnimationDur = 3500;
     this.animationInterval = this.positionAnimationDur + 50;
+
+    // this.onMovement = false;
+    // this.counter = 0;
+    // this.lenOfPathList = 0;
 }
 
 MovementController.prototype = {
@@ -22,24 +26,39 @@ MovementController.prototype = {
     },
 
     moveThroughPath: function ( camera, container, pathList ) {
-        let counter = 0;
-        const lenOfPathList = pathList.length - 1;
+
+        globalData.onMovement = true;
+
+        globalData.mcCounter = 0;
+        globalData.mcLenOfPathList = pathList.length - 1;
         let that = this
         that.move(camera, container, {x:0,y:100,z:200});
         // Right after the click
         globalData.showTrajectory = false;
         document.getElementById('trajectory').setAttribute('visible', ''+globalData.showTrajectory);
         let pathEntity = this.generatePath(pathList);
+        let pathThinEntity = this.generateThinPath(pathList);
+
         container.appendChild(pathEntity);
+
         controlPanel.gui.close();
         document.getElementById('animationProgressBar').style.width = '0%';
         document.getElementById('animationProgressContainer').style.visibility = 'visible';
+
+
         let timer = setInterval(function (){
-            if (counter >= lenOfPathList) {
+            if (globalData.mcCounter >= globalData.mcLenOfPathList) {
+                globalData.onMovement = false;
+
                 clearInterval(timer);
                 document.getElementById('animationProgressContainer').style.visibility = 'hidden';
+
                 // After the travel
-                pathEntity.remove();
+
+
+                pathThinEntity.remove();
+
+
                 globalData.showTrajectory = true;
                 document.getElementById('trajectory').setAttribute('visible', ''+globalData.showTrajectory);
                 controlPanel.gui.open();
@@ -47,12 +66,17 @@ MovementController.prototype = {
 
                 $('#liveToast').toast('show');
 
-
             }
             // 4 secs after the click
-            that.move(camera, container, that.getPosStr(pathList[counter]));
-            document.getElementById('animationProgressBar').style.width = Math.round(counter/lenOfPathList*100)+ '%';
-            counter = counter + 1;
+            that.move(camera, container, that.getPosStr(pathList[globalData.mcCounter]));
+
+            if (globalData.mcCounter === 1) {
+                pathEntity.remove();
+                container.appendChild(pathThinEntity);
+            }
+
+            document.getElementById('animationProgressBar').style.width = Math.round(globalData.mcCounter/globalData.mcLenOfPathList*100)+ '%';
+            globalData.mcCounter = globalData.mcCounter + 1;
         }, this.animationInterval)
     },
 
@@ -80,4 +104,20 @@ MovementController.prototype = {
         }
         return pathContainer;
     },
+
+    generateThinPath: function ( pathList ) {
+        let pathContainer = document.createElement('a-entity');
+        let prePos = this.getPosStr(pathList[0]);
+        for (let i = 1; i < pathList.length; i++) {
+            let postPos = this.getPosStr(pathList[i]);
+            let startPoint = prePos.x + ' ' + prePos.y + ' ' + prePos.z;
+            let endPoint = postPos.x + ' ' + postPos.y + ' ' + postPos.z;
+            let pathEntity = document.createElement('a-entity');
+            pathEntity.setAttribute('line', 'start: '+startPoint+'; end: '+endPoint+'; color: #5bc0de');
+            pathContainer.appendChild(pathEntity);
+            prePos = postPos;
+        }
+        return pathContainer;
+    },
+
 }

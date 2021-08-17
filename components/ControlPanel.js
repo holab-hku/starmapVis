@@ -11,8 +11,9 @@ ControlPanel.prototype = {
         });
 
         this.gui.add(globalData, 'showCompass' ).name( "ShowCompass" ).listen( ).onChange( function ( ) {
-            console.log('show compass: ', globalData.showCompass);
+            console.log('show compass & axis: ', globalData.showCompass);
             compass.showCompass(globalData.showCompass);
+            axis.showAxis(globalData.showCompass);
         });
 
         this.gui.add(globalData, 'showColormap' ).name( "ColomapInfo" ).listen( ).onChange( function ( ) {
@@ -79,11 +80,16 @@ ControlPanel.prototype = {
         let reset = {
             reset: function () {
 
+                if (globalData.onMovement) {
+                    window.location.href = window.location.href;
+                }
+
                 camera.setAttribute('position', '0 0 250');
                 container.setAttribute('rotation', '0 0 0');
 
                 camera.components["look-controls"].pitchObject.rotation.x = 0;
                 camera.components["look-controls"].yawObject.rotation.y = 0;
+
 
             }
         };
