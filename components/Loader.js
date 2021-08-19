@@ -184,12 +184,22 @@ Loader.prototype = {
             this.traObjectsContainer.appendChild(aSphere);
 
             if (element.children) {
-                let childrenList = element.children.split(",");
+
+                let childrenList = [];
+
+                // Some modification
+                if (element.children.constructor === Number ) {
+                    childrenList = [element.children];
+                } else {
+                    childrenList = element.children.split(",");
+                }
+
                 const startPoint = x + ', ' + y + ', ' + z;
                 childrenList.forEach(
                     element2 => {
                         let path = document.createElement('a-entity');
                         const object = this.getObjectFromID(data, element2);
+
                         const x_e = object.x*globalData.scaleUp;
                         const y_e = object.y*globalData.scaleUp;
                         const z_e = object.z*globalData.scaleUp;
@@ -208,6 +218,7 @@ Loader.prototype = {
                             // this.innerContainer.appendChild(directionChoice);
                             this.traObjectsContainer.appendChild(directionChoice);
                         }
+
                     }
                 )
             }

@@ -38,20 +38,25 @@ Minimap.prototype = {
                 point.setAttribute('position', x+' '+y+' '+z);
                 this.minimap.appendChild(point);
                 // Draw the lines
-                if (globalData.trajectoryData[j].children.split(",").length > 0) {
-                    const startPoint = x + ', ' + y + ', ' + z;
-                    globalData.trajectoryData[j].children.split(",").forEach(
-                        element => {
-                            let path = document.createElement('a-entity');
-                            const object = loader.getObjectFromID(globalData.trajectoryData, element);
-                            const x_e = object.x*globalData.scaleDown;
-                            const y_e = object.y*globalData.scaleDown;
-                            const z_e = object.z*globalData.scaleDown;
-                            const endPoint = x_e + ', ' + y_e + ', ' + z_e;
-                            path.setAttribute('line', 'start: '+startPoint+'; end: '+endPoint+'; color: #0E6655');
-                            this.minimap.appendChild(path);
-                        }
-                    )
+
+                if (globalData.trajectoryData[j].children.constructor !== Number ) {
+                    if (globalData.trajectoryData[j].children.split(",").length > 0) {
+                        const startPoint = x + ', ' + y + ', ' + z;
+                        globalData.trajectoryData[j].children.split(",").forEach(
+                            element => {
+                                let path = document.createElement('a-entity');
+                                const object = loader.getObjectFromID(globalData.trajectoryData, element);
+
+                                const x_e = object.x*globalData.scaleDown;
+                                const y_e = object.y*globalData.scaleDown;
+                                const z_e = object.z*globalData.scaleDown;
+                                const endPoint = x_e + ', ' + y_e + ', ' + z_e;
+                                path.setAttribute('line', 'start: '+startPoint+'; end: '+endPoint+'; color: #0E6655');
+                                this.minimap.appendChild(path);
+
+                            }
+                        )
+                    }
                 }
             }
         }

@@ -27,6 +27,11 @@ let globalData = {
         path4: 'Y_80 Y_1 Y_29 Y_60 Y_5 Y_46 Y_77 Y_63 Y_74 Y_14 Y_78 Y_18 Y_69 Y_47 Y_68 Y_79 Y_2 Y_27 Y_45 Y_11 Y_32 Y_73 Y_44 Y_38 Y_62 Y_81 Y_51 Y_67 Y_42 Y_34 Y_41 Y_83 Y_7 Y_72 Y_23',
       },
       s2: {
+        path1: 'Y5 Y14 Y11 Y15 Y16 Y12 Y9 Y10 Y13',
+        path2: 'Y5 Y6 Y3 Y2 Y17 Y1 Y8',
+      },
+      S3: {
+
       },
     },
     mcCounter: 0,
