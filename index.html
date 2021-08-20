@@ -48,7 +48,7 @@
             <button class="btn btn-primary m-1 btn-block" type="button" onclick="goCanvas('s1')">Sample data 1</button>
             <button class="btn btn-primary m-1 btn-block" type="button" onclick="goCanvas('s2')" >Sample data 2</button>
             <button class="btn btn-primary m-1 btn-block" type="button" onclick="goCanvas('s3')" >Sample data 3</button>
-            <button class="btn btn-primary m-1 btn-block" type="button" onclick="goCanvas('s4')" >Sample data 4</button>
+            <button class="btn btn-success m-1 btn-block" type="button" onclick="goCanvasLU('s4')" >Lifting Up</button>
         </div>
         <!--collapse-->
         <div class="collapse pt-5" id="collapseExample">
@@ -151,6 +151,10 @@
 
     function goCanvas( name ) {
         location.href = "canvas.html?target="+name;
+    }
+
+    function goCanvasLU( name ) {
+        location.href = "canvasLU.html?target="+name;
     }
 
     function userUpload( name ) {
