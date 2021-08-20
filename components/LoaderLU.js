@@ -124,7 +124,11 @@ LoaderLU.prototype = {
                 }
             }
             aSphere.setAttribute('radius', '0.6');
-            aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + 10 + ' ' + element.z*globalData.scaleUp)
+            if (globalData.liftUp2D) {
+                aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + 10 + ' ' + element.z*globalData.scaleUp);
+            } else {
+                aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + element.y*globalData.scaleUp + ' ' + element.z*globalData.scaleUp);
+            }
             // aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + element.y*globalData.scaleUp + ' ' + element.z*globalData.scaleUp)
 
 

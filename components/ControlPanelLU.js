@@ -10,6 +10,12 @@ ControlPanelLU.prototype = {
             document.getElementById('cellData').setAttribute('visible', ''+globalData.showData);
         });
 
+        this.guiLU.add(globalData, 'showImg' ).name( "ShowImg" ).listen( ).onChange( function ( ) {
+            console.log('show image: ', globalData.showImg);
+            document.getElementById('sliceImg').setAttribute('visible', ''+globalData.showImg);
+            // document.getElementById('sliceImg').setAttribute('animation', 'property: visible;  to: '+ globalData.showImg+'; dur: 1000; easing: linear')
+        });
+
         this.guiLU.add(globalData, 'showCompass' ).name( "ShowCompass" ).listen( ).onChange( function ( ) {
             console.log('show compass & axis: ', globalData.showCompass);
             compass.showCompass(globalData.showCompass);
@@ -81,6 +87,8 @@ ControlPanelLU.prototype = {
                 if (globalData.liftUp2D) {
                     console.log('From 2D to 3D');
 
+                    globalData.liftUp2D = false;
+
                     globalData.cellData.forEach(element => {
                         let target = document.getElementById(element[""]);
                         let originalPos = target.getAttribute('position');
@@ -89,9 +97,16 @@ ControlPanelLU.prototype = {
                         target.setAttribute('animation', 'property: position; from: ' + originalPosStr + '; to: '+ posStr +'; dur: 1500; easing: easeInOutSine')
                     });
 
-                    globalData.liftUp2D = false;
+                    let targetImg = document.getElementById('sliceImg');
+                    let originalImgPos = targetImg.getAttribute('position');
+                    let originalImgPosStr = originalImgPos.x + ' ' + originalImgPos.y + ' ' + originalImgPos.z;
+                    let posImgStr = originalImgPos.x+ ' ' + (Number(originalImgPos.y) - 8) + ' ' + originalImgPos.z;
+                    targetImg.setAttribute('animation', 'property: position; from: ' + originalImgPosStr + '; to: '+ posImgStr +'; dur: 1500; easing: easeInOutSine')
+
                 } else {
                     console.log('From 3D to 2D');
+
+                    globalData.liftUp2D = true;
 
                     globalData.cellData.forEach(element => {
                         let target = document.getElementById(element[""]);
@@ -101,7 +116,11 @@ ControlPanelLU.prototype = {
                         target.setAttribute('animation', 'property: position; from: ' + originalPosStr + '; to: '+ posStr +'; dur: 1500; easing: easeInOutSine')
                     });
 
-                    globalData.liftUp2D = true;
+                    let targetImg = document.getElementById('sliceImg');
+                    let originalImgPos = targetImg.getAttribute('position');
+                    let originalImgPosStr = originalImgPos.x + ' ' + originalImgPos.y + ' ' + originalImgPos.z;
+                    let posImgStr = originalImgPos.x+ ' ' + (Number(originalImgPos.y) + 8) + ' ' + originalImgPos.z;
+                    targetImg.setAttribute('animation', 'property: position; from: ' + originalImgPosStr + '; to: '+ posImgStr +'; dur: 1500; easing: easeInOutSine')
 
                 }
 

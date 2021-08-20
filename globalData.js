@@ -38,4 +38,5 @@ let globalData = {
     mcLenOfPathList: 0,
     onMovement: false,
     liftUp2D: true,
+    showImg: true,
 };
