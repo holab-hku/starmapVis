@@ -16,7 +16,6 @@ LoaderLU.prototype = {
 
     loadCSV: function ( path, id) {
         let that = this;
-
         return new Promise((resolve, reject) => {
             Papa.parse(path, {
                 header: true,
@@ -40,10 +39,29 @@ LoaderLU.prototype = {
         })
     },
 
+    load3DCSV: function (path) {
+        return new Promise((resolve, reject) => {
+            Papa.parse(path, {
+                header: true,
+                download: true,
+                dynamicTyping: true,
+                complete: function(results) {
+                    let data = results.data;
+                    globalData.cellData3D = data;
+                    resolve(results.data)
+                },
+                error: function (err) {
+                    reject(err)
+                }
+            })
+        })
+    },
+
     renderPoints: function( data, flag = false ){
         globalData.categoricalColorDict = {};
         let attributesList = Object.keys(data[0]);
         const idStr = attributesList[0];
+        globalData.idStr = idStr;
         const featureList = attributesList.splice(4, attributesList.length - 4);
         globalData.markerGeneList = featureList;
         let curMarkerGene = '';
@@ -72,6 +90,7 @@ LoaderLU.prototype = {
         }
         let edgeValue = 0;
         let featureMax = 0;
+        let featureMin = 0;
         for (let i = 0; i < data.length; i++) {
             if (Math.abs(data[i].x) > edgeValue) {
                 edgeValue = Math.abs(data[i].x);
@@ -93,14 +112,25 @@ LoaderLU.prototype = {
                 if (data[i][curMarkerGene] > featureMax) {
                     featureMax = data[i][curMarkerGene];
                 }
+                if (data[i][curMarkerGene] < featureMin) {
+                    featureMin = data[i][curMarkerGene];
+                }
             }
         }
         globalData.featureMAX = featureMax;
+        globalData.featureMIN = featureMin;
         document.getElementById('colormapMAX').innerText = "MAX: " + globalData.featureMAX.toFixed(2);
+        document.getElementById('colormapMIN').innerText = "MIN: " + globalData.featureMIN.toFixed(2);
         console.log('max value: ', globalData.featureMAX);
         globalData.scaleUp = 150/edgeValue;
         globalData.scaleDown = 1/edgeValue;
-        const featureNorm = 100/featureMax;
+
+        let featureNorm
+        if (featureMin < 0) {
+            featureNorm = 100/(featureMax - featureMin);
+        } else {
+            featureNorm = 100/featureMax;
+        }
 
 
 
@@ -109,7 +139,11 @@ LoaderLU.prototype = {
             if (isStr) {
                 colorIndex = strToNumDict[element[curMarkerGene]] * featureNorm;
             } else {
-                colorIndex = element[curMarkerGene] * featureNorm;
+                if (featureMin < 0) {
+                    colorIndex = (element[curMarkerGene] - featureMin) * featureNorm;
+                } else {
+                    colorIndex = element[curMarkerGene] * featureNorm;
+                }
             }
             if (Math.round(colorIndex) > 99) {colorIndex = 99}
             const colorStr = globalData.batlowColormap[Math.round(colorIndex)];
@@ -124,10 +158,13 @@ LoaderLU.prototype = {
                 }
             }
             aSphere.setAttribute('radius', '0.6');
+
+
             if (globalData.liftUp2D) {
-                aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + 10 + ' ' + element.z*globalData.scaleUp);
-            } else {
                 aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + element.y*globalData.scaleUp + ' ' + element.z*globalData.scaleUp);
+            } else {
+                let target = loader.getObjectFromID(globalData.cellData3D, element[idStr]);
+                aSphere.setAttribute('position', target.x*globalData.scaleUp + ' ' + target.y*globalData.scaleUp + ' ' + target.z*globalData.scaleUp);
             }
             // aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + element.y*globalData.scaleUp + ' ' + element.z*globalData.scaleUp)
 

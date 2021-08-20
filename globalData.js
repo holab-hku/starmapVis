@@ -1,5 +1,6 @@
 let globalData = {
     cellData: null,
+    cellData3D: null,
     trajectoryData: null,
     batlowColormap: [],
     scaleUp: 0,
@@ -13,6 +14,7 @@ let globalData = {
     curMarkerGene: { MarkerGene: '' },
     categoricalColorDict: {},
     featureMAX: 0,
+    featureMIN: 0,
     // for the movement
     destinationCheckpoint: {},
     doTheMovement: false,
@@ -39,4 +41,5 @@ let globalData = {
     onMovement: false,
     liftUp2D: true,
     showImg: true,
+    idStr: '',
 };

@@ -95,6 +95,7 @@ Loader.prototype = {
                 }
             }
         }
+
         globalData.featureMAX = featureMax;
         document.getElementById('colormapMAX').innerText = "MAX: " + globalData.featureMAX.toFixed(2);
         console.log('max value: ', globalData.featureMAX);

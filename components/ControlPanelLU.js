@@ -90,17 +90,18 @@ ControlPanelLU.prototype = {
                     globalData.liftUp2D = false;
 
                     globalData.cellData.forEach(element => {
-                        let target = document.getElementById(element[""]);
-                        let originalPos = target.getAttribute('position');
+                        let origin = document.getElementById(element[globalData.idStr]);
+                        let originalPos = origin.getAttribute('position');
                         let originalPosStr = originalPos.x + ' ' + originalPos.y + ' ' + originalPos.z;
-                        let posStr = originalPos.x+ ' ' + element.y*globalData.scaleUp + ' ' + originalPos.z;
-                        target.setAttribute('animation', 'property: position; from: ' + originalPosStr + '; to: '+ posStr +'; dur: 1500; easing: easeInOutSine')
+                        let target = loader.getObjectFromID(globalData.cellData3D, element[globalData.idStr]);
+                        let targetStr = target.x*globalData.scaleUp+ ' ' + target.y*globalData.scaleUp + ' ' + target.z*globalData.scaleUp;
+                        origin.setAttribute('animation', 'property: position; from: ' + originalPosStr + '; to: '+ targetStr +'; dur: 1500; easing: easeInOutSine')
                     });
 
                     let targetImg = document.getElementById('sliceImg');
                     let originalImgPos = targetImg.getAttribute('position');
                     let originalImgPosStr = originalImgPos.x + ' ' + originalImgPos.y + ' ' + originalImgPos.z;
-                    let posImgStr = originalImgPos.x+ ' ' + (Number(originalImgPos.y) - 8) + ' ' + originalImgPos.z;
+                    let posImgStr = originalImgPos.x+ ' ' + originalImgPos.y + ' ' + (Number(originalImgPos.z) - 30);
                     targetImg.setAttribute('animation', 'property: position; from: ' + originalImgPosStr + '; to: '+ posImgStr +'; dur: 1500; easing: easeInOutSine')
 
                 } else {
@@ -109,17 +110,18 @@ ControlPanelLU.prototype = {
                     globalData.liftUp2D = true;
 
                     globalData.cellData.forEach(element => {
-                        let target = document.getElementById(element[""]);
-                        let originalPos = target.getAttribute('position');
+                        let origin = document.getElementById(element[globalData.idStr]);
+                        let originalPos = origin.getAttribute('position');
                         let originalPosStr = originalPos.x + ' ' + originalPos.y + ' ' + originalPos.z;
-                        let posStr = originalPos.x+ ' ' + 10 + ' ' + originalPos.z;
-                        target.setAttribute('animation', 'property: position; from: ' + originalPosStr + '; to: '+ posStr +'; dur: 1500; easing: easeInOutSine')
+                        let target = loader.getObjectFromID(globalData.cellData, element[globalData.idStr]);
+                        let targetStr = target.x*globalData.scaleUp+ ' ' + target.y*globalData.scaleUp + ' ' + target.z*globalData.scaleUp;
+                        origin.setAttribute('animation', 'property: position; from: ' + originalPosStr + '; to: '+ targetStr +'; dur: 1500; easing: easeInOutSine')
                     });
 
                     let targetImg = document.getElementById('sliceImg');
                     let originalImgPos = targetImg.getAttribute('position');
                     let originalImgPosStr = originalImgPos.x + ' ' + originalImgPos.y + ' ' + originalImgPos.z;
-                    let posImgStr = originalImgPos.x+ ' ' + (Number(originalImgPos.y) + 8) + ' ' + originalImgPos.z;
+                    let posImgStr = originalImgPos.x+ ' ' + originalImgPos.y+ ' ' + (Number(originalImgPos.z) + 30);
                     targetImg.setAttribute('animation', 'property: position; from: ' + originalImgPosStr + '; to: '+ posImgStr +'; dur: 1500; easing: easeInOutSine')
 
                 }

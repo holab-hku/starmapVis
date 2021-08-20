@@ -23,7 +23,7 @@
 
     <body>
 
-    <div id="theSpinner" class="d-flex justify-content-center" style="height: 100%; align-items: center; background-color: #F4F6F6">
+    <div id="theSpinner" class="d-flex justify-content-center" style="height: 100%; align-items: center; background-color: #F4F6F6; z-index: 9999">
         <div class="spinner-grow m-3" style="background-color: #943126">
         </div>
         <div class="spinner-grow m-3" style="background-color: #0E6655">
@@ -81,7 +81,8 @@
             <div class="toast-body" id="colormapToastBody">
                 <img src="image/batlowweb.png" class="img-fluid">
                 <div style=" height: 22px">
-                    <div style="float: left">MIN: 0</div>
+<!--                    <div style="float: left">MIN: 0</div>-->
+                    <div id="colormapMIN" style="float: left"></div>
                     <div id="colormapMAX" style="float: right"></div>
                 </div>
             </div>
@@ -160,6 +161,7 @@
         // load the first csv file
         let loader = new LoaderLU(container, 'cellData');
         loader.loadCSV('Sample/'+ target +'/input1.csv', 'cellData');
+        loader.load3DCSV('Sample/'+ target +'/input2.csv');
 
         // load keyboard controller
         let keyboard = new KeyboardControl(container);
@@ -174,10 +176,10 @@
         let sliceImg = document.createElement('a-image');
         sliceImg.setAttribute('id', 'sliceImg');
         sliceImg.setAttribute('src', 'Sample/s4/slice.jpg');
-        sliceImg.setAttribute('height', '100');
-        sliceImg.setAttribute('width', '100');
-        sliceImg.setAttribute('position', '80, 0, 80');
-        sliceImg.setAttribute('rotation', '90 0 0');
+        sliceImg.setAttribute('height', '170');
+        sliceImg.setAttribute('width', '170');
+        sliceImg.setAttribute('position', '82.5, 85, -10');
+        sliceImg.setAttribute('rotation', '0 0 0');
 
         container.appendChild(sliceImg);
 
