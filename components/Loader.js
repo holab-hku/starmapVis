@@ -113,8 +113,19 @@ Loader.prototype = {
                 colorIndex = element[curMarkerGene] * featureNorm;
             }
             if (Math.round(colorIndex) > 99) {colorIndex = 99}
-            const colorStr = globalData.batlowColormap[Math.round(colorIndex)];
 
+            let colorStr
+            if (isStr) {
+                if (Math.round(colorIndex) % 2 === 0) {
+                    colorStr = globalData.batlowColormap[99 - Math.round(colorIndex)];
+                } else {
+                    colorStr = globalData.batlowColormap[Math.round(colorIndex)];
+                }
+            } else {
+                colorStr = globalData.batlowColormap[Math.round(colorIndex)];
+            }
+
+            // let colorStr = globalData.batlowColormap[Math.round(colorIndex)];
 
             let aSphere = document.createElement('a-sphere');
             aSphere.setAttribute('id', element[idStr]);
