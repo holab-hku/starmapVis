@@ -14,6 +14,7 @@ ControlPanel.prototype = {
             console.log('show compass & axis: ', globalData.showCompass);
             compass.showCompass(globalData.showCompass);
             axis.showAxis(globalData.showCompass);
+            minimap.showMinimap(globalData.showCompass);
         });
 
         this.gui.add(globalData, 'showColormap' ).name( "ColomapInfo" ).listen( ).onChange( function ( ) {

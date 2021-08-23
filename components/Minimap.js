@@ -62,4 +62,9 @@ Minimap.prototype = {
         }
     },
 
+    showMinimap: function ( bool ) {
+        console.log('show minimap: ', bool);
+        this.minimap.setAttribute( 'visible', bool );
+    }
+
 }

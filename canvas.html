@@ -172,13 +172,15 @@
 
         let loader2;
 
+        let minimap;
+
         setTimeout(function (){
             // load the second csv file
             loader2 = new Loader(container, 'trajectory');
             loader2.registerComp();
             loader2.loadCSV('Sample/'+ target +'/input2.csv', 'trajectory').then(function (){
                     // load the minimap
-                    let minimap = new Minimap(camera);
+                    minimap = new Minimap(camera);
                     minimap.renderMinimap();
 
                     // load the control panel
