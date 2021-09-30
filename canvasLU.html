@@ -136,7 +136,7 @@
         camera.setAttribute('id', 'theCamera');
         camera.setAttribute('look-controls');
         camera.setAttribute("wasd-controls", "acceleration: 270; fly: true");
-        camera.setAttribute("position", "100 50 250");
+        camera.setAttribute("position", "100 100 500");
 
         let cursor = document.createElement('a-entity');
         cursor.setAttribute('cursor', "rayOrigin:mouse");
@@ -173,16 +173,50 @@
 
         let controlPanel
 
-        let sliceImg = document.createElement('a-image');
-        sliceImg.setAttribute('id', 'sliceImg');
-        sliceImg.setAttribute('src', 'Sample/s4/slice.jpg');
-        sliceImg.setAttribute('height', '170');
-        sliceImg.setAttribute('width', '170');
-        sliceImg.setAttribute('position', '82.5, 85, -10');
-        sliceImg.setAttribute('rotation', '0 0 0');
+        // let sliceImg = document.createElement('a-image');
+        // sliceImg.setAttribute('id', 'sliceImg');
+        // sliceImg.setAttribute('src', 'Sample/s4/slice.jpg');
+        // sliceImg.setAttribute('height', '170');
+        // sliceImg.setAttribute('width', '170');
+        // sliceImg.setAttribute('position', '82.5, 85, -10');
+        // sliceImg.setAttribute('rotation', '0 0 0');
+        // container.appendChild(sliceImg);
 
-        container.appendChild(sliceImg);
+        let slice1 = document.createElement('a-image');
+        slice1.setAttribute('id', 'slice1');
+        slice1.setAttribute('src', 'Sample/s4/1.png');
+        slice1.setAttribute('height', '175');
+        slice1.setAttribute('width', '175');
+        slice1.setAttribute('position', '75, 75, 45');
+        slice1.setAttribute('rotation', '0 0 0');
+        container.appendChild(slice1);
 
+        let slice2 = document.createElement('a-image');
+        slice2.setAttribute('id', 'slice2');
+        slice2.setAttribute('src', 'Sample/s4/2.png');
+        slice2.setAttribute('height', '175');
+        slice2.setAttribute('width', '175');
+        slice2.setAttribute('position', '75, 75, 95');
+        slice2.setAttribute('rotation', '0 0 0');
+        container.appendChild(slice2);
+
+        let slice3 = document.createElement('a-image');
+        slice3.setAttribute('id', 'slice3');
+        slice3.setAttribute('src', 'Sample/s4/3.png');
+        slice3.setAttribute('height', '175');
+        slice3.setAttribute('width', '175');
+        slice3.setAttribute('position', '75, 75, 145');
+        slice3.setAttribute('rotation', '0 0 0');
+        container.appendChild(slice3);
+
+        let slice4 = document.createElement('a-image');
+        slice4.setAttribute('id', 'slice4');
+        slice4.setAttribute('src', 'Sample/s4/4.png');
+        slice4.setAttribute('height', '175');
+        slice4.setAttribute('width', '175');
+        slice4.setAttribute('position', '75, 75, 195');
+        slice4.setAttribute('rotation', '0 0 0');
+        container.appendChild(slice4);
 
         setTimeout(function (){
 

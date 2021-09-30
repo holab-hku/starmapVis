@@ -84,6 +84,10 @@ ControlPanelLU.prototype = {
         let liftUp = {
             liftUp: function () {
 
+                // document.getElementById('theSpinner').style.height = '100%';
+                // document.getElementById('theSpinner').style.visibility = 'visible';
+
+
                 if (globalData.liftUp2D) {
                     console.log('From 2D to 3D');
 
@@ -98,11 +102,21 @@ ControlPanelLU.prototype = {
                         origin.setAttribute('animation', 'property: position; from: ' + originalPosStr + '; to: '+ targetStr +'; dur: 1500; easing: easeInOutSine')
                     });
 
-                    let targetImg = document.getElementById('sliceImg');
-                    let originalImgPos = targetImg.getAttribute('position');
-                    let originalImgPosStr = originalImgPos.x + ' ' + originalImgPos.y + ' ' + originalImgPos.z;
-                    let posImgStr = originalImgPos.x+ ' ' + originalImgPos.y + ' ' + (Number(originalImgPos.z) - 30);
-                    targetImg.setAttribute('animation', 'property: position; from: ' + originalImgPosStr + '; to: '+ posImgStr +'; dur: 1500; easing: easeInOutSine')
+
+                    for (let i = 1; i < 5; i++) {
+                        const idTemp = 'slice' + i
+                        let targetImg = document.getElementById(idTemp);
+                        let originalImgPos = targetImg.getAttribute('position');
+                        let originalImgPosStr = originalImgPos.x + ' ' + originalImgPos.y + ' ' + originalImgPos.z;
+                        let posImgStr = originalImgPos.x+ ' ' + (Number(originalImgPos.y) - 200) + ' ' + (Number(originalImgPos.z) - 30);
+                        targetImg.setAttribute('animation', 'property: position; from: ' + originalImgPosStr + '; to: '+ posImgStr +'; dur: 1500; easing: easeInOutSine')
+                    }
+
+                    // let targetImg = document.getElementById('sliceImg');
+                    // let originalImgPos = targetImg.getAttribute('position');
+                    // let originalImgPosStr = originalImgPos.x + ' ' + originalImgPos.y + ' ' + originalImgPos.z;
+                    // let posImgStr = originalImgPos.x+ ' ' + originalImgPos.y + ' ' + (Number(originalImgPos.z) - 30);
+                    // targetImg.setAttribute('animation', 'property: position; from: ' + originalImgPosStr + '; to: '+ posImgStr +'; dur: 1500; easing: easeInOutSine')
 
                 } else {
                     console.log('From 3D to 2D');
@@ -114,17 +128,29 @@ ControlPanelLU.prototype = {
                         let originalPos = origin.getAttribute('position');
                         let originalPosStr = originalPos.x + ' ' + originalPos.y + ' ' + originalPos.z;
                         let target = loader.getObjectFromID(globalData.cellData, element[globalData.idStr]);
-                        let targetStr = target.x*globalData.scaleUp+ ' ' + target.y*globalData.scaleUp + ' ' + target.z*globalData.scaleUp;
+                        let targetStr = target.x*globalData.scaleUp+ ' ' + target.y*globalData.scaleUp + ' ' + target.z/2;
                         origin.setAttribute('animation', 'property: position; from: ' + originalPosStr + '; to: '+ targetStr +'; dur: 1500; easing: easeInOutSine')
                     });
 
-                    let targetImg = document.getElementById('sliceImg');
-                    let originalImgPos = targetImg.getAttribute('position');
-                    let originalImgPosStr = originalImgPos.x + ' ' + originalImgPos.y + ' ' + originalImgPos.z;
-                    let posImgStr = originalImgPos.x+ ' ' + originalImgPos.y+ ' ' + (Number(originalImgPos.z) + 30);
-                    targetImg.setAttribute('animation', 'property: position; from: ' + originalImgPosStr + '; to: '+ posImgStr +'; dur: 1500; easing: easeInOutSine')
+                    for (let i = 1; i < 5; i++) {
+                        const idTemp = 'slice' + i
+                        let targetImg = document.getElementById(idTemp);
+                        let originalImgPos = targetImg.getAttribute('position');
+                        let originalImgPosStr = originalImgPos.x + ' ' + originalImgPos.y + ' ' + originalImgPos.z;
+                        let posImgStr = originalImgPos.x+ ' ' + (Number(originalImgPos.y) + 200) + ' ' + (Number(originalImgPos.z) + 30);
+                        targetImg.setAttribute('animation', 'property: position; from: ' + originalImgPosStr + '; to: '+ posImgStr +'; dur: 1500; easing: easeInOutSine')
+                    }
+
+                    // let targetImg = document.getElementById('sliceImg');
+                    // let originalImgPos = targetImg.getAttribute('position');
+                    // let originalImgPosStr = originalImgPos.x + ' ' + originalImgPos.y + ' ' + originalImgPos.z;
+                    // let posImgStr = originalImgPos.x+ ' ' + originalImgPos.y+ ' ' + (Number(originalImgPos.z) + 30);
+                    // targetImg.setAttribute('animation', 'property: position; from: ' + originalImgPosStr + '; to: '+ posImgStr +'; dur: 1500; easing: easeInOutSine')
 
                 }
+
+                // document.getElementById('theSpinner').style.height = '0';
+                // document.getElementById('theSpinner').style.visibility = 'hidden';
 
             }
         };

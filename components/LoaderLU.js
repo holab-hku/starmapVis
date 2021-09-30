@@ -98,9 +98,9 @@ LoaderLU.prototype = {
             if (Math.abs(data[i].y) > edgeValue) {
                 edgeValue = Math.abs(data[i].y);
             }
-            if (Math.abs(data[i].z) > edgeValue) {
-                edgeValue = Math.abs(data[i].z);
-            }
+            // if (Math.abs(data[i].z) > edgeValue) {
+            //     edgeValue = Math.abs(data[i].z);
+            // }
             if (isStr) {
                 if ( !strSet.includes(data[i][curMarkerGene]) && data[i][curMarkerGene] ){
                     strSet.push(data[i][curMarkerGene]);
@@ -175,7 +175,7 @@ LoaderLU.prototype = {
 
 
             if (globalData.liftUp2D) {
-                aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + element.y*globalData.scaleUp + ' ' + element.z*globalData.scaleUp);
+                aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + element.y*globalData.scaleUp + ' ' + element.z/2);
             } else {
                 let target = loader.getObjectFromID(globalData.cellData3D, element[idStr]);
                 aSphere.setAttribute('position', target.x*globalData.scaleUp + ' ' + target.y*globalData.scaleUp + ' ' + target.z*globalData.scaleUp);
