@@ -12,8 +12,13 @@ ControlPanelLU.prototype = {
 
         this.guiLU.add(globalData, 'showImg' ).name( "ShowImg" ).listen( ).onChange( function ( ) {
             console.log('show image: ', globalData.showImg);
-            document.getElementById('sliceImg').setAttribute('visible', ''+globalData.showImg);
+            // document.getElementById('sliceImg').setAttribute('visible', ''+globalData.showImg);
             // document.getElementById('sliceImg').setAttribute('animation', 'property: visible;  to: '+ globalData.showImg+'; dur: 1000; easing: linear')
+
+            for (let i = 1; i < 5; i++) {
+                const idTemp = 'slice' + i
+                document.getElementById(idTemp).setAttribute('visible', ''+globalData.showImg);
+            }
         });
 
         this.guiLU.add(globalData, 'showCompass' ).name( "ShowCompass" ).listen( ).onChange( function ( ) {
@@ -98,7 +103,7 @@ ControlPanelLU.prototype = {
                         let originalPos = origin.getAttribute('position');
                         let originalPosStr = originalPos.x + ' ' + originalPos.y + ' ' + originalPos.z;
                         let target = loader.getObjectFromID(globalData.cellData3D, element[globalData.idStr]);
-                        let targetStr = target.x*globalData.scaleUp+ ' ' + target.y*globalData.scaleUp + ' ' + target.z*globalData.scaleUp;
+                        let targetStr = target.x*globalData.scaleUp*2+ ' ' + target.y*globalData.scaleUp*2 + ' ' + target.z*globalData.scaleUp*2;
                         origin.setAttribute('animation', 'property: position; from: ' + originalPosStr + '; to: '+ targetStr +'; dur: 1500; easing: easeInOutSine')
                     });
 
