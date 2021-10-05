@@ -14,6 +14,8 @@ let Loader = function( container, id ) {
 
 Loader.prototype = {
 
+    // TODO Load uploaded file
+
     loadCSV: function ( path, id) {
         let that = this;
 
