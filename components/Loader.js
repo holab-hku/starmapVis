@@ -15,10 +15,46 @@ let Loader = function( container, id ) {
 Loader.prototype = {
 
     // TODO Load uploaded file
+    loadCSVUpload: function (obj) {
+
+        const blob = new Blob([obj]);
+        const result = Papa.parse(blob);
+        console.log(blob);
+        console.log(obj);
+
+        // return new Promise((resolve, reject) => {
+        //     Papa.parse(obj, {
+        //         worker: true, // Don't bog down the main thread if its a big file
+        //         header: true,
+        //         complete: function(results) {
+        //             // console.log('parsing complete read', count, 'records.');
+        //         }
+        //     });
+        // })
+
+        // $('#files').parse({
+        //     config: config,
+        //     before: function(file, inputElem)
+        //     {
+        //         start = now();
+        //         console.log("Parsing file...", file);
+        //     },
+        //     error: function(err, file)
+        //     {
+        //         console.log("ERROR:", err, file);
+        //         firstError = firstError || err;
+        //         errorCount++;
+        //     },
+        //     complete: function()
+        //     {
+        //         end = now();
+        //         printStats("Done with all files");
+        //     }
+        // });
+    },
 
     loadCSV: function ( path, id) {
         let that = this;
-
         return new Promise((resolve, reject) => {
             Papa.parse(path, {
                 header: true,

@@ -19,6 +19,7 @@
         <script type="text/javascript" src="components/ControlPanel.js"></script>
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
         <script type="text/javascript" src="components/MovementController.js"></script>
+        <script type="text/javascript" src="packages/store.legacy.min.js"></script>
     </head>
 
     <body>
@@ -112,10 +113,8 @@
 
         console.log(target);
         if (target === 'custom') {
-            f1 = urlParams.get('f1');
-            console.log(f1);
-            f2 = urlParams.get('f2');
-            console.log(f2);
+            f1 = localStorage.getItem('f1');
+            // f2 = store.get('f2');
         }
 
         // determine whether has animation path section
@@ -168,7 +167,9 @@
         let loader = new Loader(container, 'cellData');
         if (target === 'custom') {
             // custom input 1
-            loader.loadCSV(f1, 'cellData');
+            // TODO
+            console.log(f1);
+            // loader.loadCSVUpload(f1);
         } else {
             loader.loadCSV('Sample/'+ target +'/input1.csv', 'cellData');
         }
