@@ -33,6 +33,34 @@
         </div>
     </div>
 
+
+
+<!--    TODO - Upload section -->
+
+
+
+    <div class="modal modal-fullscreen" id="uploadModal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Upload</h5>
+                </div>
+                <div class="modal-body">
+                    <p> Haven't done yet ...  </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="$('#uploadModal').modal('toggle');">Enter</button>
+                    <button type="button" class="btn btn-secondary" onclick="$('#uploadModal').modal('toggle');">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
     <div class="modal fade bd-example-modal-lg" id="theModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -49,12 +77,9 @@
         </div>
     </div>
 
-
-
     <div id="animationProgressContainer" class="progress fixed-bottom m-5" style="z-index: 1100; height: 10px; width: 75%; visibility: hidden">
         <div id="animationProgressBar" class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
     </div>
-
 
     <div class="position-fixed top-0 left-0 p-3" style="z-index: 5">
         <div id="liveToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" data-delay="10000">
@@ -67,17 +92,12 @@
         </div>
     </div>
 
-
-
-
     <div class="position-fixed top-50 end-0 pe-3" style="z-index: 5; width: 300px">
         <div id="colormapToast" class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
             <div class="toast-header">
                 <strong class="me-auto">Colormap Information</strong>
                 <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" onclick="globalData.showColormap=false"></button>
             </div>
-
-
 
             <div class="toast-body" id="colormapToastBody">
                 <img src="image/batlowweb.png" class="img-fluid">
@@ -90,9 +110,11 @@
             <div class="toast-body" id="colormapToastBodyCategory" style="display: none">
             </div>
 
-
         </div>
     </div>
+
+
+
 
 
 
@@ -113,8 +135,8 @@
 
         console.log(target);
         if (target === 'custom') {
-            f1 = localStorage.getItem('f1');
-            // f2 = store.get('f2');
+            let uploadModal = new bootstrap.Modal(document.getElementById('uploadModal'));
+            uploadModal.toggle();
         }
 
         // determine whether has animation path section
@@ -168,7 +190,7 @@
         if (target === 'custom') {
             // custom input 1
             // TODO
-            console.log(f1);
+            // console.log(f1);
             // loader.loadCSVUpload(f1);
         } else {
             loader.loadCSV('Sample/'+ target +'/input1.csv', 'cellData');
