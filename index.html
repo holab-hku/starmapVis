@@ -53,38 +53,44 @@
             <button class="btn btn-primary m-1 btn-block" type="button" onclick="goCanvas('s3')" >Sample data 3</button>
             <button class="btn btn-success m-1 btn-block" type="button" onclick="goCanvasLU('s4')" >Lifting Up</button>
         </div>
-        <!--collapse-->
-        <div class="collapse pt-5" id="collapseExample">
-            <div class="card card-body shadow">
-                <div class="mb-3">
-                    <label for="formFile1" class="form-label">Please Upload Cell Data CSV File</label>
-                    <input class="form-control" type="file" id="formFile1">
-                </div>
-            </div>
-            <div class="container" style="height: 15px"></div>
-            <div class="card card-body shadow">
-                <div class="mb-3">
-                    <label for="formFile2" class="form-label">Please Upload Trajectory Data CSV File</label>
-                    <input class="form-control" type="file" id="formFile2">
-                </div>
-            </div>
-            <div class="container" style="height: 15px"></div>
-            <div class="card card-body shadow">
-                <div class="mb-3">
-                    <label>Please Specify Animation Path (not compulsory)</label><br/>
 
-                    <table class="table order-list ">
 
-                    </table>
 
-                    <button class="btn btn-success" type="button" id="addrow">Add Path</button>
-                </div>
-            </div>
-            <div class="container" style="height: 15px"></div>
-            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                <button class="btn btn-success" type="button" onclick="goCanvas('custom')">Enter</button>
-            </div>
-        </div>
+        <!--collapse TOBE DELETED-->
+<!--        <div class="collapse pt-5" id="collapseExample">-->
+<!--            <div class="card card-body shadow">-->
+<!--                <div class="mb-3">-->
+<!--                    <label for="formFile1" class="form-label">Please Upload Cell Data CSV File</label>-->
+<!--                    <input class="form-control" type="file" id="formFile1">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="container" style="height: 15px"></div>-->
+<!--            <div class="card card-body shadow">-->
+<!--                <div class="mb-3">-->
+<!--                    <label for="formFile2" class="form-label">Please Upload Trajectory Data CSV File</label>-->
+<!--                    <input class="form-control" type="file" id="formFile2">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="container" style="height: 15px"></div>-->
+<!--            <div class="card card-body shadow">-->
+<!--                <div class="mb-3">-->
+<!--                    <label>Please Specify Animation Path (not compulsory)</label><br/>-->
+
+<!--                    <table class="table order-list ">-->
+
+<!--                    </table>-->
+
+<!--                    <button class="btn btn-success" type="button" id="addrow">Add Path</button>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="container" style="height: 15px"></div>-->
+<!--            <div class="d-grid gap-2 d-md-flex justify-content-md-end">-->
+<!--                <button class="btn btn-success" type="button" onclick="goCanvas('custom')">Enter</button>-->
+<!--            </div>-->
+<!--        </div>-->
+
+
+
         <div class="container" style="height: 45px"></div>
     </div>
 
@@ -123,80 +129,12 @@
 
 <script>
 
-    $(document).ready(function () {
-
-        let counter = 0;
-
-        $("#addrow").on("click", function () {
-            var newRow = $("<tr class='row ps-2 pt-2'>");
-            var cols = "";
-
-            cols += '<td class="col-3" style="padding: 0"><input type="text" class="form-control" name="name' + counter + '" placeholder="Path name"/></td>';
-            cols += '<td class="col-8" style="padding: 0"><input type="text" class="form-control" name="mail' + counter + '" placeholder="Checkpoints"/></td>';
-
-            cols += '<td class="col-1" style="padding: 0"><input type="button" class="ibtnDel btn btn-primary"  value="Delete"></td>';
-
-            newRow.append(cols);
-            $("table.order-list").append(newRow);
-            counter++;
-        });
-
-
-        $("table.order-list").on("click", ".ibtnDel", function (event) {
-            $(this).closest("tr").remove();
-            counter -= 1
-        });
-
-
-
-
-
-    });
-
     function goCanvas( name ) {
-        if (name === 'custom') {
-
-            store.clearAll();
-
-            // const f1 = $.csv.toObjects(document.getElementById('formFile1').files[0]);
-            // const f2 = $.csv.toObjects(document.getElementById('formFile2').files[0]);
-            // let store = require('store');
-
-            console.log(document.getElementById('formFile1').files[0])
-
-            const f1 = document.getElementById('formFile1').files[0];
-            const f2 = document.getElementById('formFile2').files[0];
-
-            Papa.parse(f1, {
-                worker: true, // Don't bog down the main thread if its a big file
-                header: true,
-                complete: function(results) {
-                    console.log(results.data);
-                    store.set('f1', JSON.stringify(results.data));
-                }
-            })
-
-            // console.log(localStorage.getItem('f1'))
-
-
-            // store.set('f1', result1);
-            // store.set('f2', f2);
-
-
-            location.href = "canvas.html?target="+name;
-        } else {
-            location.href = "canvas.html?target="+name;
-        }
-
-
+        location.href = "canvas.html?target="+name;
     }
 
     function goCanvasLU( name ) {
         location.href = "canvasLU.html?target="+name;
-    }
-
-    function userUpload( name ) {
-        // location.href = "canvas.html";
     }
 
 </script>

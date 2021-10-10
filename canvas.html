@@ -37,20 +37,45 @@
 
 <!--    TODO - Upload section -->
 
-
-
     <div class="modal modal-fullscreen" id="uploadModal" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-fullscreen" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Upload</h5>
+                    <h4 class="modal-title ms-2 fw-light">Upload</h4>
                 </div>
-                <div class="modal-body">
-                    <p> Haven't done yet ...  </p>
+                <div class="modal-body" id='uploadModalBody' style="background-color:#F4F6F6">
+
+                    <div class="card card-body shadow">
+                        <div class="mb-3">
+                            <label for="formFile1" class="form-label">Please Upload Cell Data CSV File</label>
+                            <input class="form-control" type="file" id="formFile1">
+                        </div>
+                    </div>
+
+                    <div class="container" style="height: 15px"></div>
+                    <div class="card card-body shadow">
+                        <div class="mb-3">
+                            <label for="formFile2" class="form-label">Please Upload Trajectory Data CSV File (not compulsory)</label>
+                            <input class="form-control" type="file" id="formFile2">
+                        </div>
+                    </div>
+                    <div class="container" style="height: 15px"></div>
+                    <div class="card card-body shadow">
+                        <div class="mb-3">
+                            <label>Please Specify Animation Path (not compulsory)</label><br/>
+
+                            <table class="table order-list ">
+
+                            </table>
+
+                            <button class="btn btn-success" type="button" id="addrow">Add Path</button>
+                        </div>
+                    </div>
+
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="$('#uploadModal').modal('toggle');">Enter</button>
-                    <button type="button" class="btn btn-secondary" onclick="$('#uploadModal').modal('toggle');">Close</button>
+                    <button type="button" class="btn btn-secondary" onclick="backIndex()">Return</button>
+                    <button type="button" class="btn btn-success" onclick="uploadEnter()">Enter</button>
                 </div>
             </div>
         </div>
@@ -131,97 +156,116 @@
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         const target = urlParams.get('target');
-        let f1, f2;
+
+        let spinner;
+        let environment;
+        let sky;
+        let container;
+        let camera;
+        let cursor;
+        let axis;
+        let compass;
+        let loader;
+        let keyboard;
+        let movementController;
+        let controlPanel;
+        let loader2;
+        let minimap;
+
+        let uploadF1;
+        let uploadF2;
+
+        let uploadModal;
 
         console.log(target);
         if (target === 'custom') {
-            let uploadModal = new bootstrap.Modal(document.getElementById('uploadModal'));
+            uploadModal = new bootstrap.Modal(document.getElementById('uploadModal'));
             uploadModal.toggle();
-        }
 
-        // determine whether has animation path section
-        if (target === 's1' || target === 's2' || target === 's3') {
+
+
+        } else if (target === 's1' || target === 's2' || target === 's3') {
             console.log(target + ' has animation section');
             globalData.hasAnimationPath = true;
             globalData.curAnimationPath = globalData.sampleAnimationPath[target];
-        }
 
-        // make sure that the user follows the correct flow
-        if (target === null) {
-            location.href = "index.html";
-        }
+            render();
 
-        let spinner = document.getElementById('theSpinner');
-        let environment = document.createElement('a-entity');
-        let sky = document.createElement('a-sky');
-        sky.setAttribute('color', '#F4F6F6');
-
-        let container = document.createElement('a-entity');
-        container.setAttribute('position', '0 0 0');
-
-        let camera = document.createElement('a-camera');
-        camera.setAttribute('id', 'theCamera');
-        camera.setAttribute('look-controls');
-        camera.setAttribute("wasd-controls", "acceleration: 270; fly: true");
-        camera.setAttribute("position", "0 0 250");
-
-        let cursor = document.createElement('a-entity');
-        cursor.setAttribute('cursor', "rayOrigin:mouse");
-        cursor.setAttribute('raycaster', "objects: [data-raycastable]");
-        camera.appendChild(cursor);
-
-
-        fetch('packages/batlow100.txt')
-            .then(response => response.text())
-            .then(text => {
-                globalData.batlowColormap = text.split("\n");
-            })
-
-
-        // load the axis element
-        let axis = new Axis(container);
-        axis.renderAxis();
-
-        // load the compass element
-        let compass = new Compass(camera, container);
-
-        // load the first csv file
-        let loader = new Loader(container, 'cellData');
-        if (target === 'custom') {
-            // custom input 1
-            // TODO
-            // console.log(f1);
-            // loader.loadCSVUpload(f1);
         } else {
-            loader.loadCSV('Sample/'+ target +'/input1.csv', 'cellData');
+
+            location.href = "index.html";
+
         }
 
-        // load keyboard controller
-        let keyboard = new KeyboardControl(container);
-        keyboard.init();
-        keyboard.enableKeyboardControl(true);
 
-        // load movement controller
-        let movementController = new MovementController();
 
-        let controlPanel;
 
-        let loader2;
 
-        let minimap;
+        function render () {
+            spinner = document.getElementById('theSpinner');
+            environment = document.createElement('a-entity');
+            sky = document.createElement('a-sky');
+            sky.setAttribute('color', '#F4F6F6');
 
-        setTimeout(function (){
-            // load the second csv file
-            loader2 = new Loader(container, 'trajectory');
-            loader2.registerComp();
+            container = document.createElement('a-entity');
+            container.setAttribute('position', '0 0 0');
+
+            camera = document.createElement('a-camera');
+            camera.setAttribute('id', 'theCamera');
+            camera.setAttribute('look-controls');
+            camera.setAttribute("wasd-controls", "acceleration: 270; fly: true");
+            camera.setAttribute("position", "0 0 250");
+
+            cursor = document.createElement('a-entity');
+            cursor.setAttribute('cursor', "rayOrigin:mouse");
+            cursor.setAttribute('raycaster', "objects: [data-raycastable]");
+            camera.appendChild(cursor);
+
+            fetch('packages/batlow100.txt')
+                .then(response => response.text())
+                .then(text => {
+                    globalData.batlowColormap = text.split("\n");
+                })
+
+            axis = new Axis(container);
+            axis.renderAxis();
+
+            compass = new Compass(camera, container);
+
+            loader = new Loader(container, 'cellData');
             if (target === 'custom') {
-                // TODO
-                console.log('this is a custom input, Part 2: ');
+                loader.loadCSV(uploadF1, 'cellData');
             } else {
-                loader2.loadCSV('Sample/'+ target +'/input2.csv', 'trajectory').then(function (){
+                loader.loadCSV('Sample/'+ target +'/input1.csv', 'cellData');
+            }
+
+            keyboard = new KeyboardControl(container);
+            keyboard.init();
+            keyboard.enableKeyboardControl(true);
+
+            movementController = new MovementController();
+
+            setTimeout(function (){
+                // load the second csv file
+                loader2 = new Loader(container, 'trajectory');
+                loader2.registerComp();
+
+
+                let loader2Para;
+
+                if (target === 'custom') {
+                    loader2Para = uploadF2;
+                } else {
+                    loader2Para = 'Sample/'+ target +'/input2.csv';
+                }
+
+
+                loader2.loadCSV(loader2Para, 'trajectory').then(function (){
                         // load the minimap
-                        minimap = new Minimap(camera);
-                        minimap.renderMinimap();
+                        if (loader2Para !== undefined) {
+                            minimap = new Minimap(camera);
+                            minimap.renderMinimap();
+                        }
 
                         // load the control panel
                         controlPanel = new ControlPanel();
@@ -231,26 +275,66 @@
                         $('#colormapToast').toast('show');
                     }
                 )
-            }
 
 
-            let scene = document.createElement('a-scene');
-            scene.setAttribute('id', "scene");
-            // scene.setAttribute('style', 'position: absolute; height: 100%; width: 100%;');
-            scene.appendChild(environment);
-            scene.appendChild(container);
-            scene.appendChild(camera);
 
-            // document.querySelector('body').setAttribute('style', 'position: absolute; height: 100%; width: 100%;');
-            document.querySelector('body').appendChild(scene);
 
-            $(document).ready(function() {
-                // loader.renderPoints(globalData.cellData, true);
-                // loader2.loadCSV('Sample/'+ target +'/input2.csv', 'trajectory');
-                spinner.style.visibility = "hidden";
+                let scene = document.createElement('a-scene');
+                scene.setAttribute('id', "scene");
+                // scene.setAttribute('style', 'position: absolute; height: 100%; width: 100%;');
+                scene.appendChild(environment);
+                scene.appendChild(container);
+                scene.appendChild(camera);
+
+                // document.querySelector('body').setAttribute('style', 'position: absolute; height: 100%; width: 100%;');
+                document.querySelector('body').appendChild(scene);
+
+                $(document).ready(function() {
+                    // TODO
+                    loader.renderPoints(globalData.cellData, true);
+                    // loader2.loadCSV('Sample/'+ target +'/input2.csv', 'trajectory');
+                    spinner.style.visibility = "hidden";
+                });
+
+            }, 100);
+
+
+        }
+
+        function uploadEnter() {
+
+            uploadF1 = document.getElementById('formFile1').files[0];
+            uploadF2 = document.getElementById('formFile2').files[0];
+
+            render();
+            uploadModal.toggle();
+
+        }
+
+        function backIndex() {
+            location.href = "index.html";
+        }
+
+        $(document).ready(function () {
+            let counter = 0;
+            $("#addrow").on("click", function () {
+                var newRow = $("<tr class='row ps-2 pt-2'>");
+                var cols = "";
+
+                cols += '<td class="col-3" style="padding: 0"><input type="text" class="form-control" name="name' + counter + '" placeholder="Path name"/></td>';
+                cols += '<td class="col-8" style="padding: 0"><input type="text" class="form-control" name="mail' + counter + '" placeholder="Checkpoints"/></td>';
+
+                cols += '<td class="col-1" style="padding: 0"><input type="button" class="ibtnDel btn btn-primary"  value="Delete"></td>';
+
+                newRow.append(cols);
+                $("table.order-list").append(newRow);
+                counter++;
             });
-
-        }, 100);
+            $("table.order-list").on("click", ".ibtnDel", function (event) {
+                $(this).closest("tr").remove();
+                counter -= 1
+            });
+        });
 
     </script>
 
@@ -258,6 +342,28 @@
     <style>
         html, body {
             height: 100%;
+        }
+
+        .btn-primary {
+            background-color: #154360 !important;
+            border-color: #154360;
+        }
+
+        .btn-success {
+            background-color: #16A085;
+            border-color: #16A085;
+        }
+
+        .btn:hover,
+        .btn:active,
+        .btn:focus,
+        .btn:visited{
+            background-color: #EB984E !important;
+            border-color: #EB984E !important;
+        }
+
+        input[type="text"] {
+            box-sizing: border-box;
         }
     </style>
 </html>
