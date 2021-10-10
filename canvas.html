@@ -157,49 +157,30 @@
         const urlParams = new URLSearchParams(queryString);
         const target = urlParams.get('target');
 
-        let spinner;
-        let environment;
-        let sky;
-        let container;
-        let camera;
-        let cursor;
-        let axis;
-        let compass;
-        let loader;
-        let keyboard;
-        let movementController;
-        let controlPanel;
-        let loader2;
-        let minimap;
+        let spinner, environment, sky, container, camera, cursor, axis, compass, loader, keyboard;
+        let movementController, controlPanel, loader2, minimap, uploadF1, uploadF2, uploadModal;
 
-        let uploadF1;
-        let uploadF2;
-
-        let uploadModal;
-
-        console.log(target);
         if (target === 'custom') {
             uploadModal = new bootstrap.Modal(document.getElementById('uploadModal'));
             uploadModal.toggle();
 
-
-
         } else if (target === 's1' || target === 's2' || target === 's3') {
-            console.log(target + ' has animation section');
-            globalData.hasAnimationPath = true;
+            globalData.inputFile1 = true;
+            globalData.inputFile2 = true;
+            globalData.inputPath = true;
             globalData.curAnimationPath = globalData.sampleAnimationPath[target];
-
             render();
-
-        } else {
-
-            location.href = "index.html";
-
+        } else if (target === 's4') {
+            globalData.inputFile1 = true;
+            globalData.inputFile1Trans = true;
+            globalData.inputPath = true;
+            globalData.inputSlice = true;
+            globalData.startFrom2D = true;
+            render();
         }
-
-
-
-
+        else {
+            location.href = "index.html";
+        }
 
         function render () {
             spinner = document.getElementById('theSpinner');
@@ -214,7 +195,12 @@
             camera.setAttribute('id', 'theCamera');
             camera.setAttribute('look-controls');
             camera.setAttribute("wasd-controls", "acceleration: 270; fly: true");
-            camera.setAttribute("position", "0 0 250");
+
+            if (target === 's4') {
+                camera.setAttribute("position", "100 100 500");
+            } else {
+                camera.setAttribute("position", "0 0 250");
+            }
 
             cursor = document.createElement('a-entity');
             cursor.setAttribute('cursor', "rayOrigin:mouse");
@@ -237,6 +223,9 @@
                 loader.loadCSV(uploadF1, 'cellData');
             } else {
                 loader.loadCSV('Sample/'+ target +'/input1.csv', 'cellData');
+                if (globalData.inputFile1Trans) {
+                    loader.load3DCSV('Sample/'+ target +'/input2.csv');
+                }
             }
 
             keyboard = new KeyboardControl(container);
@@ -244,6 +233,10 @@
             keyboard.enableKeyboardControl(true);
 
             movementController = new MovementController();
+
+            if (globalData.inputSlice) {
+                loadSlice(container, 's4')
+            }
 
             setTimeout(function (){
                 // load the second csv file
@@ -256,13 +249,15 @@
                 if (target === 'custom') {
                     loader2Para = uploadF2;
                 } else {
-                    loader2Para = 'Sample/'+ target +'/input2.csv';
+                    if (globalData.inputFile2) {
+                        loader2Para = 'Sample/'+ target +'/input2.csv';
+                    }
                 }
 
 
                 loader2.loadCSV(loader2Para, 'trajectory').then(function (){
                         // load the minimap
-                        if (loader2Para !== undefined) {
+                        if (globalData.inputFile2) {
                             minimap = new Minimap(camera);
                             minimap.renderMinimap();
                         }
@@ -301,10 +296,56 @@
 
         }
 
+        function loadSlice(container, id) {
+            let slice1 = document.createElement('a-image');
+            slice1.setAttribute('id', 'slice1');
+            slice1.setAttribute('src', 'Sample/'+id+'/1.png');
+            slice1.setAttribute('height', '175');
+            slice1.setAttribute('width', '175');
+            slice1.setAttribute('position', '75, 75, 45');
+            slice1.setAttribute('rotation', '0 0 0');
+            container.appendChild(slice1);
+
+            let slice2 = document.createElement('a-image');
+            slice2.setAttribute('id', 'slice2');
+            slice2.setAttribute('src', 'Sample/'+id+'/2.png');
+            slice2.setAttribute('height', '175');
+            slice2.setAttribute('width', '175');
+            slice2.setAttribute('position', '75, 75, 95');
+            slice2.setAttribute('rotation', '0 0 0');
+            container.appendChild(slice2);
+
+            let slice3 = document.createElement('a-image');
+            slice3.setAttribute('id', 'slice3');
+            slice3.setAttribute('src', 'Sample/'+id+'/3.png');
+            slice3.setAttribute('height', '175');
+            slice3.setAttribute('width', '175');
+            slice3.setAttribute('position', '75, 75, 145');
+            slice3.setAttribute('rotation', '0 0 0');
+            container.appendChild(slice3);
+
+            let slice4 = document.createElement('a-image');
+            slice4.setAttribute('id', 'slice4');
+            slice4.setAttribute('src', 'Sample/'+id+'/4.png');
+            slice4.setAttribute('height', '175');
+            slice4.setAttribute('width', '175');
+            slice4.setAttribute('position', '75, 75, 195');
+            slice4.setAttribute('rotation', '0 0 0');
+            container.appendChild(slice4);
+        }
+
         function uploadEnter() {
 
             uploadF1 = document.getElementById('formFile1').files[0];
             uploadF2 = document.getElementById('formFile2').files[0];
+
+            if (uploadF1 !== undefined) {
+                globalData.inputFile1 = true;
+            }
+            if (uploadF2 !== undefined) {
+                globalData.inputFile2 = true;
+            }
+
 
             render();
             uploadModal.toggle();

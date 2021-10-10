@@ -44,6 +44,24 @@ Loader.prototype = {
         });
     },
 
+    load3DCSV: function (path) {
+        return new Promise((resolve, reject) => {
+            Papa.parse(path, {
+                header: true,
+                download: true,
+                dynamicTyping: true,
+                complete: function(results) {
+                    let data = results.data;
+                    globalData.cellData3D = data;
+                    resolve(results.data)
+                },
+                error: function (err) {
+                    reject(err)
+                }
+            })
+        })
+    },
+
     renderPoints: function( data, flag = false ){
         globalData.categoricalColorDict = {};
         let attributesList = Object.keys(data[0]);
@@ -83,8 +101,11 @@ Loader.prototype = {
             if (Math.abs(data[i].y) > edgeValue) {
                 edgeValue = Math.abs(data[i].y);
             }
-            if (Math.abs(data[i].z) > edgeValue) {
-                edgeValue = Math.abs(data[i].z);
+
+            if (!globalData.startFrom2D) {
+                if (Math.abs(data[i].z) > edgeValue) {
+                    edgeValue = Math.abs(data[i].z);
+                }
             }
             if (isStr) {
                 if ( !strSet.includes(data[i][curMarkerGene]) && data[i][curMarkerGene] ){
@@ -140,7 +161,18 @@ Loader.prototype = {
                 }
             }
             aSphere.setAttribute('radius', '0.6');
-            aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + element.y*globalData.scaleUp + ' ' + element.z*globalData.scaleUp)
+
+
+            if (globalData.inputFile1Trans) {
+                if (globalData.startFrom2D) {
+                    aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + element.y*globalData.scaleUp + ' ' + element.z/2);
+                } else {
+                    let target = loader.getObjectFromID(globalData.cellData3D, element[idStr]);
+                    aSphere.setAttribute('position', target.x*globalData.scaleUp + ' ' + target.y*globalData.scaleUp + ' ' + target.z*globalData.scaleUp);
+                }
+            } else {
+                aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + element.y*globalData.scaleUp + ' ' + element.z*globalData.scaleUp)
+            }
 
 
 

@@ -51,45 +51,8 @@
             <button class="btn btn-primary m-1 btn-block" type="button" onclick="goCanvas('s1')">Sample data 1</button>
             <button class="btn btn-primary m-1 btn-block" type="button" onclick="goCanvas('s2')" >Sample data 2</button>
             <button class="btn btn-primary m-1 btn-block" type="button" onclick="goCanvas('s3')" >Sample data 3</button>
-            <button class="btn btn-success m-1 btn-block" type="button" onclick="goCanvasLU('s4')" >Lifting Up</button>
+            <button class="btn btn-success m-1 btn-block" type="button" onclick="goCanvas('s4')" >Transformation</button>
         </div>
-
-
-
-        <!--collapse TOBE DELETED-->
-<!--        <div class="collapse pt-5" id="collapseExample">-->
-<!--            <div class="card card-body shadow">-->
-<!--                <div class="mb-3">-->
-<!--                    <label for="formFile1" class="form-label">Please Upload Cell Data CSV File</label>-->
-<!--                    <input class="form-control" type="file" id="formFile1">-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="container" style="height: 15px"></div>-->
-<!--            <div class="card card-body shadow">-->
-<!--                <div class="mb-3">-->
-<!--                    <label for="formFile2" class="form-label">Please Upload Trajectory Data CSV File</label>-->
-<!--                    <input class="form-control" type="file" id="formFile2">-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="container" style="height: 15px"></div>-->
-<!--            <div class="card card-body shadow">-->
-<!--                <div class="mb-3">-->
-<!--                    <label>Please Specify Animation Path (not compulsory)</label><br/>-->
-
-<!--                    <table class="table order-list ">-->
-
-<!--                    </table>-->
-
-<!--                    <button class="btn btn-success" type="button" id="addrow">Add Path</button>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="container" style="height: 15px"></div>-->
-<!--            <div class="d-grid gap-2 d-md-flex justify-content-md-end">-->
-<!--                <button class="btn btn-success" type="button" onclick="goCanvas('custom')">Enter</button>-->
-<!--            </div>-->
-<!--        </div>-->
-
-
 
         <div class="container" style="height: 45px"></div>
     </div>
@@ -131,10 +94,6 @@
 
     function goCanvas( name ) {
         location.href = "canvas.html?target="+name;
-    }
-
-    function goCanvasLU( name ) {
-        location.href = "canvasLU.html?target="+name;
     }
 
 </script>
