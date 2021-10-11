@@ -35,7 +35,7 @@ let globalData = {
             path1: 'E8 E5 E2 E11 E15 E6 E1 E13',
         },
         s4: {
-            path1: '',
+            path1: 'E_1 E_2 E_3 E_4',
         }
     },
     mcCounter: 0,

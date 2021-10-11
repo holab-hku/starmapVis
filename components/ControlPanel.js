@@ -16,7 +16,7 @@ ControlPanel.prototype = {
             axis.showAxis(globalData.showCompass);
 
             // minimap will only occur when there is a trajectory
-            if (globalData.inputFile2) {
+            if (globalData.inputFile2 && target !== 's4') {
                 minimap.showMinimap(globalData.showCompass);
             }
         });
@@ -94,7 +94,11 @@ ControlPanel.prototype = {
                     window.location.href = window.location.href;
                 }
 
-                camera.setAttribute('position', '0 0 250');
+                if (target === 's4') {
+                    camera.setAttribute("position", "100 100 500");
+                } else {
+                    camera.setAttribute('position', '0 0 250');
+                }
                 container.setAttribute('rotation', '0 0 0');
 
                 camera.components["look-controls"].pitchObject.rotation.x = 0;

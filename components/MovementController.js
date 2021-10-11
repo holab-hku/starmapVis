@@ -32,7 +32,14 @@ MovementController.prototype = {
         globalData.mcCounter = 0;
         globalData.mcLenOfPathList = pathList.length - 1;
         let that = this
-        that.move(camera, container, {x:0,y:100,z:200});
+
+        if (target === 's4') {
+            that.move(camera, container, {x:100,y:250,z:550});
+        } else {
+            that.move(camera, container, {x:0,y:100,z:200});
+        }
+
+
         // Right after the click
         globalData.showTrajectory = false;
         document.getElementById('trajectory').setAttribute('visible', ''+globalData.showTrajectory);
@@ -85,7 +92,13 @@ MovementController.prototype = {
         let pointLoc = {};
         pointLoc.x = ori.x * globalData.scaleUp;
         pointLoc.y = ori.y * globalData.scaleUp;
-        pointLoc.z = ori.z * globalData.scaleUp;
+
+        if (target === 's4') {
+            pointLoc.z = ori.z;
+        } else {
+            pointLoc.z = ori.z * globalData.scaleUp;
+        }
+
         return pointLoc
     },
 

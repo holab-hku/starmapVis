@@ -37,10 +37,7 @@ Loader.prototype = {
                 }
             })
         }).catch(error => {
-            if (id === 'cellData') {
-                alert('No data received');
-                location.href = "canvas.html?target=custom";
-            }
+            console.log(error);
         });
     },
 
@@ -219,7 +216,11 @@ Loader.prototype = {
             if (element.root) {
                 color = '#F39C12'
                 radius = '0.4';
-                globalData.destinationCheckpoint = {x:element.x*globalData.scaleUp, y:element.y*globalData.scaleUp, z:element.z*globalData.scaleUp};
+                if (globalData.inputFile1Trans && globalData.startFrom2D) {
+                    globalData.destinationCheckpoint = {x:element.x*globalData.scaleUp, y:element.y*globalData.scaleUp, z:element.z};
+                } else {
+                    globalData.destinationCheckpoint = {x:element.x*globalData.scaleUp, y:element.y*globalData.scaleUp, z:element.z*globalData.scaleUp};
+                }
             }
             let aSphere = document.createElement('a-sphere');
             aSphere.setAttribute('id', element.edges);
@@ -227,7 +228,14 @@ Loader.prototype = {
             aSphere.setAttribute('radius', radius);
             const x = element.x*globalData.scaleUp;
             const y = element.y*globalData.scaleUp;
-            const z = element.z*globalData.scaleUp;
+            let z;
+
+            if (globalData.inputFile1Trans && globalData.startFrom2D) {
+                z = element.z;
+            } else {
+                z = element.z*globalData.scaleUp;
+            }
+
             aSphere.setAttribute('position', x + ' ' + y+ ' ' + z)
             this.traObjectsContainer.appendChild(aSphere);
 
@@ -250,7 +258,14 @@ Loader.prototype = {
 
                         const x_e = object.x*globalData.scaleUp;
                         const y_e = object.y*globalData.scaleUp;
-                        const z_e = object.z*globalData.scaleUp;
+                        let z_e;
+
+                        if (globalData.inputFile1Trans && globalData.startFrom2D) {
+                            z_e = object.z;
+                        } else {
+                            z_e = object.z*globalData.scaleUp;
+                        }
+
                         const endPoint = x_e + ', ' + y_e + ', ' + z_e;
 
                         // path.setAttribute('meshline','path: ' + startPoint + ', ' + endPoint + ' ; color: #566573; lineWidth: 7');

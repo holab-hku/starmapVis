@@ -35,7 +35,7 @@
 
 
 
-<!--    TODO - Upload section -->
+<!-- Upload section -->
 
     <div class="modal modal-fullscreen" id="uploadModal" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-fullscreen" role="document">
@@ -173,7 +173,9 @@
         } else if (target === 's4') {
             globalData.inputFile1 = true;
             globalData.inputFile1Trans = true;
+            globalData.inputFile2 = true;
             globalData.inputPath = true;
+            globalData.curAnimationPath = globalData.sampleAnimationPath[target];
             globalData.inputSlice = true;
             globalData.startFrom2D = true;
             render();
@@ -224,7 +226,7 @@
             } else {
                 loader.loadCSV('Sample/'+ target +'/input1.csv', 'cellData');
                 if (globalData.inputFile1Trans) {
-                    loader.load3DCSV('Sample/'+ target +'/input2.csv');
+                    loader.load3DCSV('Sample/'+ target +'/input1Trans.csv');
                 }
             }
 
@@ -235,14 +237,13 @@
             movementController = new MovementController();
 
             if (globalData.inputSlice) {
-                loadSlice(container, 's4')
+                loadSlice(container, target)
             }
 
             setTimeout(function (){
                 // load the second csv file
                 loader2 = new Loader(container, 'trajectory');
                 loader2.registerComp();
-
 
                 let loader2Para;
 
@@ -257,7 +258,7 @@
 
                 loader2.loadCSV(loader2Para, 'trajectory').then(function (){
                         // load the minimap
-                        if (globalData.inputFile2) {
+                        if (globalData.inputFile2 && target !== 's4') {
                             minimap = new Minimap(camera);
                             minimap.renderMinimap();
                         }
@@ -270,9 +271,6 @@
                         $('#colormapToast').toast('show');
                     }
                 )
-
-
-
 
                 let scene = document.createElement('a-scene');
                 scene.setAttribute('id', "scene");
@@ -341,15 +339,18 @@
 
             if (uploadF1 !== undefined) {
                 globalData.inputFile1 = true;
+                if (uploadF2 !== undefined) {
+                    globalData.inputFile2 = true;
+                }
+
+                render();
+                uploadModal.toggle();
+
+            } else {
+
+                alert('No data received');
+
             }
-            if (uploadF2 !== undefined) {
-                globalData.inputFile2 = true;
-            }
-
-
-            render();
-            uploadModal.toggle();
-
         }
 
         function backIndex() {
