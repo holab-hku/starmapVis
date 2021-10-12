@@ -50,4 +50,5 @@ let globalData = {
     inputFile2: false,
     inputPath: false,
     inputSlice: false,
+    stopAnimation: false,
 };

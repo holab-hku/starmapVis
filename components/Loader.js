@@ -37,7 +37,9 @@ Loader.prototype = {
                 }
             })
         }).catch(error => {
-            console.log(error);
+            if (id === 'trajectory') {
+                console.log('No trajectory data received');
+            }
         });
     },
 

@@ -82,7 +82,14 @@ ControlPanel.prototype = {
             Object.keys(globalData.curAnimationPath).forEach(function(key) {
                 defaultPathFolder.add(animationWithPath, 'animationWithPath').name( key ).listen( ).onChange( function ( ) {
                     let pathList = globalData.curAnimationPath[key].split(' ');
-                    movementController.moveThroughPath(camera, container, pathList);
+
+                    try {
+                        movementController.moveThroughPath(camera, container, pathList);
+                    } catch (error) {
+                        alert('This input path is not applicable');
+                    }
+
+
                 });
             });
         }

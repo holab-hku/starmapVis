@@ -153,6 +153,9 @@
 
     <script>
 
+        // TODO
+        let inputPathCounter = 0;
+
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         const target = urlParams.get('target');
@@ -337,10 +340,28 @@
             uploadF1 = document.getElementById('formFile1').files[0];
             uploadF2 = document.getElementById('formFile2').files[0];
 
+
+            let inputPath = {}
+            for (let i = 0; i < inputPathCounter; i++) {
+                let key = document.getElementById('inputPathName'+i).value;
+                let value = document.getElementById('inputPath'+i).value;
+                if (key !== '' && value !== ''){
+                    inputPath[key] = value;
+                }
+            }
+
             if (uploadF1 !== undefined) {
                 globalData.inputFile1 = true;
                 if (uploadF2 !== undefined) {
                     globalData.inputFile2 = true;
+
+                    if (inputPathCounter > 0 && Object.keys(inputPath).length > 0) {
+                        globalData.curAnimationPath = inputPath;
+                        globalData.inputPath = true;
+                    }
+
+
+
                 }
 
                 render();
@@ -358,23 +379,28 @@
         }
 
         $(document).ready(function () {
-            let counter = 0;
+            // let counter = 0;
             $("#addrow").on("click", function () {
                 var newRow = $("<tr class='row ps-2 pt-2'>");
                 var cols = "";
 
-                cols += '<td class="col-3" style="padding: 0"><input type="text" class="form-control" name="name' + counter + '" placeholder="Path name"/></td>';
-                cols += '<td class="col-8" style="padding: 0"><input type="text" class="form-control" name="mail' + counter + '" placeholder="Checkpoints"/></td>';
+                cols += '<td class="col-3" style="padding: 0">' +
+                    '<input type="text" class="form-control" name="name' + inputPathCounter + '" placeholder="Path name" id="inputPathName' + inputPathCounter + '"/>' +
+                    '</td>';
+                cols += '<td class="col-8" style="padding: 0">' +
+                    '<input type="text" class="form-control" name="path' + inputPathCounter + '" placeholder="Checkpoints" id="inputPath' + inputPathCounter + '"/>' +
+                    '</td>';
 
                 cols += '<td class="col-1" style="padding: 0"><input type="button" class="ibtnDel btn btn-primary"  value="Delete"></td>';
 
                 newRow.append(cols);
                 $("table.order-list").append(newRow);
-                counter++;
+                inputPathCounter++;
             });
             $("table.order-list").on("click", ".ibtnDel", function (event) {
                 $(this).closest("tr").remove();
-                counter -= 1
+                inputPathCounter -= 1
+                console.log(inputPathCounter, ' path left');
             });
         });
 
