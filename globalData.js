@@ -1,6 +1,7 @@
 let globalData = {
     cellData: null,
     cellData3D: null,
+    cellData3D2: null,
     trajectoryData: null,
     batlowColormap: [],
     scaleUp: 0,
@@ -44,9 +45,10 @@ let globalData = {
     startFrom2D: false,
     showImg: true,
     idStr: '',
-
+    idStrTra: '',
     inputFile1: false,
     inputFile1Trans: false,
+    inputFile1Trans2: false,
     inputFile2: false,
     inputPath: false,
     inputSlice: false,

@@ -88,16 +88,13 @@ MovementController.prototype = {
     },
 
     getPosStr: function ( id ) {
-        const ori = loader.getObjectFromID(globalData.trajectoryData, id);
         let pointLoc = {};
-        pointLoc.x = ori.x * globalData.scaleUp;
-        pointLoc.y = ori.y * globalData.scaleUp;
 
-        if (target === 's4') {
-            pointLoc.z = ori.z;
-        } else {
+        loader.getObjectFromID(globalData.trajectoryData, id, globalData.idStr).then(ori => {
+            pointLoc.x = ori.x * globalData.scaleUp;
+            pointLoc.y = ori.y * globalData.scaleUp;
             pointLoc.z = ori.z * globalData.scaleUp;
-        }
+        })
 
         return pointLoc
     },

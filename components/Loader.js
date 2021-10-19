@@ -15,22 +15,13 @@ let Loader = function( container, id ) {
 Loader.prototype = {
 
     loadCSV: function ( path, id) {
-        let that = this;
         return new Promise((resolve, reject) => {
             Papa.parse(path, {
                 header: true,
                 download: true,
                 dynamicTyping: true,
                 complete: function(results) {
-                    let data = results.data;
-                    if (id === 'cellData') {
-                        that.renderPoints(data);
-                        globalData.cellData = data;
-                    } else if (id === 'trajectory') {
-                        that.renderTrajectory(data)
-                        globalData.trajectoryData = data;
-                    }
-                    resolve(results.data)
+                    resolve(results.data);
                 },
                 error: function (err) {
                     reject(err)
@@ -50,8 +41,6 @@ Loader.prototype = {
                 download: true,
                 dynamicTyping: true,
                 complete: function(results) {
-                    let data = results.data;
-                    globalData.cellData3D = data;
                     resolve(results.data)
                 },
                 error: function (err) {
@@ -62,9 +51,11 @@ Loader.prototype = {
     },
 
     renderPoints: function( data, flag = false ){
+
         globalData.categoricalColorDict = {};
         let attributesList = Object.keys(data[0]);
         const idStr = attributesList[0];
+        globalData.idStr = idStr;
         const featureList = attributesList.splice(4, attributesList.length - 4);
         globalData.markerGeneList = featureList;
         let curMarkerGene = '';
@@ -83,14 +74,20 @@ Loader.prototype = {
         let strSet = [];
         let strToNumDict = {};
         let strToNumIndex = 0;
-        if (typeof(data[0][curMarkerGene]) === 'string') {
-            console.log('this gene marker contains strings');
-            isStr = true;
-            // have a different colormap info block
-            document.getElementById('colormapToastBody').setAttribute('style', 'display: none');
-        } else {
-            document.getElementById('colormapToastBody').setAttribute('style', 'display: block');
+
+        for (let i = 0; i < data.length; i++) {
+            if (data[i][curMarkerGene] !== 'None') {
+                if (typeof(data[i][curMarkerGene]) === 'string') {
+                    console.log('this gene marker contains strings');
+                    isStr = true;
+                    document.getElementById('colormapToastBody').setAttribute('style', 'display: none');
+                } else {
+                    document.getElementById('colormapToastBody').setAttribute('style', 'display: block');
+                }
+                break;
+            }
         }
+
         let edgeValue = 0;
         let featureMax = 0;
         for (let i = 0; i < data.length; i++) {
@@ -101,11 +98,15 @@ Loader.prototype = {
                 edgeValue = Math.abs(data[i].y);
             }
 
-            if (!globalData.startFrom2D) {
-                if (Math.abs(data[i].z) > edgeValue) {
-                    edgeValue = Math.abs(data[i].z);
-                }
+            if (Math.abs(data[i].z) > edgeValue) {
+                edgeValue = Math.abs(data[i].z);
             }
+            // if (!globalData.startFrom2D) {
+            //     if (Math.abs(data[i].z) > edgeValue) {
+            //         edgeValue = Math.abs(data[i].z);
+            //     }
+            // }
+
             if (isStr) {
                 if ( !strSet.includes(data[i][curMarkerGene]) && data[i][curMarkerGene] ){
                     strSet.push(data[i][curMarkerGene]);
@@ -156,18 +157,26 @@ Loader.prototype = {
             if (colorStr) {
                 aSphere.setAttribute('color', colorStr);
                 if (isStr) {
-                    globalData.categoricalColorDict[element[curMarkerGene]] = colorStr;
+                    if (element[curMarkerGene] === 'None') {
+                        aSphere.setAttribute('visible', 'false');
+                    } else {
+                        globalData.categoricalColorDict[element[curMarkerGene]] = colorStr;
+                    }
                 }
+                aSphere.setAttribute('radius', '0.6');
+            } else {
+                aSphere.setAttribute('visible', 'false');
             }
-            aSphere.setAttribute('radius', '0.6');
 
 
             if (globalData.inputFile1Trans) {
                 if (globalData.startFrom2D) {
-                    aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + element.y*globalData.scaleUp + ' ' + element.z/2);
+                    // aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + element.y*globalData.scaleUp + ' ' + element.z/2);
+                    aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + element.y*globalData.scaleUp + ' ' + element.z*globalData.scaleUp);
                 } else {
-                    let target = loader.getObjectFromID(globalData.cellData3D, element[idStr]);
-                    aSphere.setAttribute('position', target.x*globalData.scaleUp + ' ' + target.y*globalData.scaleUp + ' ' + target.z*globalData.scaleUp);
+                    loader.getObjectFromID(globalData.cellData3D, element[idStr], globalData.idStr).then(target => {
+                        aSphere.setAttribute('position', target.x*globalData.scaleUp + ' ' + target.y*globalData.scaleUp + ' ' + target.z*globalData.scaleUp);
+                    })
                 }
             } else {
                 aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + element.y*globalData.scaleUp + ' ' + element.z*globalData.scaleUp)
@@ -211,6 +220,7 @@ Loader.prototype = {
     },
 
     renderTrajectory: function ( data ) {
+        globalData.idStrTra = Object.keys(data[0])[0];
         data.forEach(element => {
             let color = '#943126';
             let radius = '0.15';
@@ -219,7 +229,7 @@ Loader.prototype = {
                 color = '#F39C12'
                 radius = '0.4';
                 if (globalData.inputFile1Trans && globalData.startFrom2D) {
-                    globalData.destinationCheckpoint = {x:element.x*globalData.scaleUp, y:element.y*globalData.scaleUp, z:element.z};
+                    globalData.destinationCheckpoint = {x:element.x*globalData.scaleUp, y:element.y*globalData.scaleUp, z:element.z*globalData.scaleUp};
                 } else {
                     globalData.destinationCheckpoint = {x:element.x*globalData.scaleUp, y:element.y*globalData.scaleUp, z:element.z*globalData.scaleUp};
                 }
@@ -233,7 +243,7 @@ Loader.prototype = {
             let z;
 
             if (globalData.inputFile1Trans && globalData.startFrom2D) {
-                z = element.z;
+                z = element.z*globalData.scaleUp;
             } else {
                 z = element.z*globalData.scaleUp;
             }
@@ -256,34 +266,27 @@ Loader.prototype = {
                 childrenList.forEach(
                     element2 => {
                         let path = document.createElement('a-entity');
-                        const object = this.getObjectFromID(data, element2);
+                        this.getObjectFromID(data, element2, globalData.idStrTra).then(object => {
+                            const x_e = object.x*globalData.scaleUp;
+                            const y_e = object.y*globalData.scaleUp;
+                            const z_e = object.z*globalData.scaleUp;
 
-                        const x_e = object.x*globalData.scaleUp;
-                        const y_e = object.y*globalData.scaleUp;
-                        let z_e;
+                            const endPoint = x_e + ', ' + y_e + ', ' + z_e;
 
-                        if (globalData.inputFile1Trans && globalData.startFrom2D) {
-                            z_e = object.z;
-                        } else {
-                            z_e = object.z*globalData.scaleUp;
-                        }
+                            // path.setAttribute('meshline','path: ' + startPoint + ', ' + endPoint + ' ; color: #566573; lineWidth: 7');
+                            path.setAttribute('line', 'start: '+startPoint+'; end: '+endPoint+'; color: #943126');
 
-                        const endPoint = x_e + ', ' + y_e + ', ' + z_e;
+                            this.innerContainer.appendChild(path);
 
-                        // path.setAttribute('meshline','path: ' + startPoint + ', ' + endPoint + ' ; color: #566573; lineWidth: 7');
-                        path.setAttribute('line', 'start: '+startPoint+'; end: '+endPoint+'; color: #943126');
-
-                        this.innerContainer.appendChild(path);
-
-                        if (childrenList.length > 0) {
-                            const x_e_half = (x+x_e)/2;
-                            const y_e_half = (y+y_e)/2;
-                            const z_e_half = (z+z_e)/2;
-                            let directionChoice = this.addDirection((x+x_e_half)/2,(y+y_e_half)/2,(z+z_e_half)/2,  new THREE.Vector3(x_e, y_e, z_e), element.edges+'-'+element2);
-                            // this.innerContainer.appendChild(directionChoice);
-                            this.traObjectsContainer.appendChild(directionChoice);
-                        }
-
+                            if (childrenList.length > 0) {
+                                const x_e_half = (x+x_e)/2;
+                                const y_e_half = (y+y_e)/2;
+                                const z_e_half = (z+z_e)/2;
+                                let directionChoice = this.addDirection((x+x_e_half)/2,(y+y_e_half)/2,(z+z_e_half)/2,  new THREE.Vector3(x_e, y_e, z_e), element.edges+'-'+element2);
+                                // this.innerContainer.appendChild(directionChoice);
+                                this.traObjectsContainer.appendChild(directionChoice);
+                            }
+                        }, reject => {})
                     }
                 )
             }
@@ -293,15 +296,18 @@ Loader.prototype = {
         this.innerContainer.appendChild(this.traObjectsContainer);
     },
 
-    getObjectFromID : function( data, id ) {
-        let result = null;
-        data.forEach(element => {
-            const idStr = Object.keys(data[0])[0];
-            if (element[idStr] === id) {
-                result = element
-            }
-        });
-        return result
+
+
+    getObjectFromID : function( data, id, key ) {
+        return new Promise(((resolve, reject) => {
+            data.forEach(element => {
+                if (element[key] === id) {
+                    resolve(element);
+                }
+            });
+            reject('None');
+        }))
+
     },
 
     addDirection : function(x, y, z, destination, name) {

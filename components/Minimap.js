@@ -45,13 +45,14 @@ Minimap.prototype = {
                         globalData.trajectoryData[j].children.split(",").forEach(
                             element => {
                                 let path = document.createElement('a-entity');
-                                const object = loader.getObjectFromID(globalData.trajectoryData, element);
 
-                                const x_e = object.x*globalData.scaleDown;
-                                const y_e = object.y*globalData.scaleDown;
-                                const z_e = object.z*globalData.scaleDown;
-                                const endPoint = x_e + ', ' + y_e + ', ' + z_e;
-                                path.setAttribute('line', 'start: '+startPoint+'; end: '+endPoint+'; color: #0E6655');
+                                loader.getObjectFromID(globalData.trajectoryData, element, globalData.idStrTra).then(object => {
+                                    const x_e = object.x*globalData.scaleDown;
+                                    const y_e = object.y*globalData.scaleDown;
+                                    const z_e = object.z*globalData.scaleDown;
+                                    const endPoint = x_e + ', ' + y_e + ', ' + z_e;
+                                    path.setAttribute('line', 'start: '+startPoint+'; end: '+endPoint+'; color: #0E6655');
+                                }, reject => {})
                                 this.minimap.appendChild(path);
 
                             }

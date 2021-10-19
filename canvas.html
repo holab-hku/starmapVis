@@ -176,9 +176,10 @@
         } else if (target === 's4') {
             globalData.inputFile1 = true;
             globalData.inputFile1Trans = true;
-            globalData.inputFile2 = true;
-            globalData.inputPath = true;
-            globalData.curAnimationPath = globalData.sampleAnimationPath[target];
+            globalData.inputFile1Trans2 = true;
+            // globalData.inputFile2 = true;
+            // globalData.inputPath = true;
+            // globalData.curAnimationPath = globalData.sampleAnimationPath[target];
             globalData.inputSlice = true;
             globalData.startFrom2D = true;
             render();
@@ -202,7 +203,7 @@
             camera.setAttribute("wasd-controls", "acceleration: 270; fly: true");
 
             if (target === 's4') {
-                camera.setAttribute("position", "100 100 500");
+                camera.setAttribute("position", "75 75 350");
             } else {
                 camera.setAttribute("position", "0 0 250");
             }
@@ -225,11 +226,26 @@
 
             loader = new Loader(container, 'cellData');
             if (target === 'custom') {
-                loader.loadCSV(uploadF1, 'cellData');
+                loader.loadCSV(uploadF1, 'cellData').then(resolve => {
+                    globalData.idStr = Object.keys(resolve[0])[0];
+                    globalData.cellData = resolve;
+                    loader.renderPoints(resolve);
+                })
             } else {
-                loader.loadCSV('Sample/'+ target +'/input1.csv', 'cellData');
+                loader.loadCSV('Sample/'+ target +'/input1.csv', 'cellData').then(resolve => {
+                    globalData.idStr = Object.keys(resolve[0])[0];
+                    globalData.cellData = resolve;
+                    loader.renderPoints(resolve);
+                })
                 if (globalData.inputFile1Trans) {
-                    loader.load3DCSV('Sample/'+ target +'/input1Trans.csv');
+                    loader.load3DCSV('Sample/'+ target +'/input1Trans.csv').then(resolve => {
+                        globalData.cellData3D = resolve;
+                    })
+                    if (globalData.inputFile1Trans2) {
+                        loader.load3DCSV('Sample/'+ target +'/input1Trans2.csv').then(resolve => {
+                            globalData.cellData3D2 = resolve;
+                        })
+                    }
                 }
             }
 
@@ -259,21 +275,21 @@
                 }
 
 
-                loader2.loadCSV(loader2Para, 'trajectory').then(function (){
-                        // load the minimap
-                        if (globalData.inputFile2 && target !== 's4') {
-                            minimap = new Minimap(camera);
-                            minimap.renderMinimap();
-                        }
-
-                        // load the control panel
-                        controlPanel = new ControlPanel();
-                        controlPanel.init();
-
-                        // show the colormapInfo
-                        $('#colormapToast').toast('show');
+                loader2.loadCSV(loader2Para, 'trajectory').then(function (resolve){
+                    if (resolve) {
+                        globalData.trajectoryData = resolve;
+                        loader2.renderTrajectory(resolve)
                     }
-                )
+
+                    // load the minimap
+                    if (globalData.inputFile2 && target !== 's4') {
+                        minimap = new Minimap(camera);
+                        minimap.renderMinimap();
+                    }
+
+                    // show the colormapInfo
+                    $('#colormapToast').toast('show');
+                })
 
                 let scene = document.createElement('a-scene');
                 scene.setAttribute('id', "scene");
@@ -287,12 +303,15 @@
 
                 $(document).ready(function() {
                     // TODO
-                    loader.renderPoints(globalData.cellData, true);
+                    // loader.renderPoints(globalData.cellData, true);
                     // loader2.loadCSV('Sample/'+ target +'/input2.csv', 'trajectory');
                     spinner.style.visibility = "hidden";
+                    // load the control panel
+                    controlPanel = new ControlPanel();
+                    controlPanel.init();
                 });
 
-            }, 100);
+            }, 500);
 
 
         }
@@ -301,38 +320,21 @@
             let slice1 = document.createElement('a-image');
             slice1.setAttribute('id', 'slice1');
             slice1.setAttribute('src', 'Sample/'+id+'/1.png');
-            slice1.setAttribute('height', '175');
-            slice1.setAttribute('width', '175');
-            slice1.setAttribute('position', '75, 75, 45');
+            slice1.setAttribute('height', '150');
+            slice1.setAttribute('width', '150');
+            slice1.setAttribute('position', '75, 75, -5');
             slice1.setAttribute('rotation', '0 0 0');
             container.appendChild(slice1);
 
             let slice2 = document.createElement('a-image');
             slice2.setAttribute('id', 'slice2');
             slice2.setAttribute('src', 'Sample/'+id+'/2.png');
-            slice2.setAttribute('height', '175');
-            slice2.setAttribute('width', '175');
-            slice2.setAttribute('position', '75, 75, 95');
+            slice2.setAttribute('height', '150');
+            slice2.setAttribute('width', '150');
+            slice2.setAttribute('position', '75, 75, 145');
             slice2.setAttribute('rotation', '0 0 0');
             container.appendChild(slice2);
 
-            let slice3 = document.createElement('a-image');
-            slice3.setAttribute('id', 'slice3');
-            slice3.setAttribute('src', 'Sample/'+id+'/3.png');
-            slice3.setAttribute('height', '175');
-            slice3.setAttribute('width', '175');
-            slice3.setAttribute('position', '75, 75, 145');
-            slice3.setAttribute('rotation', '0 0 0');
-            container.appendChild(slice3);
-
-            let slice4 = document.createElement('a-image');
-            slice4.setAttribute('id', 'slice4');
-            slice4.setAttribute('src', 'Sample/'+id+'/4.png');
-            slice4.setAttribute('height', '175');
-            slice4.setAttribute('width', '175');
-            slice4.setAttribute('position', '75, 75, 195');
-            slice4.setAttribute('rotation', '0 0 0');
-            container.appendChild(slice4);
         }
 
         function uploadEnter() {
