@@ -101,11 +101,6 @@ Loader.prototype = {
             if (Math.abs(data[i].z) > edgeValue) {
                 edgeValue = Math.abs(data[i].z);
             }
-            // if (!globalData.startFrom2D) {
-            //     if (Math.abs(data[i].z) > edgeValue) {
-            //         edgeValue = Math.abs(data[i].z);
-            //     }
-            // }
 
             if (isStr) {
                 if ( !strSet.includes(data[i][curMarkerGene]) && data[i][curMarkerGene] ){
@@ -226,13 +221,11 @@ Loader.prototype = {
             let radius = '0.15';
             // Root has distinct color and radius.
             if (element.root) {
+                globalData.trajRootId = element[globalData.idStrTra];
                 color = '#F39C12'
                 radius = '0.4';
-                if (globalData.inputFile1Trans && globalData.startFrom2D) {
-                    globalData.destinationCheckpoint = {x:element.x*globalData.scaleUp, y:element.y*globalData.scaleUp, z:element.z*globalData.scaleUp};
-                } else {
-                    globalData.destinationCheckpoint = {x:element.x*globalData.scaleUp, y:element.y*globalData.scaleUp, z:element.z*globalData.scaleUp};
-                }
+                globalData.destinationCheckpoint = {id:element[globalData.idStrTra], x:element.x*globalData.scaleUp, y:element.y*globalData.scaleUp, z:element.z*globalData.scaleUp};
+
             }
             let aSphere = document.createElement('a-sphere');
             aSphere.setAttribute('id', element.edges);
@@ -282,7 +275,7 @@ Loader.prototype = {
                                 const x_e_half = (x+x_e)/2;
                                 const y_e_half = (y+y_e)/2;
                                 const z_e_half = (z+z_e)/2;
-                                let directionChoice = this.addDirection((x+x_e_half)/2,(y+y_e_half)/2,(z+z_e_half)/2,  new THREE.Vector3(x_e, y_e, z_e), element.edges+'-'+element2);
+                                let directionChoice = this.addDirection((x+x_e_half)/2,(y+y_e_half)/2,(z+z_e_half)/2,  new THREE.Vector3(x_e, y_e, z_e), element.edges+'-'+element2, element2);
                                 // this.innerContainer.appendChild(directionChoice);
                                 this.traObjectsContainer.appendChild(directionChoice);
                             }
@@ -310,7 +303,7 @@ Loader.prototype = {
 
     },
 
-    addDirection : function(x, y, z, destination, name) {
+    addDirection : function(x, y, z, destination, name, id) {
         let objectWrapper = document.createElement('a-entity');
         let object = document.createElement('a-cone');
         object.setAttribute('color', '#943126');
@@ -320,7 +313,7 @@ Loader.prototype = {
         objectWrapper.setAttribute('position', x+' '+y+' '+z);
         object.setAttribute('rotation', '90 0 0');
 
-        object.setAttribute('clickhandler', "txt:"+destination.x+' '+destination.y+' '+destination.z);
+        object.setAttribute('clickhandler', "txt:"+destination.x+' '+destination.y+' '+destination.z+' '+id);
         object.setAttribute('data-raycastable');
 
         objectWrapper.appendChild(object);
@@ -339,7 +332,7 @@ Loader.prototype = {
                 let el = this.el;
                 el.addEventListener('click', function () {
                     const desList = data.txt.split(' ');
-                    globalData.destinationCheckpoint = {x: desList[0], y: desList[1], z: desList[2]};
+                    globalData.destinationCheckpoint = {id:desList[3], x: desList[0], y: desList[1], z: desList[2]};
                     console.log('new destination: ', globalData.destinationCheckpoint);
                     movementController.move(camera, container, globalData.destinationCheckpoint);
 

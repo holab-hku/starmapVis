@@ -75,6 +75,8 @@ MovementController.prototype = {
 
             }
             // 4 secs after the click
+            console.log('debug: ', pathList, ' || ', globalData.mcCounter);
+
             that.move(camera, container, that.getPosStr(pathList[globalData.mcCounter]));
 
             if (globalData.mcCounter === 1) {
@@ -87,15 +89,23 @@ MovementController.prototype = {
         }, this.animationInterval)
     },
 
+    getObjectFromID : function( data, id, key ) {
+        let result = {}
+        data.forEach(element => {
+            if (element[key] === id) {
+                result = element;
+            }
+        })
+        return result
+    },
+
     getPosStr: function ( id ) {
         let pointLoc = {};
 
-        loader.getObjectFromID(globalData.trajectoryData, id, globalData.idStr).then(ori => {
-            pointLoc.x = ori.x * globalData.scaleUp;
-            pointLoc.y = ori.y * globalData.scaleUp;
-            pointLoc.z = ori.z * globalData.scaleUp;
-        })
-
+        let ori = this.getObjectFromID(globalData.trajectoryData, id, globalData.idStrTra);
+        pointLoc.x = ori.x * globalData.scaleUp;
+        pointLoc.y = ori.y * globalData.scaleUp;
+        pointLoc.z = ori.z * globalData.scaleUp;
         return pointLoc
     },
 

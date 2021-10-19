@@ -36,7 +36,9 @@ let globalData = {
             path1: 'E8 E5 E2 E11 E15 E6 E1 E13',
         },
         s4: {
-            path1: 'E_1 E_2 E_3 E_4',
+            path1: 'AACGTCAGACTAGTGG-1-Anterior TGCACTATGTGAGTGC-1-Posterior TAGGTGAGCCCTACTC-1-Anterior GCTTCCAGCTTAGATT-1-Posterior ' +
+                'ATGCCAATCGCTCTGC-1-Anterior CGGCACTCAAGAAAGT-1-Posterior AACCGAGCTTGGTCAT-1-Anterior GAAGAACGGTGCAGGT-1-Posterior ' +
+                'CCGGGCGGTCTCGTCA-1-Anterior GACAACGCAGCTTACG-1-Posterior',
         }
     },
     mcCounter: 0,
@@ -53,4 +55,5 @@ let globalData = {
     inputPath: false,
     inputSlice: false,
     stopAnimation: false,
+    trajRootId: '',
 };

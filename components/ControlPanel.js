@@ -75,6 +75,29 @@ ControlPanel.prototype = {
                     loader2.traObjectsContainer.setAttribute('visible', 'false');
                     setTimeout(function (){
                         loader2.traObjectsContainer.setAttribute('visible', 'true');
+
+                        // TODO set the checkpoint
+                        loader.getObjectFromID(globalData.trajectoryData, globalData.destinationCheckpoint.id, globalData.idStrTra).then(target => {
+
+                            let childrenList
+                            try {
+                                childrenList = target.children.split(",")
+                            } catch (e) {
+                                alert('Reached the end')
+                                childrenList = [globalData.trajRootId];
+                            }
+
+
+                            if (childrenList.length === 1) {
+                                console.log("Only one child");
+                                loader.getObjectFromID(globalData.trajectoryData, childrenList[0], globalData.idStrTra).then(target2 => {
+                                    console.log('feat: ', target2);
+                                    globalData.destinationCheckpoint = {id: target2[globalData.idStrTra], x: target2.x*globalData.scaleUp, y: target2.y*globalData.scaleUp, z: target2.z*globalData.scaleUp}
+                                })
+                            }
+                        })
+
+
                     }, movementController.positionAnimationDur)
                     movementController.move(camera, container, globalData.destinationCheckpoint);
                 },
@@ -97,9 +120,12 @@ ControlPanel.prototype = {
                 defaultPathFolder.add(animationWithPath, 'animationWithPath').name( key ).listen( ).onChange( function ( ) {
                     let pathList = globalData.curAnimationPath[key].split(' ');
 
+                    console.log('path list: ', pathList);
+
                     try {
                         movementController.moveThroughPath(camera, container, pathList);
                     } catch (error) {
+                        console.log(error);
                         alert('This input path is not applicable');
                     }
 
