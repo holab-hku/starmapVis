@@ -163,7 +163,6 @@ Loader.prototype = {
                 aSphere.setAttribute('visible', 'false');
             }
 
-
             if (globalData.inputFile1Trans) {
                 if (globalData.startFrom2D) {
                     // aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + element.y*globalData.scaleUp + ' ' + element.z/2);
@@ -176,10 +175,6 @@ Loader.prototype = {
             } else {
                 aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + element.y*globalData.scaleUp + ' ' + element.z*globalData.scaleUp)
             }
-
-
-
-
 
             this.innerContainer.appendChild(aSphere);
         });

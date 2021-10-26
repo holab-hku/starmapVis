@@ -19,7 +19,7 @@
         <script type="text/javascript" src="components/ControlPanel.js"></script>
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
         <script type="text/javascript" src="components/MovementController.js"></script>
-        <script type="text/javascript" src="packages/store.legacy.min.js"></script>
+        <script type="text/javascript" src="packages/FileSaver.min.js"></script>
     </head>
 
     <body>
@@ -59,18 +59,37 @@
                             <input class="form-control" type="file" id="formFile2">
                         </div>
                     </div>
+
                     <div class="container" style="height: 15px"></div>
                     <div class="card card-body shadow">
                         <div class="mb-3">
                             <label>Please Specify Animation Path (not compulsory)</label><br/>
-
                             <table class="table order-list ">
-
                             </table>
-
                             <button class="btn btn-success" type="button" id="addrow">Add Path</button>
                         </div>
                     </div>
+
+
+                    <div class="container" style="height: 15px"></div>
+                    <div class="card card-body shadow">
+                        <div class="mb-3">
+                            <label>Please Upload Image (not compulsory)</label><br/>
+                            <table class="table order-list-img">
+                            </table>
+                            <button class="btn btn-success" type="button" id="addrowImg">Add Image</button>
+                        </div>
+                    </div>
+
+                    <div class="container" style="height: 15px"></div>
+                    <div class="card card-body shadow">
+                        <div class="mb-3">
+                            <label for="formFile3" class="form-label">Please Upload Transformed Data CSV File (not compulsory)</label>
+                            <input class="form-control" type="file" id="formFile3">
+                        </div>
+                    </div>
+
+
 
                 </div>
                 <div class="modal-footer">
@@ -153,15 +172,20 @@
 
     <script>
 
-        // TODO
+        window.URL = window.URL || window.webkitURL;
+
         let inputPathCounter = 0;
+        let inputImgCounter = 0;
 
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         const target = urlParams.get('target');
 
         let spinner, environment, sky, container, camera, cursor, axis, compass, loader, keyboard;
-        let movementController, controlPanel, loader2, minimap, uploadF1, uploadF2, uploadModal;
+        let movementController, controlPanel, loader2, minimap, uploadF1, uploadF2, uploadModal, uploadF3;
+
+        let customImgList = [];
+        let customImgCList = [];
 
         if (target === 'custom') {
             uploadModal = new bootstrap.Modal(document.getElementById('uploadModal'));
@@ -182,6 +206,7 @@
             globalData.curAnimationPath = globalData.sampleAnimationPath[target];
             globalData.inputSlice = true;
             globalData.startFrom2D = true;
+            globalData.showTrajectory = false;
             render();
         }
         else {
@@ -202,10 +227,10 @@
             camera.setAttribute('look-controls');
             camera.setAttribute("wasd-controls", "acceleration: 270; fly: true");
 
-            if (target === 's4') {
-                camera.setAttribute("position", "75 75 350");
-            } else {
+            if (target === 's1') {
                 camera.setAttribute("position", "0 0 250");
+            } else {
+                camera.setAttribute("position", "75 75 350");
             }
 
             cursor = document.createElement('a-entity');
@@ -231,6 +256,12 @@
                     globalData.cellData = resolve;
                     loader.renderPoints(resolve);
                 })
+                if (globalData.inputFile1Trans) {
+                    globalData.startFrom2D = true;
+                    loader.load3DCSV(uploadF3).then(resolve => {
+                        globalData.cellData3D = resolve;
+                    })
+                }
             } else {
                 loader.loadCSV('Sample/'+ target +'/input1.csv', 'cellData').then(resolve => {
                     globalData.idStr = Object.keys(resolve[0])[0];
@@ -256,7 +287,52 @@
             movementController = new MovementController();
 
             if (globalData.inputSlice) {
-                loadSlice(container, target)
+                if (target === 'custom') {
+                    for (let i = 0; i < customImgList.length; i++) {
+
+                        // let slice = document.createElement('a-image');
+                        // slice.setAttribute('id', 'slice'+(i+1));
+                        // slice.setAttribute('src', customImgList[i]);
+                        // slice.setAttribute('height', '150');
+                        // slice.setAttribute('width', '150');
+                        // slice.setAttribute('position', '75, 75, '+(customImgCList[i]-5));
+                        // slice.setAttribute('rotation', '0 0 0');
+                        // container.appendChild(slice);
+
+                        // const reader = new FileReader();
+                        /// console.log('debug: ', reader.readAsDataURL(customImgList[i]));
+
+
+                        console.log('debug: ', customImgList[i]);
+
+                        // let slice = document.createElement('a-image');
+                        // slice.setAttribute('id', 'slice'+(i+1));
+                        // slice.setAttribute('src', "test"+i+".png");
+                        // slice.setAttribute('height', '150');
+                        // slice.setAttribute('width', '150');
+                        // slice.setAttribute('position', '75, 75, '+(customImgCList[i]-5));
+                        // slice.setAttribute('rotation', '0 0 0');
+                        // container.appendChild(slice);
+
+                        let img = document.createElement("a-image");
+                        // img.src = window.URL.createObjectURL(customImgList[i]);
+                        img.src = 'Sample/s4/1.png';
+                        img.height = '150';
+                        img.width = '150';
+                        img.posision = '0 0 0';
+                        img.rotation = '0 0 0';
+                        img.onload = function() {
+                            window.URL.revokeObjectURL(this.src);
+                        }
+                        console.log('debug2: ', img);
+                        container.appendChild(img);
+
+
+                    }
+                } else {
+                    loadSlice(container, target);
+                }
+
             }
 
             setTimeout(function (){
@@ -278,7 +354,7 @@
                 loader2.loadCSV(loader2Para, 'trajectory').then(function (resolve){
                     if (resolve) {
                         globalData.trajectoryData = resolve;
-                        loader2.renderTrajectory(resolve)
+                        loader2.renderTrajectory(resolve);
                     }
 
                     // load the minimap
@@ -293,18 +369,41 @@
 
                 let scene = document.createElement('a-scene');
                 scene.setAttribute('id', "scene");
-                // scene.setAttribute('style', 'position: absolute; height: 100%; width: 100%;');
                 scene.appendChild(environment);
                 scene.appendChild(container);
                 scene.appendChild(camera);
 
-                // document.querySelector('body').setAttribute('style', 'position: absolute; height: 100%; width: 100%;');
                 document.querySelector('body').appendChild(scene);
 
                 $(document).ready(function() {
-                    // TODO
-                    // loader.renderPoints(globalData.cellData, true);
-                    // loader2.loadCSV('Sample/'+ target +'/input2.csv', 'trajectory');
+
+                    if (target === 'custom'){
+                        loader.renderPoints(globalData.cellData, true);
+
+                        console.log('debug: ', customImgList);
+
+                        for (let i = 0; i < customImgList.length; i++) {
+                            let img = document.createElement("a-image");
+                            let tempSrc = window.URL.createObjectURL(customImgList[i]);
+
+                            img.setAttribute('src', 'Sample/s4/1.png');
+                            img.setAttribute('height', '150');
+                            img.setAttribute('width', '150');
+                            img.setAttribute('position', '75, 75, -5');
+                            img.setAttribute('rotation', '0 0 0');
+
+
+                            console.log('debug2: ', img, '||', tempSrc);
+                            container.appendChild(img);
+
+                            // img.onload = function () {
+                            //     window.URL.revokeObjectURL(tempSrc);
+                            // }
+                        }
+                    }
+
+                    document.getElementById('trajectory').setAttribute('visible', ''+globalData.showTrajectory);
+
                     spinner.style.visibility = "hidden";
                     // load the control panel
                     controlPanel = new ControlPanel();
@@ -335,13 +434,22 @@
             slice2.setAttribute('rotation', '0 0 0');
             container.appendChild(slice2);
 
+            console.log('debug: ', slice1);
+
         }
+
+
+
+
 
         function uploadEnter() {
 
+            customImgList = [];
+            customImgCList = [];
+
             uploadF1 = document.getElementById('formFile1').files[0];
             uploadF2 = document.getElementById('formFile2').files[0];
-
+            uploadF3 = document.getElementById('formFile3').files[0];
 
             let inputPath = {}
             for (let i = 0; i < inputPathCounter; i++) {
@@ -352,18 +460,34 @@
                 }
             }
 
+            for (let i = 0; i < inputImgCounter; i++) {
+                let img = document.getElementById('inputImg'+i).files[0];
+                let imgC = document.getElementById('inputImgC'+i).value;
+                if (img && imgC !== '') {
+                    if (img.type === 'image/png') {
+                        customImgList.push(img);
+                        customImgCList.push(imgC);
+                    }
+                }
+            }
+
             if (uploadF1 !== undefined) {
                 globalData.inputFile1 = true;
                 if (uploadF2 !== undefined) {
                     globalData.inputFile2 = true;
-
                     if (inputPathCounter > 0 && Object.keys(inputPath).length > 0) {
                         globalData.curAnimationPath = inputPath;
                         globalData.inputPath = true;
                     }
+                }
 
+                if (uploadF3 !== undefined) {
+                    globalData.inputFile1Trans = true;
+                    globalData.startFrom2D = true;
+                }
 
-
+                if (customImgList.length > 0) {
+                    globalData.inputSlice = true;
                 }
 
                 render();
@@ -374,6 +498,7 @@
                 alert('No data received');
 
             }
+
         }
 
         function backIndex() {
@@ -381,7 +506,7 @@
         }
 
         $(document).ready(function () {
-            // let counter = 0;
+
             $("#addrow").on("click", function () {
                 var newRow = $("<tr class='row ps-2 pt-2'>");
                 var cols = "";
@@ -404,6 +529,31 @@
                 inputPathCounter -= 1
                 console.log(inputPathCounter, ' path left');
             });
+
+
+            $("#addrowImg").on("click", function () {
+                var newRow = $("<tr class='row ps-2 pt-2'>");
+                var cols = "";
+
+                cols += '<td class="col-8" style="padding: 0">' +
+                    '<input class="form-control" type="file" id="inputImg' + inputImgCounter + '">' +
+                    '</td>';
+                cols += '<td class="col-3" style="padding: 0">' +
+                    '<input type="text" class="form-control" name="path' + inputImgCounter + '" placeholder="Coordinate on Z-axis" id="inputImgC' + inputImgCounter + '"/>' +
+                    '</td>';
+
+                cols += '<td class="col-1" style="padding: 0"><input type="button" class="ibtnDel btn btn-primary"  value="Delete"></td>';
+
+                newRow.append(cols);
+                $("table.order-list-img").append(newRow);
+                inputImgCounter++;
+            });
+            $("table.order-list-img").on("click", ".ibtnDel", function (event) {
+                $(this).closest("tr").remove();
+                inputImgCounter -= 1
+                console.log(inputImgCounter, ' img left');
+            });
+
         });
 
     </script>

@@ -141,10 +141,10 @@ ControlPanel.prototype = {
                     window.location.href = window.location.href;
                 }
 
-                if (target === 's4') {
-                    camera.setAttribute("position", "75 75 350");
+                if (target === 's1') {
+                    camera.setAttribute("position", "0 0 250");
                 } else {
-                    camera.setAttribute('position', '0 0 250');
+                    camera.setAttribute('position', '75 75 350');
                 }
                 container.setAttribute('rotation', '0 0 0');
 
@@ -208,14 +208,17 @@ ControlPanel.prototype = {
                         }
                     )
                 });
-                for (let i = 1; i < 3; i++) {
-                    const idTemp = 'slice' + i
-                    let targetImg = document.getElementById(idTemp);
-                    let originalImgPos = targetImg.getAttribute('position');
-                    let originalImgPosStr = originalImgPos.x + ' ' + originalImgPos.y + ' ' + originalImgPos.z;
-                    let posImgStr = originalImgPos.x+ ' ' + (Number(originalImgPos.y) - 200) + ' ' + (Number(originalImgPos.z) - 30);
-                    targetImg.setAttribute('animation', 'property: position; from: ' + originalImgPosStr + '; to: '+ posImgStr +'; dur: 1000; easing: easeInOutSine')
+                if (globalData.inputSlice) {
+                    for (let i = 1; i < 3; i++) {
+                        const idTemp = 'slice' + i
+                        let targetImg = document.getElementById(idTemp);
+                        let originalImgPos = targetImg.getAttribute('position');
+                        let originalImgPosStr = originalImgPos.x + ' ' + originalImgPos.y + ' ' + originalImgPos.z;
+                        let posImgStr = originalImgPos.x+ ' ' + (Number(originalImgPos.y) - 200) + ' ' + (Number(originalImgPos.z) - 30);
+                        targetImg.setAttribute('animation', 'property: position; from: ' + originalImgPosStr + '; to: '+ posImgStr +'; dur: 1000; easing: easeInOutSine')
+                    }
                 }
+
             } else {
                 console.log('From 3D to 2D');
                 globalData.startFrom2D = true;
@@ -230,13 +233,15 @@ ControlPanel.prototype = {
                         }
                     )
                 });
-                for (let i = 1; i < 3; i++) {
-                    const idTemp = 'slice' + i
-                    let targetImg = document.getElementById(idTemp);
-                    let originalImgPos = targetImg.getAttribute('position');
-                    let originalImgPosStr = originalImgPos.x + ' ' + originalImgPos.y + ' ' + originalImgPos.z;
-                    let posImgStr = originalImgPos.x+ ' ' + (Number(originalImgPos.y) + 200) + ' ' + (Number(originalImgPos.z) + 30);
-                    targetImg.setAttribute('animation', 'property: position; from: ' + originalImgPosStr + '; to: '+ posImgStr +'; dur: 2000; easing: easeInOutSine')
+                if (globalData.inputSlice) {
+                    for (let i = 1; i < 3; i++) {
+                        const idTemp = 'slice' + i
+                        let targetImg = document.getElementById(idTemp);
+                        let originalImgPos = targetImg.getAttribute('position');
+                        let originalImgPosStr = originalImgPos.x + ' ' + originalImgPos.y + ' ' + originalImgPos.z;
+                        let posImgStr = originalImgPos.x+ ' ' + (Number(originalImgPos.y) + 200) + ' ' + (Number(originalImgPos.z) + 30);
+                        targetImg.setAttribute('animation', 'property: position; from: ' + originalImgPosStr + '; to: '+ posImgStr +'; dur: 2000; easing: easeInOutSine')
+                    }
                 }
 
             }
