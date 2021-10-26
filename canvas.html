@@ -324,35 +324,53 @@
                     $('#colormapToast').toast('show');
                 })
 
+
+
                 let scene = document.createElement('a-scene');
                 scene.setAttribute('id', "scene");
                 scene.appendChild(environment);
                 scene.appendChild(container);
                 scene.appendChild(camera);
 
+                let assets = document.createElement('a-assets');
+                scene.appendChild(assets);
+
+                for (let i = 0; i < customImgList.length; i++) {
+
+                    let tempSrc = window.URL.createObjectURL(customImgList[i]);
+                    let imgO = document.createElement('img');
+                    imgO.id = 'theImgID';
+                    imgO.src = tempSrc;
+                    imgO.crossOrigin = 'crossorigin';
+                    assets.appendChild(imgO);
+
+
+                    let img = document.createElement("a-image");
+                    // let tempSrc = window.URL.createObjectURL(customImgList[i]);
+                    img.setAttribute('src', '#theImgID');
+                    img.setAttribute('height', '150');
+                    img.setAttribute('width', '150');
+                    img.setAttribute('position', '75, 75, '+(customImgCList[i]*globalData.scaleUp - 5));
+                    img.setAttribute('rotation', '0 0 0');
+
+                    container.appendChild(img);
+
+                    console.log('debug: ', img);
+
+                    img.onload = function () {
+                        window.URL.revokeObjectURL(tempSrc);
+                    }
+                }
+
                 document.querySelector('body').appendChild(scene);
+
+
 
                 $(document).ready(function() {
 
                     if (target === 'custom'){
                         loader.renderPoints(globalData.cellData, true);
 
-                        for (let i = 0; i < customImgList.length; i++) {
-                            let img = document.createElement("a-image");
-                            let tempSrc = window.URL.createObjectURL(customImgList[i]);
-
-                            img.setAttribute('src', tempSrc);
-                            img.setAttribute('height', '150');
-                            img.setAttribute('width', '150');
-                            img.setAttribute('position', '75, 75, '+(customImgCList[i]*globalData.scaleUp - 5));
-                            img.setAttribute('rotation', '0 0 0');
-
-                            container.appendChild(img);
-
-                            // img.onload = function () {
-                            //     window.URL.revokeObjectURL(tempSrc);
-                            // }
-                        }
                     }
 
                     document.getElementById('trajectory').setAttribute('visible', ''+globalData.showTrajectory);
@@ -363,7 +381,7 @@
                     controlPanel.init();
                 });
 
-            }, 500);
+            }, 800);
 
 
         }
