@@ -344,14 +344,14 @@
                             img.setAttribute('src', tempSrc);
                             img.setAttribute('height', '150');
                             img.setAttribute('width', '150');
-                            img.setAttribute('position', '75, 75, '+customImgCList[i]);
+                            img.setAttribute('position', '75, 75, '+(customImgCList[i]*globalData.scaleUp - 5));
                             img.setAttribute('rotation', '0 0 0');
 
                             container.appendChild(img);
 
-                            img.onload = function () {
-                                window.URL.revokeObjectURL(tempSrc);
-                            }
+                            // img.onload = function () {
+                            //     window.URL.revokeObjectURL(tempSrc);
+                            // }
                         }
                     }
 
