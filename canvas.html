@@ -19,7 +19,6 @@
         <script type="text/javascript" src="components/ControlPanel.js"></script>
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
         <script type="text/javascript" src="components/MovementController.js"></script>
-        <script type="text/javascript" src="packages/FileSaver.min.js"></script>
     </head>
 
     <body>
@@ -287,49 +286,7 @@
             movementController = new MovementController();
 
             if (globalData.inputSlice) {
-                if (target === 'custom') {
-                    for (let i = 0; i < customImgList.length; i++) {
-
-                        // let slice = document.createElement('a-image');
-                        // slice.setAttribute('id', 'slice'+(i+1));
-                        // slice.setAttribute('src', customImgList[i]);
-                        // slice.setAttribute('height', '150');
-                        // slice.setAttribute('width', '150');
-                        // slice.setAttribute('position', '75, 75, '+(customImgCList[i]-5));
-                        // slice.setAttribute('rotation', '0 0 0');
-                        // container.appendChild(slice);
-
-                        // const reader = new FileReader();
-                        /// console.log('debug: ', reader.readAsDataURL(customImgList[i]));
-
-
-                        console.log('debug: ', customImgList[i]);
-
-                        // let slice = document.createElement('a-image');
-                        // slice.setAttribute('id', 'slice'+(i+1));
-                        // slice.setAttribute('src', "test"+i+".png");
-                        // slice.setAttribute('height', '150');
-                        // slice.setAttribute('width', '150');
-                        // slice.setAttribute('position', '75, 75, '+(customImgCList[i]-5));
-                        // slice.setAttribute('rotation', '0 0 0');
-                        // container.appendChild(slice);
-
-                        let img = document.createElement("a-image");
-                        // img.src = window.URL.createObjectURL(customImgList[i]);
-                        img.src = 'Sample/s4/1.png';
-                        img.height = '150';
-                        img.width = '150';
-                        img.posision = '0 0 0';
-                        img.rotation = '0 0 0';
-                        img.onload = function() {
-                            window.URL.revokeObjectURL(this.src);
-                        }
-                        console.log('debug2: ', img);
-                        container.appendChild(img);
-
-
-                    }
-                } else {
+                if (target !== 'custom') {
                     loadSlice(container, target);
                 }
 
@@ -380,25 +337,21 @@
                     if (target === 'custom'){
                         loader.renderPoints(globalData.cellData, true);
 
-                        console.log('debug: ', customImgList);
-
                         for (let i = 0; i < customImgList.length; i++) {
                             let img = document.createElement("a-image");
                             let tempSrc = window.URL.createObjectURL(customImgList[i]);
 
-                            img.setAttribute('src', 'Sample/s4/1.png');
+                            img.setAttribute('src', tempSrc);
                             img.setAttribute('height', '150');
                             img.setAttribute('width', '150');
-                            img.setAttribute('position', '75, 75, -5');
+                            img.setAttribute('position', '75, 75, '+customImgCList[i]);
                             img.setAttribute('rotation', '0 0 0');
 
-
-                            console.log('debug2: ', img, '||', tempSrc);
                             container.appendChild(img);
 
-                            // img.onload = function () {
-                            //     window.URL.revokeObjectURL(tempSrc);
-                            // }
+                            img.onload = function () {
+                                window.URL.revokeObjectURL(tempSrc);
+                            }
                         }
                     }
 
