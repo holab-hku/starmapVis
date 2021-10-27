@@ -56,4 +56,5 @@ let globalData = {
     inputSlice: false,
     stopAnimation: false,
     trajRootId: '',
+    numOfSlices: 0,
 };

@@ -209,7 +209,7 @@ ControlPanel.prototype = {
                     )
                 });
                 if (globalData.inputSlice) {
-                    for (let i = 1; i < 3; i++) {
+                    for (let i = 1; i < globalData.numOfSlices+1; i++) {
                         const idTemp = 'slice' + i
                         let targetImg = document.getElementById(idTemp);
                         let originalImgPos = targetImg.getAttribute('position');
@@ -234,7 +234,7 @@ ControlPanel.prototype = {
                     )
                 });
                 if (globalData.inputSlice) {
-                    for (let i = 1; i < 3; i++) {
+                    for (let i = 1; i < globalData.numOfSlices+1; i++) {
                         const idTemp = 'slice' + i
                         let targetImg = document.getElementById(idTemp);
                         let originalImgPos = targetImg.getAttribute('position');
