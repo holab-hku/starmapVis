@@ -60,7 +60,7 @@ AFRAME.registerComponent('points', {
       //create geometry
       var geometry = this.geometry = new THREE.BufferGeometry();
       geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( data.positions, 3 ) );
-      if( data.hasColor == true )
+      if( data.hasColor === true )
         geometry.setAttribute( 'color', new THREE.BufferAttribute( colorsArray, 3 ) );
 
 

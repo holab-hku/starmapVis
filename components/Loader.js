@@ -75,6 +75,8 @@ Loader.prototype = {
         let strToNumDict = {};
         let strToNumIndex = 0;
 
+
+        // TODO regard int as discrete
         for (let i = 0; i < data.length; i++) {
             if (data[i][curMarkerGene] !== 'None') {
                 if (typeof(data[i][curMarkerGene]) === 'string') {
@@ -125,27 +127,72 @@ Loader.prototype = {
 
 
 
-        data.forEach(element => {
-            let colorIndex;
-            if (isStr) {
-                colorIndex = strToNumDict[element[curMarkerGene]] * featureNorm;
-            } else {
-                colorIndex = element[curMarkerGene] * featureNorm;
-            }
-            if (Math.round(colorIndex) > 99) {colorIndex = 99}
 
-            let colorStr
-            if (isStr) {
-                if (Math.round(colorIndex) % 2 === 0) {
-                    colorStr = globalData.batlowColormap[99 - Math.round(colorIndex)];
+
+        if (globalData.inputSlice === false) {
+            let positions = [];
+            let colors = [];
+            let ids = []
+            let indexCounter = 0;
+            data.forEach(element => {
+                let colorIndex;
+                if (isStr) {
+                    colorIndex = strToNumDict[element[curMarkerGene]] * featureNorm;
+                } else {
+                    colorIndex = element[curMarkerGene] * featureNorm;
+                }
+                if (Math.round(colorIndex) > 99) {colorIndex = 99}
+                let colorStr
+                if (isStr) {
+                    if (Math.round(colorIndex) % 2 === 0) {
+                        colorStr = globalData.batlowColormap[99 - Math.round(colorIndex)];
+                    } else {
+                        colorStr = globalData.batlowColormap[Math.round(colorIndex)];
+                    }
                 } else {
                     colorStr = globalData.batlowColormap[Math.round(colorIndex)];
                 }
-            } else {
-                colorStr = globalData.batlowColormap[Math.round(colorIndex)];
-            }
 
-            // let colorStr = globalData.batlowColormap[Math.round(colorIndex)];
+                if (colorStr) {
+
+                    if (isStr) {
+                        globalData.categoricalColorDict[element[curMarkerGene]] = colorStr;
+                    }
+
+                    let color = new THREE.Color(Number('0x'+colorStr.slice(-6)));
+                    colors.push(color.r, color.g, color.b);
+
+                    positions.push(element.x*globalData.scaleUp, element.y*globalData.scaleUp, element.z*globalData.scaleUp);
+
+                    ids.push(indexCounter);
+                    indexCounter = indexCounter + 1;
+                }
+
+            });
+
+            let sphereGroup = document.createElement('a-entity');
+            sphereGroup.setAttribute('spheregroup', {positionList: positions, idList: ids, colorList: colors});
+            this.innerContainer.appendChild(sphereGroup);
+        } else {
+            data.forEach(element => {
+                let colorIndex;
+                if (isStr) {
+                    colorIndex = strToNumDict[element[curMarkerGene]] * featureNorm;
+                } else {
+                    colorIndex = element[curMarkerGene] * featureNorm;
+                }
+                if (Math.round(colorIndex) > 99) {colorIndex = 99}
+
+                let colorStr
+                if (isStr) {
+                    if (Math.round(colorIndex) % 2 === 0) {
+                        colorStr = globalData.batlowColormap[99 - Math.round(colorIndex)];
+                    } else {
+                        colorStr = globalData.batlowColormap[Math.round(colorIndex)];
+                    }
+                } else {
+                    colorStr = globalData.batlowColormap[Math.round(colorIndex)];
+                }
 
             let aSphere = document.createElement('a-sphere');
             aSphere.setAttribute('id', element[idStr]);
@@ -177,7 +224,13 @@ Loader.prototype = {
             }
 
             this.innerContainer.appendChild(aSphere);
-        });
+
+            });
+
+        }
+
+
+
 
 
 

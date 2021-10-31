@@ -7,7 +7,9 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
         <script type="text/javascript" src="packages/aframe-meshline-component.min.js"></script>
+
         <script type="text/javascript" src="components/pointsComponent.js"></script>
+
         <script type="text/javascript" src="components/Compass.js"></script>
         <script type="text/javascript" src="packages/papaparse.min.js"></script>
         <script type="text/javascript" src="components/Loader.js"></script>
@@ -19,6 +21,9 @@
         <script type="text/javascript" src="components/ControlPanel.js"></script>
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
         <script type="text/javascript" src="components/MovementController.js"></script>
+        <script type="text/javascript" src="components/SphereIntegration.js"></script>
+
+
     </head>
 
     <body>
@@ -105,13 +110,21 @@
 
 
     <div class="modal fade bd-example-modal-lg" id="theModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Help</h5>
                 </div>
                 <div class="modal-body">
-                    <p> Haven't done yet ...  </p>
+                    <p class="font-monospace"> > Manipulation: <br> 1) Use keyboard ([W][A][S][D] and Arrow keys) to change the position of the camera and the rotation of the model. <br> 2) Use mouse or gyroscope to adjust the direction of the camera. </p>
+                    <p class="font-monospace"> > Control Panel:
+                        <br> 1) Switch toggles to show/hide corresponding components.
+                        <br> 2) Change the marker gene by selecting from dropdown menu.
+                        <br> 3) Click [Flyover] button to flyover the model by following input/default paths (corresponding input file is required).
+                        <br> 4) Click [Transformation] button to transform the model (corresponding input file is required).
+                    </p>
+                    <p class="font-monospace"> > Interaction: <br> 1) Click red cylinders on the trajectory to move to the next checkpoint. </p>
+                    <p class="font-monospace"> > Others: <br> 1) If some components/data are not visualised properly in the demo data, please reload the page. </p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" onclick="$('#theModal').modal('toggle');">Close</button>
@@ -190,23 +203,31 @@
             uploadModal = new bootstrap.Modal(document.getElementById('uploadModal'));
             uploadModal.toggle();
 
-        } else if (target === 's1' || target === 's2' || target === 's3') {
+        } else if (target === 's1' ) {
+            globalData.inputFile1 = true;
+            render();
+
+        } else if( target === 's2') {
             globalData.inputFile1 = true;
             globalData.inputFile2 = true;
             globalData.inputPath = true;
-            globalData.curAnimationPath = globalData.sampleAnimationPath[target];
+            globalData.curAnimationPath = globalData.sampleAnimationPath['s2'];
             render();
-        } else if (target === 's4') {
+        } else if (target === 's3' || target === 's4') {
             globalData.inputFile1 = true;
             globalData.inputFile1Trans = true;
             globalData.inputFile1Trans2 = true;
-            globalData.inputFile2 = true;
-            globalData.inputPath = true;
-            globalData.curAnimationPath = globalData.sampleAnimationPath[target];
             globalData.inputSlice = true;
             globalData.startFrom2D = true;
             globalData.showTrajectory = false;
-            globalData.numOfSlices = 4;
+            if (target === 's3') {
+                globalData.numOfSlices = 2;
+                globalData.inputFile2 = true;
+                globalData.inputPath = true;
+                globalData.curAnimationPath = globalData.sampleAnimationPath[target];
+            } else {
+                globalData.numOfSlices = 4;
+            }
             render();
         }
         else {
@@ -227,11 +248,18 @@
             camera.setAttribute('look-controls');
             camera.setAttribute("wasd-controls", "acceleration: 270; fly: true");
 
-            if (target === 's1') {
-                camera.setAttribute("position", "0 0 250");
-            } else {
+
+            if (globalData.inputSlice) {
                 camera.setAttribute("position", "75 75 350");
+            } else {
+                if (target === 's1') {
+                    camera.setAttribute("position", "30 30 250");
+                } else {
+                    camera.setAttribute("position", "75 75 250");
+                }
             }
+
+
 
             cursor = document.createElement('a-entity');
             cursor.setAttribute('cursor', "rayOrigin:mouse");
@@ -316,7 +344,7 @@
                     }
 
                     // load the minimap
-                    if (globalData.inputFile2 && target !== 's4') {
+                    if (globalData.inputFile2 && target !== 's3' && target !== 's4') {
                         minimap = new Minimap(camera);
                         minimap.renderMinimap();
                     }
@@ -367,8 +395,7 @@
                 $(document).ready(function() {
 
                     if (target === 'custom'){
-                        loader.renderPoints(globalData.cellData, true);
-
+                        // loader.renderPoints(globalData.cellData, true);
                     }
 
                     document.getElementById('trajectory').setAttribute('visible', ''+globalData.showTrajectory);
@@ -385,26 +412,61 @@
         }
 
         function loadSlice(container, id) {
-            let slice1 = document.createElement('a-image');
-            slice1.setAttribute('id', 'slice1');
-            slice1.setAttribute('src', 'Sample/'+id+'/1.png');
-            slice1.setAttribute('height', '150');
-            slice1.setAttribute('width', '150');
-            slice1.setAttribute('position', '75, 75, -5');
-            slice1.setAttribute('rotation', '0 0 0');
-            container.appendChild(slice1);
+            if (id === 's3') {
+                let slice1 = document.createElement('a-image');
+                slice1.setAttribute('id', 'slice1');
+                slice1.setAttribute('src', 'Sample/'+id+'/1.png');
+                slice1.setAttribute('height', '150');
+                slice1.setAttribute('width', '150');
+                slice1.setAttribute('position', '75, 75, -5');
+                slice1.setAttribute('rotation', '0 0 0');
+                container.appendChild(slice1);
 
-            let slice2 = document.createElement('a-image');
-            slice2.setAttribute('id', 'slice2');
-            slice2.setAttribute('src', 'Sample/'+id+'/2.png');
-            slice2.setAttribute('height', '150');
-            slice2.setAttribute('width', '150');
-            slice2.setAttribute('position', '75, 75, 145');
-            slice2.setAttribute('rotation', '0 0 0');
-            container.appendChild(slice2);
+                let slice2 = document.createElement('a-image');
+                slice2.setAttribute('id', 'slice2');
+                slice2.setAttribute('src', 'Sample/'+id+'/2.png');
+                slice2.setAttribute('height', '150');
+                slice2.setAttribute('width', '150');
+                slice2.setAttribute('position', '75, 75, 145');
+                slice2.setAttribute('rotation', '0 0 0');
+                container.appendChild(slice2);
+            } else if (id === 's4') {
+                let slice1 = document.createElement('a-image');
+                slice1.setAttribute('id', 'slice1');
+                slice1.setAttribute('src', 'Sample/'+id+'/1.png');
+                slice1.setAttribute('height', '150');
+                slice1.setAttribute('width', '150');
+                slice1.setAttribute('position', '75, 75, -155');
+                slice1.setAttribute('rotation', '0 0 0');
+                container.appendChild(slice1);
 
-            console.log('debug: ', slice1);
+                let slice2 = document.createElement('a-image');
+                slice2.setAttribute('id', 'slice2');
+                slice2.setAttribute('src', 'Sample/'+id+'/2.png');
+                slice2.setAttribute('height', '150');
+                slice2.setAttribute('width', '150');
+                slice2.setAttribute('position', '75, 75, -55');
+                slice2.setAttribute('rotation', '0 0 0');
+                container.appendChild(slice2);
 
+                let slice3 = document.createElement('a-image');
+                slice3.setAttribute('id', 'slice3');
+                slice3.setAttribute('src', 'Sample/'+id+'/3.png');
+                slice3.setAttribute('height', '150');
+                slice3.setAttribute('width', '150');
+                slice3.setAttribute('position', '75, 75, 45');
+                slice3.setAttribute('rotation', '0 0 0');
+                container.appendChild(slice3);
+
+                let slice4 = document.createElement('a-image');
+                slice4.setAttribute('id', 'slice4');
+                slice4.setAttribute('src', 'Sample/'+id+'/4.png');
+                slice4.setAttribute('height', '150');
+                slice4.setAttribute('width', '150');
+                slice4.setAttribute('position', '75, 75, 145');
+                slice4.setAttribute('rotation', '0 0 0');
+                container.appendChild(slice4);
+            }
         }
 
 

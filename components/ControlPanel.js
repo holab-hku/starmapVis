@@ -141,11 +141,18 @@ ControlPanel.prototype = {
                     window.location.href = window.location.href;
                 }
 
-                if (target === 's1') {
-                    camera.setAttribute("position", "0 0 250");
+
+                if (globalData.inputSlice) {
+                    camera.setAttribute("position", "75 75 350");
                 } else {
-                    camera.setAttribute('position', '75 75 350');
+                    if (target === 's1') {
+                        camera.setAttribute("position", "30 30 250");
+                    } else {
+                        camera.setAttribute("position", "75 75 250");
+                    }
+
                 }
+
                 container.setAttribute('rotation', '0 0 0');
 
                 camera.components["look-controls"].pitchObject.rotation.x = 0;
