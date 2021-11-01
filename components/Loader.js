@@ -129,11 +129,9 @@ Loader.prototype = {
 
 
 
-        if (globalData.inputSlice === false) {
+        if (globalData.startFrom2D === false && globalData.inputFile1Trans === false) {
             let positions = [];
             let colors = [];
-            let ids = []
-            let indexCounter = 0;
             data.forEach(element => {
                 let colorIndex;
                 if (isStr) {
@@ -164,14 +162,12 @@ Loader.prototype = {
 
                     positions.push(element.x*globalData.scaleUp, element.y*globalData.scaleUp, element.z*globalData.scaleUp);
 
-                    ids.push(indexCounter);
-                    indexCounter = indexCounter + 1;
                 }
 
             });
 
             let sphereGroup = document.createElement('a-entity');
-            sphereGroup.setAttribute('spheregroup', {positionList: positions, idList: ids, colorList: colors});
+            sphereGroup.setAttribute('spheregroup', {positionList: positions, colorList: colors});
             this.innerContainer.appendChild(sphereGroup);
         } else {
             data.forEach(element => {
@@ -194,36 +190,74 @@ Loader.prototype = {
                     colorStr = globalData.batlowColormap[Math.round(colorIndex)];
                 }
 
-            let aSphere = document.createElement('a-sphere');
-            aSphere.setAttribute('id', element[idStr]);
-            if (colorStr) {
-                aSphere.setAttribute('color', colorStr);
-                if (isStr) {
-                    if (element[curMarkerGene] === 'None') {
-                        aSphere.setAttribute('visible', 'false');
-                    } else {
-                        globalData.categoricalColorDict[element[curMarkerGene]] = colorStr;
+
+                // if (colorStr) {
+                //     let aSphere = document.createElement('a-entity');
+                //     let color = new THREE.Color(Number('0x'+colorStr.slice(-6)));
+                //     aSphere.setAttribute('id', element[idStr]);
+                //     if (colorStr) {
+                //         aSphere.setAttribute('spheresimple', {color: [color.r, color.g, color.b]});
+                //         if (isStr) {
+                //             if (element[curMarkerGene] === 'None') {
+                //                 aSphere.setAttribute('visible', 'false');
+                //             } else {
+                //                 globalData.categoricalColorDict[element[curMarkerGene]] = colorStr;
+                //             }
+                //         }
+                //         // aSphere.setAttribute('radius', '0.6');
+                //     } else {
+                //         aSphere.setAttribute('visible', 'false');
+                //     }
+                //
+                //     if (globalData.inputFile1Trans) {
+                //         if (globalData.startFrom2D) {
+                //             // aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + element.y*globalData.scaleUp + ' ' + element.z/2);
+                //             aSphere.setAttribute('spheresimple', {position: [element.x*globalData.scaleUp, element.y*globalData.scaleUp, element.z*globalData.scaleUp]});
+                //
+                //         } else {
+                //             loader.getObjectFromID(globalData.cellData3D, element[idStr], globalData.idStr).then(target => {
+                //                 aSphere.setAttribute('spheresimple', {position: [element.x*globalData.scaleUp, element.y*globalData.scaleUp, element.z*globalData.scaleUp]});
+                //             })
+                //         }
+                //     } else {
+                //         aSphere.setAttribute('spheresimple', {position: [element.x*globalData.scaleUp, element.y*globalData.scaleUp, element.z*globalData.scaleUp]});
+                //     }
+                //
+                //     this.innerContainer.appendChild(aSphere);
+                // }
+
+
+
+                let aSphere = document.createElement('a-sphere');
+                aSphere.setAttribute('id', element[idStr]);
+                if (colorStr) {
+                    aSphere.setAttribute('color', colorStr);
+                    if (isStr) {
+                        if (element[curMarkerGene] === 'None') {
+                            aSphere.setAttribute('visible', 'false');
+                        } else {
+                            globalData.categoricalColorDict[element[curMarkerGene]] = colorStr;
+                        }
                     }
-                }
-                aSphere.setAttribute('radius', '0.6');
-            } else {
-                aSphere.setAttribute('visible', 'false');
-            }
-
-            if (globalData.inputFile1Trans) {
-                if (globalData.startFrom2D) {
-                    // aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + element.y*globalData.scaleUp + ' ' + element.z/2);
-                    aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + element.y*globalData.scaleUp + ' ' + element.z*globalData.scaleUp);
+                    aSphere.setAttribute('radius', '0.6');
                 } else {
-                    loader.getObjectFromID(globalData.cellData3D, element[idStr], globalData.idStr).then(target => {
-                        aSphere.setAttribute('position', target.x*globalData.scaleUp + ' ' + target.y*globalData.scaleUp + ' ' + target.z*globalData.scaleUp);
-                    })
+                    aSphere.setAttribute('visible', 'false');
                 }
-            } else {
-                aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + element.y*globalData.scaleUp + ' ' + element.z*globalData.scaleUp)
-            }
 
-            this.innerContainer.appendChild(aSphere);
+                if (globalData.inputFile1Trans) {
+                    if (globalData.startFrom2D) {
+                        // aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + element.y*globalData.scaleUp + ' ' + element.z/2);
+                        aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + element.y*globalData.scaleUp + ' ' + element.z*globalData.scaleUp);
+                    } else {
+                        loader.getObjectFromID(globalData.cellData3D, element[idStr], globalData.idStr).then(target => {
+                            aSphere.setAttribute('position', target.x*globalData.scaleUp + ' ' + target.y*globalData.scaleUp + ' ' + target.z*globalData.scaleUp);
+                        })
+                    }
+                } else {
+                    aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + element.y*globalData.scaleUp + ' ' + element.z*globalData.scaleUp)
+                }
+
+                this.innerContainer.appendChild(aSphere);
 
             });
 
