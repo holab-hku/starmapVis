@@ -394,9 +394,9 @@
 
                 $(document).ready(function() {
 
-                    if (target === 'custom' || target === 's1' || target === 's2'){
-                        loader.renderPoints(globalData.cellData, true);
-                    }
+                    // if (target === 'custom' || target === 's1' || target === 's2'){
+                    //     loader.renderPoints(globalData.cellData, true);
+                    // }
 
                     document.getElementById('trajectory').setAttribute('visible', ''+globalData.showTrajectory);
 
@@ -582,7 +582,7 @@
             });
             $("table.order-list-img").on("click", ".ibtnDel", function (event) {
                 $(this).closest("tr").remove();
-                inputImgCounter -= 1
+                inputImgCounter -= 1;
                 console.log(inputImgCounter, ' img left');
             });
 
