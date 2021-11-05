@@ -13,7 +13,7 @@ AFRAME.registerComponent('spheregroup', {
         let data = this.data;
         let el = this.el;
 
-        const sprite = new THREE.TextureLoader().load( 'image/WhiteBall.png' );
+        const sprite = new THREE.TextureLoader().load( 'image/whiteBall.png' );
 
         // Create geometry.
         this.geometry = new THREE.BufferGeometry();
@@ -27,7 +27,7 @@ AFRAME.registerComponent('spheregroup', {
 
         // Create material.
         this.material = new THREE.PointsMaterial({
-            size: 1.3,
+            size: 1,
             vertexColors: THREE.VertexColors,
             alphaTest: 0.5,
             transparent: true,
