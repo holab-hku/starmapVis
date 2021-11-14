@@ -227,6 +227,9 @@
                 globalData.curAnimationPath = globalData.sampleAnimationPath[target];
             } else {
                 globalData.numOfSlices = 4;
+                globalData.inputFile2 = true;
+                globalData.inputPath = true;
+                globalData.curAnimationPath = globalData.sampleAnimationPath[target];
             }
             render();
         }
@@ -413,23 +416,25 @@
 
         function loadSlice(container, id) {
             if (id === 's3') {
+
                 let slice1 = document.createElement('a-image');
                 slice1.setAttribute('id', 'slice1');
                 slice1.setAttribute('src', 'Sample/'+id+'/1.png');
-                slice1.setAttribute('height', '150');
-                slice1.setAttribute('width', '150');
-                slice1.setAttribute('position', '75, 75, -5');
+                slice1.setAttribute('height', '168');
+                slice1.setAttribute('width', '168');
+                slice1.setAttribute('position', '-84, 84, -5');
                 slice1.setAttribute('rotation', '0 0 0');
                 container.appendChild(slice1);
 
                 let slice2 = document.createElement('a-image');
                 slice2.setAttribute('id', 'slice2');
                 slice2.setAttribute('src', 'Sample/'+id+'/2.png');
-                slice2.setAttribute('height', '150');
-                slice2.setAttribute('width', '150');
-                slice2.setAttribute('position', '75, 75, 145');
+                slice2.setAttribute('height', '168');
+                slice2.setAttribute('width', '168');
+                slice2.setAttribute('position', '84, 84, -5');
                 slice2.setAttribute('rotation', '0 0 0');
                 container.appendChild(slice2);
+
             } else if (id === 's4') {
                 let slice1 = document.createElement('a-image');
                 slice1.setAttribute('id', 'slice1');

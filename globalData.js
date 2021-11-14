@@ -33,12 +33,10 @@ let globalData = {
             path2: 'Y5 Y6 Y3 Y2 Y17 Y1 Y8',
         },
         s3: {
-            path1: 'E8 E5 E2 E11 E15 E6 E1 E13',
+            path1: 'Slice1 Slice2 Slice1 Slice2 Slice1 Slice2',
         },
         s4: {
-            path1: 'AACGTCAGACTAGTGG-1-Anterior TGCACTATGTGAGTGC-1-Posterior TAGGTGAGCCCTACTC-1-Anterior GCTTCCAGCTTAGATT-1-Posterior ' +
-                'ATGCCAATCGCTCTGC-1-Anterior CGGCACTCAAGAAAGT-1-Posterior AACCGAGCTTGGTCAT-1-Anterior GAAGAACGGTGCAGGT-1-Posterior ' +
-                'CCGGGCGGTCTCGTCA-1-Anterior GACAACGCAGCTTACG-1-Posterior',
+            path1: 'Slice1 Slice2 Slice3 Slice4 Slice1 Slice2 Slice3 Slice4',
         }
     },
     mcCounter: 0,

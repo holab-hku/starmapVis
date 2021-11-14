@@ -1,0 +1,5 @@
+"edges","x","y","z","children","root"
+"Slice1","300","300","900","Slice2","TRUE"
+"Slice2","300","300","500","Slice3","FALSE"
+"Slice3","300","300","100","Slice4","FALSE"
+"Slice4","300","300","-300","Slice1","FALSE"
