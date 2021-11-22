@@ -26,7 +26,7 @@ ControlPanel.prototype = {
                 console.log('show image: ', globalData.showImg);
                 // document.getElementById('sliceImg').setAttribute('visible', ''+globalData.showImg);
                 // document.getElementById('sliceImg').setAttribute('animation', 'property: visible;  to: '+ globalData.showImg+'; dur: 1000; easing: linear')
-                for (let i = 1; i < 3; i++) {
+                for (let i = 1; i < globalData.numOfSlices + 1; i++) {
                     const idTemp = 'slice' + i
                     document.getElementById(idTemp).setAttribute('visible', ''+globalData.showImg);
                 }
@@ -186,60 +186,79 @@ ControlPanel.prototype = {
         let liftUp = {
 
             liftUp1: function () {
-                transform(globalData.cellData3D);
+                if (target === 's3' && globalData.s3Trans2) {
+                    transform(globalData.cellData3D2, 2);
+                } else {
+                    transform(globalData.cellData3D, 1);
+                }
+
             },
 
             liftUp2: function () {
-                transform(globalData.cellData3D2);
+                transform(globalData.cellData3D2, 2);
             },
 
         };
 
-        function transform(dataObj) {
+
+        function transform(dataObj, status) {
 
             if (globalData.startFrom2D) {
                 console.log('From 2D to 3D');
                 globalData.startFrom2D = false;
-                globalData.cellData.forEach(element => {
-                    let origin = document.getElementById(element[globalData.idStr]);
-                    let originalPos = origin.getAttribute('position');
-                    let originalPosStr = originalPos.x + ' ' + originalPos.y + ' ' + originalPos.z;
-                    loader.getObjectFromID(dataObj, element[globalData.idStr], globalData.idStr).then(
-                        target => {
-                            let targetStr = target.x*globalData.scaleUp+ ' ' + target.y*globalData.scaleUp + ' ' + target.z*globalData.scaleUp;
-                            origin.setAttribute('animation', 'property: position; from: ' + originalPosStr + '; to: '+ targetStr +'; dur: 1500; easing: easeInOutSine');
-                        },
-                        reject => {
-                            let targetStr = originalPos.x + ' ' + (Number(originalPos.y) - 200) + ' ' + (Number(originalPos.z) - 30);
-                            origin.setAttribute('animation', 'property: position; from: ' + originalPosStr + '; to: '+ targetStr +'; dur: 1000; easing: easeInOutSine');
-                        }
-                    )
-                });
+
+                let target = document.getElementById('cellData').object3D;
+                createjs.Tween.get(target.position).to({x: 75, y: 75}, 1000)
+                createjs.Tween.get(target.scale).to({x: 0.05, y: 0.05, z: 0.05}, 1000).call(f);
+
+                function f() {
+                    let newPos = new THREE.Float32BufferAttribute(loader.object3DToBufferArray(dataObj), 3);
+                    document.getElementById('cellData').object3D.children[0].children[0].geometry.setAttribute(
+                        'position',
+                        newPos
+                    );
+                    f1();
+                    console.log('debug3: ', newPos.length);
+                }
+
+                function f1() {
+                    createjs.Tween.get(target.position).to({x: 0, y: 0}, 1000)
+                    createjs.Tween.get(target.scale).to({x: 1, y: 1, z: 1}, 1000);
+                }
+
                 if (globalData.inputSlice) {
-                    for (let i = 1; i < globalData.numOfSlices+1; i++) {
+                    for (let i = 1; i < globalData.numOfSlices + 1; i++) {
                         const idTemp = 'slice' + i
                         let targetImg = document.getElementById(idTemp);
                         let originalImgPos = targetImg.getAttribute('position');
                         let originalImgPosStr = originalImgPos.x + ' ' + originalImgPos.y + ' ' + originalImgPos.z;
-                        let posImgStr = originalImgPos.x+ ' ' + (Number(originalImgPos.y) - 200) + ' ' + (Number(originalImgPos.z) - 30);
-                        targetImg.setAttribute('animation', 'property: position; from: ' + originalImgPosStr + '; to: '+ posImgStr +'; dur: 1000; easing: easeInOutSine')
+                        let posImgStr = originalImgPos.x + ' ' + (Number(originalImgPos.y) - 200) + ' ' + (Number(originalImgPos.z) - 30);
+                        targetImg.setAttribute('animation', 'property: position; from: ' + originalImgPosStr + '; to: ' + posImgStr + '; dur: 500; easing: easeInOutSine')
                     }
+                }
+
+                if (status === 1) {
+                    globalData.curStatus = 1;
+                } else if (status === 2) {
+                    globalData.curStatus = 2;
                 }
 
             } else {
                 console.log('From 3D to 2D');
                 globalData.startFrom2D = true;
-                globalData.cellData.forEach(element => {
-                    let origin = document.getElementById(element[globalData.idStr]);
-                    let originalPos = origin.getAttribute('position');
-                    let originalPosStr = originalPos.x + ' ' + originalPos.y + ' ' + originalPos.z;
-                    loader.getObjectFromID(globalData.cellData, element[globalData.idStr], globalData.idStr).then(
-                        target => {
-                            let targetStr = target.x*globalData.scaleUp+ ' ' + target.y*globalData.scaleUp + ' ' + target.z*globalData.scaleUp;
-                            origin.setAttribute('animation', 'property: position; from: ' + originalPosStr + '; to: '+ targetStr +'; dur: 1500; easing: easeInOutSine');
-                        }
-                    )
-                });
+
+                let target = document.getElementById('cellData').object3D;
+                createjs.Tween.get(target.position).to({x: 75, y: 75}, 1000)
+                createjs.Tween.get(target.scale).to({x: 0.05, y: 0.05, z: 0.05}, 1000).call(f);
+                function f() {
+                    loader.renderPoints(globalData.cellData, true);
+                    f1();
+                }
+                function f1() {
+                    createjs.Tween.get(target.position).to({x: 0, y: 0}, 1000)
+                    createjs.Tween.get(target.scale).to({x: 1, y: 1, z: 1}, 1000);
+                }
+
                 if (globalData.inputSlice) {
                     for (let i = 1; i < globalData.numOfSlices+1; i++) {
                         const idTemp = 'slice' + i
@@ -247,9 +266,11 @@ ControlPanel.prototype = {
                         let originalImgPos = targetImg.getAttribute('position');
                         let originalImgPosStr = originalImgPos.x + ' ' + originalImgPos.y + ' ' + originalImgPos.z;
                         let posImgStr = originalImgPos.x+ ' ' + (Number(originalImgPos.y) + 200) + ' ' + (Number(originalImgPos.z) + 30);
-                        targetImg.setAttribute('animation', 'property: position; from: ' + originalImgPosStr + '; to: '+ posImgStr +'; dur: 2000; easing: easeInOutSine')
+                        targetImg.setAttribute('animation', 'property: position; from: ' + originalImgPosStr + '; to: '+ posImgStr +'; dur: 3000; easing: easeInOutSine')
                     }
                 }
+
+                globalData.curStatus = 0;
 
             }
 
@@ -260,16 +281,23 @@ ControlPanel.prototype = {
 
         if (globalData.inputFile1Trans) {
             let transFolder = this.gui.addFolder('Transformation', '#FFFFFF');
+
+
             transFolder.add(liftUp, 'liftUp1').name("Transform_1");
-            if (globalData.inputFile1Trans2) {
+            if (globalData.inputFile1Trans2 && target !== 's3') {
                 transFolder.add(liftUp,'liftUp2').name("Transform_2");
             }
+
+
+
             transFolder.open();
         }
 
         this.gui.add(reset, 'reset').name("Reset Camera");
         this.gui.add(help, 'help').name("Help");
         this.gui.add(exit, 'exit').name('Exit');
+
+
     },
 
 }

@@ -23,7 +23,8 @@
         <script type="text/javascript" src="components/MovementController.js"></script>
         <script type="text/javascript" src="components/SphereIntegration.js"></script>
         <script type="text/javascript" src="components/SphereSimple.js"></script>
-
+        <script type="text/javascript" src="packages/tween.umd.js"></script>
+        <script type="text/javascript" src="packages/tweenjs.min.js"></script>
     </head>
 
     <body>
@@ -158,7 +159,7 @@
             <div class="toast-body" id="colormapToastBody">
                 <img src="image/batlowweb.png" class="img-fluid">
                 <div style=" height: 22px">
-                    <div style="float: left">MIN: 0</div>
+                    <div id="colormapMIN" style="float: left"></div>
                     <div id="colormapMAX" style="float: right"></div>
                 </div>
             </div>
@@ -386,8 +387,6 @@
 
                     container.appendChild(img);
 
-                    console.log('debug: ', img);
-
                     img.onload = function () {
                         window.URL.revokeObjectURL(tempSrc);
                     }
@@ -397,9 +396,9 @@
 
                 $(document).ready(function() {
 
-                    // if (target === 'custom' || target === 's1' || target === 's2'){
-                    //     loader.renderPoints(globalData.cellData, true);
-                    // }
+                    if (target === 'custom'){
+                        loader.renderPoints(globalData.cellData, true);
+                    }
 
                     document.getElementById('trajectory').setAttribute('visible', ''+globalData.showTrajectory);
 
@@ -407,6 +406,8 @@
                     // load the control panel
                     controlPanel = new ControlPanel();
                     controlPanel.init();
+
+
                 });
 
             }, 500);
@@ -622,5 +623,8 @@
         input[type="text"] {
             box-sizing: border-box;
         }
+
+
+
     </style>
 </html>

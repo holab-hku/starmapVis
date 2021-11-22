@@ -2,6 +2,8 @@ let globalData = {
     cellData: null,
     cellData3D: null,
     cellData3D2: null,
+    cellData3DPosBuffer: null,
+    cellData3D2PosBuffer: null,
     trajectoryData: null,
     batlowColormap: [],
     scaleUp: 0,
@@ -55,4 +57,6 @@ let globalData = {
     stopAnimation: false,
     trajRootId: '',
     numOfSlices: 0,
+    s3Trans2: false,
+    curStatus: 0,
 };

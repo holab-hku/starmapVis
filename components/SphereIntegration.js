@@ -15,19 +15,29 @@ AFRAME.registerComponent('spheregroup', {
 
         const sprite = new THREE.TextureLoader().load( 'image/whiteBall.png' );
 
+
+
+        console.log('debug: ', data.positionList.length);
+        console.log('debug2: ', data.colorList.length);
+
+
         // Create geometry.
         this.geometry = new THREE.BufferGeometry();
-        this.geometry.setAttribute(
-            'position',
-            new THREE.Float32BufferAttribute(data.positionList, 3)
-        );
+        this.geometry.setAttribute('position', new THREE.Float32BufferAttribute(data.positionList, 3));
         this.geometry.setAttribute('color', new THREE.Float32BufferAttribute(data.colorList, 3));
 
-        // this.geometry.computeBoundingSphere();
+        this.geometry.computeBoundingSphere();
 
         // Create material.
+
+        let size = 1;
+        if (globalData.inputFile1Trans === true || globalData.numOfSlices > 0) {
+            size = 1.8;
+        }
+
+
         this.material = new THREE.PointsMaterial({
-            size: 1,
+            size: size,
             vertexColors: THREE.VertexColors,
             alphaTest: 0.5,
             transparent: true,
@@ -48,7 +58,5 @@ AFRAME.registerComponent('spheregroup', {
 
         // Set mesh on entity.
         el.setObject3D('mesh', this.mesh);
-
-        console.log('debug: ', el.sceneEl.object3D);
     }
 });
