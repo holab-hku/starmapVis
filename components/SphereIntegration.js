@@ -32,7 +32,7 @@ AFRAME.registerComponent('spheregroup', {
 
         let size = 1;
         if (globalData.inputFile1Trans === true || globalData.numOfSlices > 0) {
-            size = 1.8;
+            size = 2;
         }
 
 

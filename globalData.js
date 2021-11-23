@@ -13,6 +13,8 @@ let globalData = {
     showTrajectory: true,
     showColormap: true,
     hasInputPath: true,
+    visModeList: ['Simplified', 'High-Performance'],
+    curVisMode: { VisualisationMode: 'Simplified' },
     markerGeneList: [],
     curMarkerGene: { MarkerGene: '' },
     categoricalColorDict: {},

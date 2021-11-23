@@ -60,7 +60,25 @@ Loader.prototype = {
         })
     },
 
-    renderPoints: function( data, flag = false ){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    renderPoints: function( data, flag = false , visMode = 0 ){
 
         globalData.categoricalColorDict = {};
         let attributesList = Object.keys(data[0]);
@@ -156,66 +174,163 @@ Loader.prototype = {
 
 
 
-        // TODO 
-        data.forEach(element => {
-            let colorIndex;
-            if (isStr) {
-                colorIndex = strToNumDict[element[curMarkerGene]] * featureNorm;
+
+
+
+
+
+
+        // TODO
+
+        if (visMode === 1) {
+            // High-Performance Mode
+            if (globalData.startFrom2D === false && globalData.inputFile1Trans === false) {
+                let positions = [];
+                let colors = [];
+                data.forEach(element => {
+                    let colorIndex;
+                    if (isStr) {
+                        colorIndex = strToNumDict[element[curMarkerGene]] * featureNorm;
+                    } else {
+                        if (featureMin < 0) {
+                            colorIndex = (element[curMarkerGene] - featureMin) * featureNorm;
+                        } else {
+                            colorIndex = element[curMarkerGene] * featureNorm;
+                        }
+                    }
+                    if (Math.round(colorIndex) > 99) {colorIndex = 99}
+                    let colorStr
+                    if (isStr) {
+                        if (Math.round(colorIndex) % 2 === 0) {
+                            colorStr = globalData.batlowColormap[99 - Math.round(colorIndex)];
+                        } else {
+                            colorStr = globalData.batlowColormap[Math.round(colorIndex)];
+                        }
+                    } else {
+                        colorStr = globalData.batlowColormap[Math.round(colorIndex)];
+                    }
+                    if (colorStr) {
+                        if (isStr) {
+                            globalData.categoricalColorDict[element[curMarkerGene]] = colorStr;
+                        }
+                        let color = new THREE.Color(Number('0x'+colorStr.slice(-6)));
+                        colors.push(color.r, color.g, color.b);
+                        positions.push(element.x*globalData.scaleUp, element.y*globalData.scaleUp, element.z*globalData.scaleUp);
+                    }
+                });
+                let sphereGroup = document.createElement('a-entity');
+                sphereGroup.setAttribute('spheregroup', {positionList: positions, colorList: colors});
+                this.innerContainer.appendChild(sphereGroup);
             } else {
-                if (featureMin < 0) {
-                    colorIndex = (element[curMarkerGene] - featureMin) * featureNorm;
-                } else {
-                    colorIndex = element[curMarkerGene] * featureNorm;
-                }
+                data.forEach(element => {
+                    let colorIndex;
+                    if (isStr) {
+                        colorIndex = strToNumDict[element[curMarkerGene]] * featureNorm;
+                    } else {
+                        colorIndex = element[curMarkerGene] * featureNorm;
+                    }
+                    if (Math.round(colorIndex) > 99) {colorIndex = 99}
+                    let colorStr
+                    if (isStr) {
+                        if (Math.round(colorIndex) % 2 === 0) {
+                            colorStr = globalData.batlowColormap[99 - Math.round(colorIndex)];
+                        } else {
+                            colorStr = globalData.batlowColormap[Math.round(colorIndex)];
+                        }
+                    } else {
+                        colorStr = globalData.batlowColormap[Math.round(colorIndex)];
+                    }
+                    let aSphere = document.createElement('a-sphere');
+                    aSphere.setAttribute('id', element[globalData.idStr]);
+                    if (colorStr) {
+                        aSphere.setAttribute('color', colorStr);
+                        if (isStr) {
+                            if (element[curMarkerGene] === 'None') {
+                                aSphere.setAttribute('visible', 'false');
+                            } else {
+                                globalData.categoricalColorDict[element[curMarkerGene]] = colorStr;
+                            }
+                        }
+                        aSphere.setAttribute('radius', '0.7');
+                    } else {
+                        aSphere.setAttribute('visible', 'false');
+                    }
+
+                    // TODO which trans?
+
+                    if (globalData.curStatus === 1) {
+                        loader.getObjectFromID(globalData.cellData3D, element[globalData.idStr], globalData.idStr).then(target => {
+                            aSphere.setAttribute('position', target.x*globalData.scaleUp + ' ' + target.y*globalData.scaleUp + ' ' + target.z*globalData.scaleUp);
+                        })
+                    } else if (globalData.curStatus === 2) {
+                        loader.getObjectFromID(globalData.cellData3D2, element[globalData.idStr], globalData.idStr).then(target => {
+                            aSphere.setAttribute('position', target.x*globalData.scaleUp + ' ' + target.y*globalData.scaleUp + ' ' + target.z*globalData.scaleUp);
+                        })
+                    } else {
+                        aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + element.y*globalData.scaleUp + ' ' + element.z*globalData.scaleUp);
+                    }
+
+                    this.innerContainer.appendChild(aSphere);
+                });
             }
-            if (Math.round(colorIndex) > 99) {colorIndex = 99}
-            let colorStr
-            if (isStr) {
-                if (Math.round(colorIndex) % 2 === 0) {
-                    colorStr = globalData.batlowColormap[99 - Math.round(colorIndex)];
+
+        } else {
+            // Simplified Mode
+            data.forEach(element => {
+                let colorIndex;
+                if (isStr) {
+                    colorIndex = strToNumDict[element[curMarkerGene]] * featureNorm;
+                } else {
+                    if (featureMin < 0) {
+                        colorIndex = (element[curMarkerGene] - featureMin) * featureNorm;
+                    } else {
+                        colorIndex = element[curMarkerGene] * featureNorm;
+                    }
+                }
+                if (Math.round(colorIndex) > 99) {colorIndex = 99}
+                let colorStr
+                if (isStr) {
+                    if (Math.round(colorIndex) % 2 === 0) {
+                        colorStr = globalData.batlowColormap[99 - Math.round(colorIndex)];
+                    } else {
+                        colorStr = globalData.batlowColormap[Math.round(colorIndex)];
+                    }
                 } else {
                     colorStr = globalData.batlowColormap[Math.round(colorIndex)];
                 }
-            } else {
-                colorStr = globalData.batlowColormap[Math.round(colorIndex)];
-            }
 
-            if (colorStr) {
+                if (colorStr) {
+
+                    if (isStr) {
+                        globalData.categoricalColorDict[element[curMarkerGene]] = colorStr;
+                    }
+
+                    let color = new THREE.Color(Number('0x'+colorStr.slice(-6)));
+                    colors.push(color.r, color.g, color.b);
 
 
-                // TODO
-
-                if (isStr) {
-                    globalData.categoricalColorDict[element[curMarkerGene]] = colorStr;
+                    if (globalData.curStatus === 1) {
+                        this.getObjectFromID(globalData.cellData3D, element[globalData.idStr], globalData.idStr).then(object => {
+                            positions.push(object.x*globalData.scaleUp, object.y*globalData.scaleUp, object.z*globalData.scaleUp);
+                        })
+                    } else if (globalData.curStatus === 2) {
+                        this.getObjectFromID(globalData.cellData3D2, element[globalData.idStr], globalData.idStr).then(object => {
+                            positions.push(object.x*globalData.scaleUp, object.y*globalData.scaleUp, object.z*globalData.scaleUp);
+                        })
+                    } else {
+                        positions.push(element.x*globalData.scaleUp, element.y*globalData.scaleUp, element.z*globalData.scaleUp);
+                    }
                 }
-
-                let color = new THREE.Color(Number('0x'+colorStr.slice(-6)));
-                colors.push(color.r, color.g, color.b);
-
-
-                if (globalData.curStatus === 1) {
-                    this.getObjectFromID(globalData.cellData3D, element[globalData.idStr], globalData.idStr).then(object => {
-                        positions.push(object.x*globalData.scaleUp, object.y*globalData.scaleUp, object.z*globalData.scaleUp);
-                    })
-                } else if (globalData.curStatus === 2) {
-                    this.getObjectFromID(globalData.cellData3D2, element[globalData.idStr], globalData.idStr).then(object => {
-                        positions.push(object.x*globalData.scaleUp, object.y*globalData.scaleUp, object.z*globalData.scaleUp);
-                    })
-                } else {
-                    positions.push(element.x*globalData.scaleUp, element.y*globalData.scaleUp, element.z*globalData.scaleUp);
-                }
-
-
-            }
-
-        });
+            });
+            let sphereGroup = document.createElement('a-entity');
+            sphereGroup.setAttribute('spheregroup', {positionList: positions, colorList: colors});
+            this.innerContainer.appendChild(sphereGroup);
+        }
 
 
 
 
-        let sphereGroup = document.createElement('a-entity');
-        sphereGroup.setAttribute('spheregroup', {positionList: positions, colorList: colors});
-        this.innerContainer.appendChild(sphereGroup);
+
 
 
 
@@ -249,6 +364,32 @@ Loader.prototype = {
             }
         });
     },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     renderTrajectory: function ( data ) {
         globalData.idStrTra = Object.keys(data[0])[0];
