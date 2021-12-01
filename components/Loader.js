@@ -25,7 +25,7 @@ Loader.prototype = {
     object3DToBufferArray: function ( dataobj ) {
         let positions = [];
         dataobj.forEach(element => {
-            if (element[globalData.idStr] !== null) {
+            if (element[globalData.idStr] !== null && element[globalData.curMarkerGene.MarkerGene] !== 'None') {
                 positions.push(element.x*globalData.scaleUp, element.y*globalData.scaleUp, element.z*globalData.scaleUp);
             }
         })
@@ -35,7 +35,7 @@ Loader.prototype = {
     object3DToBufferArrayCluster: function ( dataobj, mg ) {
         let positions = {};
         dataobj.forEach(element => {
-            if (element[globalData.idStr] !== null) {
+            if (element[globalData.idStr] !== null && element[globalData.curMarkerGene.MarkerGene] !== 'None') {
                 if (!positions.hasOwnProperty(element[mg])) {
                     positions[element[mg]] = [];
                 }
@@ -114,15 +114,16 @@ Loader.prototype = {
             curMarkerGene = featureList[0];
             globalData.curMarkerGene.MarkerGene = curMarkerGene;
         }
-        if (globalData.inputFile1Trans && changeMG) {
+        if (globalData.inputFile1Trans && changeMG && globalData.cellData3D !== null) {
             this.uniteObjects(globalData.cellData3D, globalData.cellData, curMarkerGene)
-            if (globalData.inputFile1Trans2) {
+            if (globalData.inputFile1Trans2 && globalData.cellData3D2 !== null) {
                 this.uniteObjects(globalData.cellData3D2, globalData.cellData, curMarkerGene)
             }
         }
         console.log('Current MarkerGene: ', curMarkerGene);
         // deal with non-numerical attributes
         let isStr = false;
+        globalData.isStr = false;
 
         let strSet = [];
         let strToNumDict = {};
@@ -290,7 +291,7 @@ Loader.prototype = {
                     }
 
                     if (globalData.curStatus === 1) {
-                        this.getObjectFromID(globalData.cellData3D, element[globalData.idStr], globalData.idStr).then(object => {
+                        loader.getObjectFromID(globalData.cellData3D, element[globalData.idStr], globalData.idStr).then(object => {
                             if (isStr) {
                                 if (!positions.hasOwnProperty(element[curMarkerGene])) {
                                     positions[element[curMarkerGene]] = [];
@@ -300,9 +301,9 @@ Loader.prototype = {
                                 positions.push(object.x*globalData.scaleUp, object.y*globalData.scaleUp, object.z*globalData.scaleUp);
                             }
 
-                        })
+                        }, reject => {console.log(reject)})
                     } else if (globalData.curStatus === 2) {
-                        this.getObjectFromID(globalData.cellData3D2, element[globalData.idStr], globalData.idStr).then(object => {
+                        loader.getObjectFromID(globalData.cellData3D2, element[globalData.idStr], globalData.idStr).then(object => {
                             if (isStr) {
                                 if (!positions.hasOwnProperty(element[curMarkerGene])) {
                                     positions[element[curMarkerGene]] = [];
@@ -311,7 +312,7 @@ Loader.prototype = {
                             } else {
                                 positions.push(object.x*globalData.scaleUp, object.y*globalData.scaleUp, object.z*globalData.scaleUp);
                             }
-                        })
+                        }, reject => {console.log(reject)})
                     } else {
                         if (isStr) {
                             if (!positions.hasOwnProperty(element[curMarkerGene])) {
@@ -454,13 +455,7 @@ Loader.prototype = {
             aSphere.setAttribute('radius', radius);
             const x = element.x*globalData.scaleUp;
             const y = element.y*globalData.scaleUp;
-            let z;
-
-            if (globalData.inputFile1Trans && globalData.startFrom2D) {
-                z = element.z*globalData.scaleUp;
-            } else {
-                z = element.z*globalData.scaleUp;
-            }
+            const z = element.z*globalData.scaleUp;
 
             aSphere.setAttribute('position', x + ' ' + y+ ' ' + z)
             this.traObjectsContainer.appendChild(aSphere);

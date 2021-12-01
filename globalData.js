@@ -85,4 +85,5 @@ let globalData = {
     isStr: false,
     groupRenderPos: null,
     groupRenderColor: null,
+
 };

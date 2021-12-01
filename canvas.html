@@ -303,12 +303,10 @@
                 if (globalData.inputFile1Trans) {
                     loader.load3DCSV('Sample/'+ target +'/input1Trans.csv').then(resolve => {
                         globalData.cellData3D = resolve;
-                        // loader.uniteObjects(globalData.cellData3D, globalData.cellData, globalData.curMarkerGene.MarkerGene);
                     })
                     if (globalData.inputFile1Trans2) {
                         loader.load3DCSV('Sample/'+ target +'/input1Trans2.csv').then(resolve => {
                             globalData.cellData3D2 = resolve;
-                            // loader.uniteObjects(globalData.cellData3D2, globalData.cellData, globalData.curMarkerGene.MarkerGene);
                         })
                     }
                 }
@@ -399,7 +397,14 @@
                 $(document).ready(function() {
 
                     if (target === 'custom'){
-                        loader.renderPoints(resolve, false, 0, true);
+                        loader.renderPoints(globalData.cellData, false, 0, true);
+                    }
+
+                    if (globalData.inputFile1Trans && globalData.cellData3D !== null) {
+                        loader.uniteObjects(globalData.cellData3D, globalData.cellData, globalData.curMarkerGene.MarkerGene)
+                        if (globalData.inputFile1Trans2 && globalData.cellData3D2 !== null) {
+                            loader.uniteObjects(globalData.cellData3D2, globalData.cellData, globalData.curMarkerGene.MarkerGene)
+                        }
                     }
 
                     document.getElementById('trajectory').setAttribute('visible', ''+globalData.showTrajectory);
