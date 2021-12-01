@@ -14,6 +14,14 @@ let Loader = function( container, id ) {
 
 Loader.prototype = {
 
+    uniteObjects: function ( dataobj1, dataobj2, targetMG) {
+        dataobj1.forEach(element => {
+            this.getObjectFromID(dataobj2, element[globalData.idStr], globalData.idStr).then(target =>{
+                element[targetMG] = target[targetMG];
+            }, reject => {console.log('object not found in function getObjectFromID')});
+        });
+    },
+
     object3DToBufferArray: function ( dataobj ) {
         let positions = [];
         dataobj.forEach(element => {
@@ -21,7 +29,28 @@ Loader.prototype = {
                 positions.push(element.x*globalData.scaleUp, element.y*globalData.scaleUp, element.z*globalData.scaleUp);
             }
         })
-        return positions
+        return positions;
+    },
+
+    object3DToBufferArrayCluster: function ( dataobj, mg ) {
+        let positions = {};
+        dataobj.forEach(element => {
+            if (element[globalData.idStr] !== null) {
+                if (!positions.hasOwnProperty(element[mg])) {
+                    positions[element[mg]] = [];
+                }
+                positions[element[mg]].push(element.x*globalData.scaleUp, element.y*globalData.scaleUp, element.z*globalData.scaleUp);
+            }
+        })
+        return positions;
+    },
+
+    showOrHideDataPoint: function ( obj, mg, key, show ) {
+        obj.forEach(element => {
+            if (element[mg] === key) {
+                document.getElementById(element[globalData.idStr]).setAttribute('visible', show);
+            }
+        })
     },
 
     loadCSV: function ( path, id) {
@@ -66,19 +95,9 @@ Loader.prototype = {
 
 
 
+    renderPoints: function( data, flag = false , visMode = 0, changeMG = false){
 
-
-
-
-
-
-
-
-
-
-
-
-    renderPoints: function( data, flag = false , visMode = 0 ){
+        let numOfColorCode = globalData.colormapInfo[globalData.curColormap.Colormap].num;
 
         globalData.categoricalColorDict = {};
         let attributesList = Object.keys(data[0]);
@@ -95,24 +114,31 @@ Loader.prototype = {
             curMarkerGene = featureList[0];
             globalData.curMarkerGene.MarkerGene = curMarkerGene;
         }
+        if (globalData.inputFile1Trans && changeMG) {
+            this.uniteObjects(globalData.cellData3D, globalData.cellData, curMarkerGene)
+            if (globalData.inputFile1Trans2) {
+                this.uniteObjects(globalData.cellData3D2, globalData.cellData, curMarkerGene)
+            }
+        }
         console.log('Current MarkerGene: ', curMarkerGene);
         // deal with non-numerical attributes
         let isStr = false;
+
         let strSet = [];
         let strToNumDict = {};
         let strToNumIndex = 0;
 
-
-        // TODO regard int as discrete
         globalData.s3Trans2 = false;
         for (let i = 0; i < data.length; i++) {
             if (data[i][curMarkerGene] !== 'None') {
                 if (typeof(data[i][curMarkerGene]) === 'string') {
                     console.log('this gene marker contains strings');
                     isStr = true;
+                    globalData.isStr = true;
                     document.getElementById('colormapToastBody').setAttribute('style', 'display: none');
                 } else {
                     document.getElementById('colormapToastBody').setAttribute('style', 'display: block');
+                    document.getElementById('coloPanelImg').setAttribute('src', globalData.colormapInfo[globalData.curColormap.Colormap].imgPath);
                 }
                 break;
             } else {
@@ -136,9 +162,12 @@ Loader.prototype = {
             }
 
             if (isStr) {
-                if ( !strSet.includes(data[i][curMarkerGene]) && data[i][curMarkerGene] && data[i][curMarkerGene] !== 'None' ){
-                    strSet.push(data[i][curMarkerGene]);
-                    strToNumDict[data[i][curMarkerGene]] = strToNumIndex;
+
+                const strClass = data[i][curMarkerGene];
+
+                if ( !strSet.includes(strClass) && strClass !== undefined && strClass !== 'None' ){
+                    strSet.push(strClass);
+                    strToNumDict[strClass] = strToNumIndex;
                     strToNumIndex = strToNumIndex + 1;
                 }
                 featureMax = strToNumIndex;
@@ -151,7 +180,6 @@ Loader.prototype = {
                 }
             }
         }
-
         globalData.featureMAX = featureMax;
         globalData.featureMIN = featureMin;
         document.getElementById('colormapMAX').innerText = "MAX: " + globalData.featureMAX.toFixed(2);
@@ -159,123 +187,16 @@ Loader.prototype = {
         console.log('max value: ', globalData.featureMAX);
         globalData.scaleUp = 150/edgeValue;
         globalData.scaleDown = 1/edgeValue;
-        // const featureNorm = 100/featureMax;
 
         let featureNorm
         if (featureMin < 0) {
-            featureNorm = 100/(featureMax - featureMin);
+            featureNorm = numOfColorCode/(featureMax - featureMin);
         } else {
-            featureNorm = 100/featureMax;
+            featureNorm = numOfColorCode/featureMax;
         }
-
-
-        let positions = [];
-        let colors = [];
-
-
-
-
-
-
-
-
-
-        // TODO
 
         if (visMode === 1) {
             // High-Performance Mode
-            if (globalData.startFrom2D === false && globalData.inputFile1Trans === false) {
-                let positions = [];
-                let colors = [];
-                data.forEach(element => {
-                    let colorIndex;
-                    if (isStr) {
-                        colorIndex = strToNumDict[element[curMarkerGene]] * featureNorm;
-                    } else {
-                        if (featureMin < 0) {
-                            colorIndex = (element[curMarkerGene] - featureMin) * featureNorm;
-                        } else {
-                            colorIndex = element[curMarkerGene] * featureNorm;
-                        }
-                    }
-                    if (Math.round(colorIndex) > 99) {colorIndex = 99}
-                    let colorStr
-                    if (isStr) {
-                        if (Math.round(colorIndex) % 2 === 0) {
-                            colorStr = globalData.batlowColormap[99 - Math.round(colorIndex)];
-                        } else {
-                            colorStr = globalData.batlowColormap[Math.round(colorIndex)];
-                        }
-                    } else {
-                        colorStr = globalData.batlowColormap[Math.round(colorIndex)];
-                    }
-                    if (colorStr) {
-                        if (isStr) {
-                            globalData.categoricalColorDict[element[curMarkerGene]] = colorStr;
-                        }
-                        let color = new THREE.Color(Number('0x'+colorStr.slice(-6)));
-                        colors.push(color.r, color.g, color.b);
-                        positions.push(element.x*globalData.scaleUp, element.y*globalData.scaleUp, element.z*globalData.scaleUp);
-                    }
-                });
-                let sphereGroup = document.createElement('a-entity');
-                sphereGroup.setAttribute('spheregroup', {positionList: positions, colorList: colors});
-                this.innerContainer.appendChild(sphereGroup);
-            } else {
-                data.forEach(element => {
-                    let colorIndex;
-                    if (isStr) {
-                        colorIndex = strToNumDict[element[curMarkerGene]] * featureNorm;
-                    } else {
-                        colorIndex = element[curMarkerGene] * featureNorm;
-                    }
-                    if (Math.round(colorIndex) > 99) {colorIndex = 99}
-                    let colorStr
-                    if (isStr) {
-                        if (Math.round(colorIndex) % 2 === 0) {
-                            colorStr = globalData.batlowColormap[99 - Math.round(colorIndex)];
-                        } else {
-                            colorStr = globalData.batlowColormap[Math.round(colorIndex)];
-                        }
-                    } else {
-                        colorStr = globalData.batlowColormap[Math.round(colorIndex)];
-                    }
-                    let aSphere = document.createElement('a-sphere');
-                    aSphere.setAttribute('id', element[globalData.idStr]);
-                    if (colorStr) {
-                        aSphere.setAttribute('color', colorStr);
-                        if (isStr) {
-                            if (element[curMarkerGene] === 'None') {
-                                aSphere.setAttribute('visible', 'false');
-                            } else {
-                                globalData.categoricalColorDict[element[curMarkerGene]] = colorStr;
-                            }
-                        }
-                        aSphere.setAttribute('radius', '0.7');
-                    } else {
-                        aSphere.setAttribute('visible', 'false');
-                    }
-
-                    // TODO which trans?
-
-                    if (globalData.curStatus === 1) {
-                        loader.getObjectFromID(globalData.cellData3D, element[globalData.idStr], globalData.idStr).then(target => {
-                            aSphere.setAttribute('position', target.x*globalData.scaleUp + ' ' + target.y*globalData.scaleUp + ' ' + target.z*globalData.scaleUp);
-                        })
-                    } else if (globalData.curStatus === 2) {
-                        loader.getObjectFromID(globalData.cellData3D2, element[globalData.idStr], globalData.idStr).then(target => {
-                            aSphere.setAttribute('position', target.x*globalData.scaleUp + ' ' + target.y*globalData.scaleUp + ' ' + target.z*globalData.scaleUp);
-                        })
-                    } else {
-                        aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + element.y*globalData.scaleUp + ' ' + element.z*globalData.scaleUp);
-                    }
-
-                    this.innerContainer.appendChild(aSphere);
-                });
-            }
-
-        } else {
-            // Simplified Mode
             data.forEach(element => {
                 let colorIndex;
                 if (isStr) {
@@ -287,44 +208,143 @@ Loader.prototype = {
                         colorIndex = element[curMarkerGene] * featureNorm;
                     }
                 }
-                if (Math.round(colorIndex) > 99) {colorIndex = 99}
-                let colorStr
-                if (isStr) {
-                    if (Math.round(colorIndex) % 2 === 0) {
-                        colorStr = globalData.batlowColormap[99 - Math.round(colorIndex)];
-                    } else {
-                        colorStr = globalData.batlowColormap[Math.round(colorIndex)];
+                if (Math.round(colorIndex) > (numOfColorCode-1)) {colorIndex = (numOfColorCode-1)}
+                let colorStr = globalData.curUsingColormap[Math.round(colorIndex)];
+                let aSphere = document.createElement('a-sphere');
+                aSphere.setAttribute('id', element[globalData.idStr]);
+                if (colorStr) {
+                    aSphere.setAttribute('color', colorStr);
+                    aSphere.setAttribute('roughness', '0.8');
+                    if (isStr) {
+                        if (element[curMarkerGene] === 'None') {
+                            aSphere.setAttribute('visible', 'false');
+                        } else {
+                            globalData.categoricalColorDict[element[curMarkerGene]] = colorStr;
+                        }
                     }
+                    aSphere.setAttribute('radius', '0.7');
                 } else {
-                    colorStr = globalData.batlowColormap[Math.round(colorIndex)];
+                    aSphere.setAttribute('visible', 'false');
                 }
 
+                if (globalData.curStatus === 1) {
+                    loader.getObjectFromID(globalData.cellData3D, element[globalData.idStr], globalData.idStr).then(target => {
+                        aSphere.setAttribute('position', target.x*globalData.scaleUp + ' ' + target.y*globalData.scaleUp + ' ' + target.z*globalData.scaleUp);
+                    }, reject => {console.log(reject)})
+                } else if (globalData.curStatus === 2) {
+                    loader.getObjectFromID(globalData.cellData3D2, element[globalData.idStr], globalData.idStr).then(target => {
+                        aSphere.setAttribute('position', target.x*globalData.scaleUp + ' ' + target.y*globalData.scaleUp + ' ' + target.z*globalData.scaleUp);
+                    }, reject => {console.log(reject)})
+                } else {
+                    aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + element.y*globalData.scaleUp + ' ' + element.z*globalData.scaleUp);
+                }
+
+                this.innerContainer.appendChild(aSphere);
+            });
+
+
+        } else {
+            // Simplified Mode
+            let positions;
+            let colors;
+
+            if (isStr) {
+                positions = {};
+                colors = {};
+            } else {
+                positions = [];
+                colors = [];
+            }
+
+
+            data.forEach(element => {
+                let colorIndex;
+                if (isStr) {
+
+                    colorIndex = strToNumDict[element[curMarkerGene]] * featureNorm;
+
+                } else {
+                    if (featureMin < 0) {
+                        colorIndex = (element[curMarkerGene] - featureMin) * featureNorm;
+                    } else {
+                        colorIndex = element[curMarkerGene] * featureNorm;
+                    }
+                }
+                if (Math.round(colorIndex) > (numOfColorCode-1)) {colorIndex = (numOfColorCode-1)}
+                let colorStr = globalData.curUsingColormap[Math.round(colorIndex)];
                 if (colorStr) {
 
-                    if (isStr) {
-                        globalData.categoricalColorDict[element[curMarkerGene]] = colorStr;
-                    }
-
                     let color = new THREE.Color(Number('0x'+colorStr.slice(-6)));
-                    colors.push(color.r, color.g, color.b);
 
+                    if (isStr) {
+
+                        globalData.categoricalColorDict[element[curMarkerGene]] = colorStr;
+
+                        if (!colors.hasOwnProperty(element[curMarkerGene])) {
+                            colors[element[curMarkerGene]] = [];
+                        }
+                        colors[element[curMarkerGene]].push(color.r, color.g, color.b);
+
+                    } else {
+                        colors.push(color.r, color.g, color.b);
+                    }
 
                     if (globalData.curStatus === 1) {
                         this.getObjectFromID(globalData.cellData3D, element[globalData.idStr], globalData.idStr).then(object => {
-                            positions.push(object.x*globalData.scaleUp, object.y*globalData.scaleUp, object.z*globalData.scaleUp);
+                            if (isStr) {
+                                if (!positions.hasOwnProperty(element[curMarkerGene])) {
+                                    positions[element[curMarkerGene]] = [];
+                                }
+                                positions[element[curMarkerGene]].push(object.x*globalData.scaleUp, object.y*globalData.scaleUp, object.z*globalData.scaleUp);
+                            } else {
+                                positions.push(object.x*globalData.scaleUp, object.y*globalData.scaleUp, object.z*globalData.scaleUp);
+                            }
+
                         })
                     } else if (globalData.curStatus === 2) {
                         this.getObjectFromID(globalData.cellData3D2, element[globalData.idStr], globalData.idStr).then(object => {
-                            positions.push(object.x*globalData.scaleUp, object.y*globalData.scaleUp, object.z*globalData.scaleUp);
+                            if (isStr) {
+                                if (!positions.hasOwnProperty(element[curMarkerGene])) {
+                                    positions[element[curMarkerGene]] = [];
+                                }
+                                positions[element[curMarkerGene]].push(object.x*globalData.scaleUp, object.y*globalData.scaleUp, object.z*globalData.scaleUp);
+                            } else {
+                                positions.push(object.x*globalData.scaleUp, object.y*globalData.scaleUp, object.z*globalData.scaleUp);
+                            }
                         })
                     } else {
-                        positions.push(element.x*globalData.scaleUp, element.y*globalData.scaleUp, element.z*globalData.scaleUp);
+                        if (isStr) {
+                            if (!positions.hasOwnProperty(element[curMarkerGene])) {
+                                positions[element[curMarkerGene]] = [];
+                            }
+                            positions[element[curMarkerGene]].push(element.x*globalData.scaleUp, element.y*globalData.scaleUp, element.z*globalData.scaleUp);
+                        } else {
+                            positions.push(element.x*globalData.scaleUp, element.y*globalData.scaleUp, element.z*globalData.scaleUp);
+                        }
                     }
                 }
             });
-            let sphereGroup = document.createElement('a-entity');
-            sphereGroup.setAttribute('spheregroup', {positionList: positions, colorList: colors});
-            this.innerContainer.appendChild(sphereGroup);
+
+            if (isStr) {
+                Object.entries(colors).forEach(element => {
+                    const id = element[0];
+                    let sphereGroup = document.createElement('a-entity');
+                    sphereGroup.setAttribute('id', '3Dcluster_'+id);
+                    sphereGroup.setAttribute('spheregroup', {positionList: positions[id], colorList: element[1]});
+                    this.innerContainer.appendChild(sphereGroup);
+                })
+
+            } else {
+                let sphereGroup = document.createElement('a-entity');
+                sphereGroup.setAttribute('spheregroup', {positionList: positions, colorList: colors});
+                this.innerContainer.appendChild(sphereGroup);
+            }
+
+
+            globalData.groupRenderColor = colors;
+            globalData.groupRenderPos = positions;
+
+
         }
 
 
@@ -347,14 +367,37 @@ Loader.prototype = {
             document.getElementById('theSpinner').style.height = '0';
             document.getElementById('theSpinner').style.visibility = 'hidden';
             // Change colormap information to category
+
             if (isStr) {
-               let colormapSection = document.getElementById('colormapToastBodyCategory');
-               colormapSection.innerHTML = '';
+                let colormapSection = document.getElementById('colormapToastBodyCategory');
+                colormapSection.innerHTML = '';
                 Object.keys(globalData.categoricalColorDict).forEach(function(key) {
                     let row = document.createElement('p');
                     row.innerHTML = key;
                     row.setAttribute('style', 'color: white; background-color: '+globalData.categoricalColorDict[key]);
-                    row.setAttribute('class', 'ps-3');
+                    row.setAttribute('class', 'px-3');
+
+
+                    let checkBox = document.createElement('input');
+                    checkBox.setAttribute('class', 'form-check-input');
+                    checkBox.setAttribute('type', 'checkbox');
+                    checkBox.setAttribute('id', key);
+                    checkBox.setAttribute('checked', true);
+                    checkBox.setAttribute('style', 'float: right');
+                    checkBox.onchange = function () {
+                        console.log('Checkbox Key: ', key, ', Visible: ', checkBox.checked, ', VisMode: ', visMode, ', curMG: ', globalData.curMarkerGene.MarkerGene);
+                        if (visMode === 1) {
+                            loader.showOrHideDataPoint(globalData.cellData, globalData.curMarkerGene.MarkerGene, key, checkBox.checked);
+                        } else {
+                            document.getElementById('3Dcluster_'+key).setAttribute('visible', checkBox.checked);
+                        }
+
+                    };
+                    row.appendChild(checkBox);
+
+
+
+
                     colormapSection.appendChild(row);
                 });
                 colormapSection.setAttribute('style', 'display: block; max-height: 200px; overflow-y: scroll');
@@ -362,9 +405,10 @@ Loader.prototype = {
                 document.getElementById('colormapToastBodyCategory').innerHTML = '';
                 document.getElementById('colormapToastBodyCategory').setAttribute('style', 'display: none');
             }
+
+
         });
     },
-
 
 
 
@@ -453,7 +497,6 @@ Loader.prototype = {
                                 const y_e_half = (y+y_e)/2;
                                 const z_e_half = (z+z_e)/2;
                                 let directionChoice = this.addDirection((x+x_e_half)/2,(y+y_e_half)/2,(z+z_e_half)/2,  new THREE.Vector3(x_e, y_e, z_e), element.edges+'-'+element2, element2);
-                                // this.innerContainer.appendChild(directionChoice);
                                 this.traObjectsContainer.appendChild(directionChoice);
                             }
                         }, reject => {})

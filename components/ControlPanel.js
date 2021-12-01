@@ -55,7 +55,7 @@ ControlPanel.prototype = {
 
 
 
-        this.gui.add(globalData, 'showColormap' ).name( "ColomapInfo" ).listen( ).onChange( function ( ) {
+        this.gui.add(globalData, 'showColormap' ).name( "ColomapPanel" ).listen( ).onChange( function ( ) {
             console.log('show colormap: ', globalData.showColormap);
             if (globalData.showColormap) {
                 $('#colormapToast').toast('show');
@@ -63,6 +63,31 @@ ControlPanel.prototype = {
                 $('#colormapToast').toast('hide');
             }
         });
+
+        const changeColormap = this.gui.add( globalData.curColormap, 'Colormap' ).options( globalData.colormapList);
+
+        changeColormap.onChange( function () {
+            console.log('current colormap: ', globalData.curColormap);
+
+            const colormapPath = globalData.colormapInfo[globalData.curColormap.Colormap].path
+
+            fetch(colormapPath)
+                .then(response => response.text())
+                .then(text => {
+                    if (globalData.curColormap.Colormap === "Batlow") {
+                        globalData.curUsingColormap = text.split("\n");
+                    } else {
+                        globalData.curUsingColormap = text.split("\r\n");
+                    }
+                })
+                .then(text => {
+                    if (globalData.curVisMode.VisualisationMode === 'Simplified') {
+                        loader.renderPoints(globalData.cellData, true, 0);
+                    } else {
+                        loader.renderPoints(globalData.cellData, true, 1);
+                    }
+                })
+        } );
 
         let geneMarkerFolder = this.gui.addFolder('MarkerGene', '#FFFFFF');
 
@@ -76,9 +101,9 @@ ControlPanel.prototype = {
 
             setTimeout(function (){
                 if (globalData.curVisMode.VisualisationMode === 'High-Performance') {
-                    loader.renderPoints(globalData.cellData, true, 1)
+                    loader.renderPoints(globalData.cellData, true, 1, true)
                 } else {
-                    loader.renderPoints(globalData.cellData, true, 0)
+                    loader.renderPoints(globalData.cellData, true, 0, true)
                 }
             }, 1);
 
@@ -248,13 +273,31 @@ ControlPanel.prototype = {
                 createjs.Tween.get(target.scale).to({x: 0.05, y: 0.05, z: 0.05}, 1000).call(f);
 
                 function f() {
-                    let newPos = new THREE.Float32BufferAttribute(loader.object3DToBufferArray(dataObj), 3);
-                    document.getElementById('cellData').object3D.children[0].children[0].geometry.setAttribute(
-                        'position',
-                        newPos
-                    );
+
+                    if (globalData.isStr) {
+
+                        // TODO bug fileTrans has no mg information
+                        let newPosObj = loader.object3DToBufferArrayCluster(dataObj, globalData.curMarkerGene.MarkerGene);
+
+                        //console.log(newPosObj);
+
+                        Object.entries(globalData.groupRenderColor).forEach(element => {
+                            const id = element[0];
+                            let newPos = new THREE.Float32BufferAttribute(newPosObj[id], 3)
+                            document.getElementById('3Dcluster_'+id).object3D.children[0].geometry.setAttribute(
+                                'position',
+                                newPos
+                            )
+                        })
+
+                    } else {
+                        let newPos = new THREE.Float32BufferAttribute(loader.object3DToBufferArray(dataObj), 3);
+                        document.getElementById('cellData').object3D.children[0].children[0].geometry.setAttribute(
+                            'position',
+                            newPos
+                        );
+                    }
                     f1();
-                    console.log('debug3: ', newPos.length);
                 }
 
                 function f1() {
@@ -287,7 +330,23 @@ ControlPanel.prototype = {
                 createjs.Tween.get(target.position).to({x: 75, y: 75}, 1000)
                 createjs.Tween.get(target.scale).to({x: 0.05, y: 0.05, z: 0.05}, 1000).call(f);
                 function f() {
-                    loader.renderPoints(globalData.cellData, true);
+                    if (globalData.isStr) {
+                        let newPosObj = loader.object3DToBufferArrayCluster(globalData.cellData, globalData.curMarkerGene.MarkerGene);
+                        Object.entries(globalData.groupRenderColor).forEach(element => {
+                            const id = element[0];
+                            let newPos = new THREE.Float32BufferAttribute(newPosObj[id], 3)
+                            document.getElementById('3Dcluster_'+id).object3D.children[0].geometry.setAttribute(
+                                'position',
+                                newPos
+                            )
+                        })
+                    } else {
+                        let newPos = new THREE.Float32BufferAttribute(loader.object3DToBufferArray(globalData.cellData), 3);
+                        document.getElementById('cellData').object3D.children[0].children[0].geometry.setAttribute(
+                            'position',
+                            newPos
+                        );
+                    }
                     f1();
                 }
                 function f1() {

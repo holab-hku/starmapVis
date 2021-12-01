@@ -15,12 +15,6 @@ AFRAME.registerComponent('spheregroup', {
 
         const sprite = new THREE.TextureLoader().load( 'image/whiteBall.png' );
 
-
-
-        console.log('debug: ', data.positionList.length);
-        console.log('debug2: ', data.colorList.length);
-
-
         // Create geometry.
         this.geometry = new THREE.BufferGeometry();
         this.geometry.setAttribute('position', new THREE.Float32BufferAttribute(data.positionList, 3));
@@ -34,7 +28,6 @@ AFRAME.registerComponent('spheregroup', {
         if (globalData.inputFile1Trans === true || globalData.numOfSlices > 0) {
             size = 2;
         }
-
 
         this.material = new THREE.PointsMaterial({
             size: size,

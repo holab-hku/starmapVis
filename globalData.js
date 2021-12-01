@@ -5,7 +5,7 @@ let globalData = {
     cellData3DPosBuffer: null,
     cellData3D2PosBuffer: null,
     trajectoryData: null,
-    batlowColormap: [],
+    curUsingColormap: [],
     scaleUp: 0,
     scaleDown: 0,
     showData: true,
@@ -61,4 +61,28 @@ let globalData = {
     numOfSlices: 0,
     s3Trans2: false,
     curStatus: 0,
+
+    colormapList: ['Batlow', 'Turbo', 'Viridis'],
+    curColormap: { Colormap: 'Batlow' },
+    colormapInfo: {
+        'Batlow': {
+            num: 100,
+            path: 'packages/batlow100.txt',
+            imgPath: 'image/batlowweb.png'
+        },
+        'Turbo': {
+            num: 257,
+            path: 'packages/turbo.txt',
+            imgPath: 'image/turboImg.png'
+        },
+        'Viridis': {
+            num: 257,
+            path: 'packages/viridis.txt',
+            imgPath: 'image/viridisImg.png'
+        },
+    },
+
+    isStr: false,
+    groupRenderPos: null,
+    groupRenderColor: null,
 };

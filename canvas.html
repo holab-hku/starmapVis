@@ -23,6 +23,7 @@
         <script type="text/javascript" src="components/MovementController.js"></script>
         <script type="text/javascript" src="components/SphereIntegration.js"></script>
         <script type="text/javascript" src="packages/tweenjs.min.js"></script>
+        <script type="text/javascript" src="packages/js-colormaps.js"></script>
     </head>
 
     <body>
@@ -155,7 +156,7 @@
             </div>
 
             <div class="toast-body" id="colormapToastBody">
-                <img src="image/batlowweb.png" class="img-fluid">
+                <img src="image/turboImg.png" class="img-fluid" id="coloPanelImg">
                 <div style=" height: 22px">
                     <div id="colormapMIN" style="float: left"></div>
                     <div id="colormapMAX" style="float: right"></div>
@@ -268,10 +269,11 @@
             cursor.setAttribute('raycaster', "objects: [data-raycastable]");
             camera.appendChild(cursor);
 
+            // init colormap
             fetch('packages/batlow100.txt')
                 .then(response => response.text())
                 .then(text => {
-                    globalData.batlowColormap = text.split("\n");
+                    globalData.curUsingColormap = text.split("\n");
                 })
 
             axis = new Axis(container);
@@ -284,7 +286,7 @@
                 loader.loadCSV(uploadF1, 'cellData').then(resolve => {
                     globalData.idStr = Object.keys(resolve[0])[0];
                     globalData.cellData = resolve;
-                    loader.renderPoints(resolve);
+                    loader.renderPoints(resolve, false, 0, true);
                 })
                 if (globalData.inputFile1Trans) {
                     globalData.startFrom2D = true;
@@ -296,15 +298,17 @@
                 loader.loadCSV('Sample/'+ target +'/input1.csv', 'cellData').then(resolve => {
                     globalData.idStr = Object.keys(resolve[0])[0];
                     globalData.cellData = resolve;
-                    loader.renderPoints(resolve);
+                    loader.renderPoints(resolve, false, 0, true);
                 })
                 if (globalData.inputFile1Trans) {
                     loader.load3DCSV('Sample/'+ target +'/input1Trans.csv').then(resolve => {
                         globalData.cellData3D = resolve;
+                        // loader.uniteObjects(globalData.cellData3D, globalData.cellData, globalData.curMarkerGene.MarkerGene);
                     })
                     if (globalData.inputFile1Trans2) {
                         loader.load3DCSV('Sample/'+ target +'/input1Trans2.csv').then(resolve => {
                             globalData.cellData3D2 = resolve;
+                            // loader.uniteObjects(globalData.cellData3D2, globalData.cellData, globalData.curMarkerGene.MarkerGene);
                         })
                     }
                 }
@@ -395,7 +399,7 @@
                 $(document).ready(function() {
 
                     if (target === 'custom'){
-                        loader.renderPoints(globalData.cellData, true);
+                        loader.renderPoints(resolve, false, 0, true);
                     }
 
                     document.getElementById('trajectory').setAttribute('visible', ''+globalData.showTrajectory);
