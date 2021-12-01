@@ -326,25 +326,29 @@ Loader.prototype = {
                 }
             });
 
-            if (isStr) {
-                Object.entries(colors).forEach(element => {
-                    const id = element[0];
+
+            let that = this;
+            setTimeout(function (){
+                if (isStr) {
+
+                    Object.entries(positions).forEach(element => {
+                        const id = element[0];
+                        let sphereGroup = document.createElement('a-entity');
+                        sphereGroup.setAttribute('id', '3Dcluster_'+id);
+                        sphereGroup.setAttribute('spheregroup', {positionList: element[1], colorList: colors[id]});
+                        that.innerContainer.appendChild(sphereGroup);
+                    })
+
+                } else {
                     let sphereGroup = document.createElement('a-entity');
-                    sphereGroup.setAttribute('id', '3Dcluster_'+id);
-                    sphereGroup.setAttribute('spheregroup', {positionList: positions[id], colorList: element[1]});
-                    this.innerContainer.appendChild(sphereGroup);
-                })
-
-            } else {
-                let sphereGroup = document.createElement('a-entity');
-                sphereGroup.setAttribute('spheregroup', {positionList: positions, colorList: colors});
-                this.innerContainer.appendChild(sphereGroup);
-            }
+                    sphereGroup.setAttribute('spheregroup', {positionList: positions, colorList: colors});
+                    that.innerContainer.appendChild(sphereGroup);
+                }
 
 
-            globalData.groupRenderColor = colors;
-            globalData.groupRenderPos = positions;
-
+                globalData.groupRenderColor = colors;
+                globalData.groupRenderPos = positions;
+            }, 100)
 
         }
 

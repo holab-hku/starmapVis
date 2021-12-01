@@ -69,6 +69,9 @@ ControlPanel.prototype = {
         changeColormap.onChange( function () {
             console.log('current colormap: ', globalData.curColormap);
 
+            document.getElementById('theSpinner').style.height = '100%';
+            document.getElementById('theSpinner').style.visibility = 'visible';
+
             const colormapPath = globalData.colormapInfo[globalData.curColormap.Colormap].path
 
             fetch(colormapPath)
