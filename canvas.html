@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>StarmapVR | Space</title>
+        <title>StarmapVis | Space</title>
         <script src="packages/aframe-v1.2.0.min.js"></script>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
@@ -151,7 +151,7 @@
     <div class="position-fixed top-50 end-0 pe-3" style="z-index: 5; width: 300px">
         <div id="colormapToast" class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
             <div class="toast-header">
-                <strong class="me-auto">Colormap Information</strong>
+                <strong class="me-auto">Colourmap Panel</strong>
                 <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" onclick="globalData.showColormap=false"></button>
             </div>
 
@@ -276,8 +276,8 @@
                     globalData.curUsingColormap = text.split("\n");
                 })
 
-            axis = new Axis(container);
-            axis.renderAxis();
+            // axis = new Axis(container);
+            // axis.renderAxis();
 
             compass = new Compass(camera, container);
 
@@ -401,9 +401,9 @@
                     }
 
                     if (globalData.inputFile1Trans && globalData.cellData3D !== null) {
-                        loader.uniteObjects(globalData.cellData3D, globalData.cellData, globalData.curMarkerGene.MarkerGene)
+                        loader.uniteObjects(globalData.cellData3D, globalData.cellData, globalData.curMarkerGene.Attribute)
                         if (globalData.inputFile1Trans2 && globalData.cellData3D2 !== null) {
-                            loader.uniteObjects(globalData.cellData3D2, globalData.cellData, globalData.curMarkerGene.MarkerGene)
+                            loader.uniteObjects(globalData.cellData3D2, globalData.cellData, globalData.curMarkerGene.Attribute)
                         }
                     }
 

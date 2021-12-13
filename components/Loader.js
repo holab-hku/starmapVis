@@ -25,7 +25,7 @@ Loader.prototype = {
     object3DToBufferArray: function ( dataobj ) {
         let positions = [];
         dataobj.forEach(element => {
-            if (element[globalData.idStr] !== null && element[globalData.curMarkerGene.MarkerGene] !== 'None') {
+            if (element[globalData.idStr] !== null && element[globalData.curMarkerGene.Attribute] !== 'None') {
                 positions.push(element.x*globalData.scaleUp, element.y*globalData.scaleUp, element.z*globalData.scaleUp);
             }
         })
@@ -35,7 +35,7 @@ Loader.prototype = {
     object3DToBufferArrayCluster: function ( dataobj, mg ) {
         let positions = {};
         dataobj.forEach(element => {
-            if (element[globalData.idStr] !== null && element[globalData.curMarkerGene.MarkerGene] !== 'None') {
+            if (element[globalData.idStr] !== null && element[globalData.curMarkerGene.Attribute] !== 'None') {
                 if (!positions.hasOwnProperty(element[mg])) {
                     positions[element[mg]] = [];
                 }
@@ -97,7 +97,7 @@ Loader.prototype = {
 
     renderPoints: function( data, flag = false , visMode = 0, changeMG = false){
 
-        let numOfColorCode = globalData.colormapInfo[globalData.curColormap.Colormap].num;
+        let numOfColorCode = globalData.colormapInfo[globalData.curColormap.Colourmap].num;
 
         globalData.categoricalColorDict = {};
         let attributesList = Object.keys(data[0]);
@@ -107,12 +107,12 @@ Loader.prototype = {
         let curMarkerGene = '';
         if (flag) {
             console.log('Reloading starts');
-            curMarkerGene = globalData.curMarkerGene.MarkerGene;
+            curMarkerGene = globalData.curMarkerGene.Attribute;
             let oldCellData = document.getElementById('cellData');
             oldCellData.innerHTML = '';
         } else {
             curMarkerGene = featureList[0];
-            globalData.curMarkerGene.MarkerGene = curMarkerGene;
+            globalData.curMarkerGene.Attribute = curMarkerGene;
         }
         if (globalData.inputFile1Trans && changeMG && globalData.cellData3D !== null) {
             this.uniteObjects(globalData.cellData3D, globalData.cellData, curMarkerGene)
@@ -139,7 +139,7 @@ Loader.prototype = {
                     document.getElementById('colormapToastBody').setAttribute('style', 'display: none');
                 } else {
                     document.getElementById('colormapToastBody').setAttribute('style', 'display: block');
-                    document.getElementById('coloPanelImg').setAttribute('src', globalData.colormapInfo[globalData.curColormap.Colormap].imgPath);
+                    document.getElementById('coloPanelImg').setAttribute('src', globalData.colormapInfo[globalData.curColormap.Colourmap].imgPath);
                 }
                 break;
             } else {
@@ -390,9 +390,9 @@ Loader.prototype = {
                     checkBox.setAttribute('checked', true);
                     checkBox.setAttribute('style', 'float: right');
                     checkBox.onchange = function () {
-                        console.log('Checkbox Key: ', key, ', Visible: ', checkBox.checked, ', VisMode: ', visMode, ', curMG: ', globalData.curMarkerGene.MarkerGene);
+                        console.log('Checkbox Key: ', key, ', Visible: ', checkBox.checked, ', VisMode: ', visMode, ', curMG: ', globalData.curMarkerGene.Attribute);
                         if (visMode === 1) {
-                            loader.showOrHideDataPoint(globalData.cellData, globalData.curMarkerGene.MarkerGene, key, checkBox.checked);
+                            loader.showOrHideDataPoint(globalData.cellData, globalData.curMarkerGene.Attribute, key, checkBox.checked);
                         } else {
                             document.getElementById('3Dcluster_'+key).setAttribute('visible', checkBox.checked);
                         }

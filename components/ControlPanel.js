@@ -5,35 +5,35 @@ let ControlPanel = function( ) {
 ControlPanel.prototype = {
     init: function ( ) {
 
-        if (globalData.inputFile1Trans === true || globalData.numOfSlices > 0) {
-            const changeVisMode = this.gui.add( globalData.curVisMode, 'VisualisationMode' ).options( globalData.visModeList );
+        // if (globalData.inputFile1Trans === true || globalData.numOfSlices > 0) {
+        //     const changeVisMode = this.gui.add( globalData.curVisMode, 'VisualisationMode' ).options( globalData.visModeList );
+        //
+        //     changeVisMode.onChange( function () {
+        //         console.log('current visualisation mode: ', globalData.curVisMode);
+        //         document.getElementById('theSpinner').style.height = '100%';
+        //         document.getElementById('theSpinner').style.visibility = 'visible';
+        //
+        //         setTimeout(function (){
+        //             if (globalData.curVisMode.VisualisationMode === 'High-Performance') {
+        //                 loader.renderPoints(globalData.cellData, true, 1)
+        //             } else {
+        //                 loader.renderPoints(globalData.cellData, true, 0)
+        //             }
+        //         }, 1);
+        //
+        //     } );
+        //
+        // }
 
-            changeVisMode.onChange( function () {
-                console.log('current visualisation mode: ', globalData.curVisMode);
-                document.getElementById('theSpinner').style.height = '100%';
-                document.getElementById('theSpinner').style.visibility = 'visible';
-
-                setTimeout(function (){
-                    if (globalData.curVisMode.VisualisationMode === 'High-Performance') {
-                        loader.renderPoints(globalData.cellData, true, 1)
-                    } else {
-                        loader.renderPoints(globalData.cellData, true, 0)
-                    }
-                }, 1);
-
-            } );
-
-        }
-
-        this.gui.add(globalData, 'showData' ).name( "ShowData" ).listen( ).onChange( function ( ) {
+        this.gui.add(globalData, 'showData' ).name( "Data" ).listen( ).onChange( function ( ) {
             console.log('show Data: ', globalData.showData);
             document.getElementById('cellData').setAttribute('visible', ''+globalData.showData);
         });
 
-        this.gui.add(globalData, 'showCompass' ).name( "ShowCompass" ).listen( ).onChange( function ( ) {
+        this.gui.add(globalData, 'showCompass' ).name( "Compass" ).listen( ).onChange( function ( ) {
             console.log('show compass & axis: ', globalData.showCompass);
             compass.showCompass(globalData.showCompass);
-            axis.showAxis(globalData.showCompass);
+            // axis.showAxis(globalData.showCompass);
 
             // minimap will only occur when there is a trajectory
             if (globalData.inputFile2 && target !== 's4') {
@@ -42,7 +42,7 @@ ControlPanel.prototype = {
         });
 
         if (globalData.inputSlice) {
-            this.gui.add(globalData, 'showImg' ).name( "ShowImg" ).listen( ).onChange( function ( ) {
+            this.gui.add(globalData, 'showImg' ).name( "Image" ).listen( ).onChange( function ( ) {
                 console.log('show image: ', globalData.showImg);
                 // document.getElementById('sliceImg').setAttribute('visible', ''+globalData.showImg);
                 // document.getElementById('sliceImg').setAttribute('animation', 'property: visible;  to: '+ globalData.showImg+'; dur: 1000; easing: linear')
@@ -55,7 +55,7 @@ ControlPanel.prototype = {
 
 
 
-        this.gui.add(globalData, 'showColormap' ).name( "ColomapPanel" ).listen( ).onChange( function ( ) {
+        this.gui.add(globalData, 'showColormap' ).name( "Colourmap Panel" ).listen( ).onChange( function ( ) {
             console.log('show colormap: ', globalData.showColormap);
             if (globalData.showColormap) {
                 $('#colormapToast').toast('show');
@@ -64,7 +64,7 @@ ControlPanel.prototype = {
             }
         });
 
-        const changeColormap = this.gui.add( globalData.curColormap, 'Colormap' ).options( globalData.colormapList);
+        const changeColormap = this.gui.add( globalData.curColormap, 'Colourmap' ).options( globalData.colormapList);
 
         changeColormap.onChange( function () {
             console.log('current colormap: ', globalData.curColormap);
@@ -72,19 +72,19 @@ ControlPanel.prototype = {
             document.getElementById('theSpinner').style.height = '100%';
             document.getElementById('theSpinner').style.visibility = 'visible';
 
-            const colormapPath = globalData.colormapInfo[globalData.curColormap.Colormap].path
+            const colormapPath = globalData.colormapInfo[globalData.curColormap.Colourmap].path
 
             fetch(colormapPath)
                 .then(response => response.text())
                 .then(text => {
-                    if (globalData.curColormap.Colormap === "Batlow") {
+                    if (globalData.curColormap.Colourmap === "Batlow") {
                         globalData.curUsingColormap = text.split("\n");
                     } else {
                         globalData.curUsingColormap = text.split("\r\n");
                     }
                 })
                 .then(text => {
-                    if (globalData.curVisMode.VisualisationMode === 'Simplified') {
+                    if (globalData.curVisMode.Mode === 'Default') {
                         loader.renderPoints(globalData.cellData, true, 0);
                     } else {
                         loader.renderPoints(globalData.cellData, true, 1);
@@ -92,9 +92,10 @@ ControlPanel.prototype = {
                 })
         } );
 
-        let geneMarkerFolder = this.gui.addFolder('MarkerGene', '#FFFFFF');
+        // let geneMarkerFolder = this.gui.addFolder('MarkerGene', '#FFFFFF');
 
-        const changeGeneMarker = geneMarkerFolder.add( globalData.curMarkerGene, 'MarkerGene' ).options( globalData.markerGeneList );
+        const changeGeneMarker = this.gui.add( globalData.curMarkerGene, 'Attribute' ).options( globalData.markerGeneList );
+
 
         changeGeneMarker.onChange( function () {
 
@@ -103,7 +104,7 @@ ControlPanel.prototype = {
             document.getElementById('theSpinner').style.visibility = 'visible';
 
             setTimeout(function (){
-                if (globalData.curVisMode.VisualisationMode === 'High-Performance') {
+                if (globalData.curVisMode.Mode === 'High-Quality') {
                     loader.renderPoints(globalData.cellData, true, 1, true)
                 } else {
                     loader.renderPoints(globalData.cellData, true, 0, true)
@@ -112,12 +113,12 @@ ControlPanel.prototype = {
 
         } );
 
-        geneMarkerFolder.open();
+        // geneMarkerFolder.open();
 
 
         if (globalData.inputFile2) {
             let trajectoryFolder = this.gui.addFolder('Trajectory', '#FFFFFF');
-            trajectoryFolder.add(globalData, 'showTrajectory' ).name( "ShowTrajectory" ).listen( ).onChange( function ( ) {
+            trajectoryFolder.add(globalData, 'showTrajectory' ).name( "Trajectory" ).listen( ).onChange( function ( ) {
                 console.log('show the trajectory: ', globalData.showTrajectory);
                 document.getElementById('trajectory').setAttribute('visible', ''+globalData.showTrajectory);
             });
@@ -166,8 +167,13 @@ ControlPanel.prototype = {
             animationWithPath: function () {
             },
         };
+        let stopAnimation = {
+            stopAnimation: function () {
+                console.log('stop animation')
+            },
+        };
         if (globalData.inputPath) {
-            let defaultPathFolder = this.gui.addFolder('Flyover', '#FFFFFF');
+            let defaultPathFolder = this.gui.addFolder('Animation', '#FFFFFF');
             Object.keys(globalData.curAnimationPath).forEach(function(key) {
                 defaultPathFolder.add(animationWithPath, 'animationWithPath').name( key ).listen( ).onChange( function ( ) {
                     let pathList = globalData.curAnimationPath[key].split(' ');
@@ -184,6 +190,9 @@ ControlPanel.prototype = {
 
                 });
             });
+
+            defaultPathFolder.add(stopAnimation, 'stopAnimation').name('Stop');
+
         }
 
         let reset = {
@@ -239,13 +248,13 @@ ControlPanel.prototype = {
 
             liftUp1: function () {
                 if (target === 's3' && globalData.s3Trans2) {
-                    if ( globalData.curVisMode.VisualisationMode === 'High-Performance' ) {
+                    if ( globalData.curVisMode.Mode === 'High-Quality' ) {
                         transform_hp(globalData.cellData3D2, 2)
                     } else {
                         transform(globalData.cellData3D2, 2);
                     }
                 } else {
-                    if ( globalData.curVisMode.VisualisationMode === 'High-Performance' ) {
+                    if ( globalData.curVisMode.Mode === 'High-Quality' ) {
                         transform_hp(globalData.cellData3D, 1)
                     } else {
                         transform(globalData.cellData3D, 1);
@@ -255,7 +264,7 @@ ControlPanel.prototype = {
             },
 
             liftUp2: function () {
-                if ( globalData.curVisMode.VisualisationMode === 'High-Performance' ) {
+                if ( globalData.curVisMode.Mode === 'High-Quality' ) {
                     transform_hp(globalData.cellData3D2, 2);
                 } else {
                     transform(globalData.cellData3D2, 2);
@@ -280,7 +289,7 @@ ControlPanel.prototype = {
                     if (globalData.isStr) {
 
                         // TODO bug fileTrans has no mg information
-                        let newPosObj = loader.object3DToBufferArrayCluster(dataObj, globalData.curMarkerGene.MarkerGene);
+                        let newPosObj = loader.object3DToBufferArrayCluster(dataObj, globalData.curMarkerGene.Attribute);
 
                         //console.log(newPosObj);
 
@@ -334,7 +343,7 @@ ControlPanel.prototype = {
                 createjs.Tween.get(target.scale).to({x: 0.05, y: 0.05, z: 0.05}, 1000).call(f);
                 function f() {
                     if (globalData.isStr) {
-                        let newPosObj = loader.object3DToBufferArrayCluster(globalData.cellData, globalData.curMarkerGene.MarkerGene);
+                        let newPosObj = loader.object3DToBufferArrayCluster(globalData.cellData, globalData.curMarkerGene.Attribute);
                         Object.entries(globalData.groupRenderColor).forEach(element => {
                             const id = element[0];
                             let newPos = new THREE.Float32BufferAttribute(newPosObj[id], 3)
@@ -450,6 +459,23 @@ ControlPanel.prototype = {
 
         if (globalData.inputFile1Trans) {
             let transFolder = this.gui.addFolder('Transformation', '#FFFFFF');
+
+            if (globalData.inputFile1Trans === true || globalData.numOfSlices > 0) {
+                const changeVisMode = transFolder.add( globalData.curVisMode, 'Mode' ).options( globalData.visModeList );
+                changeVisMode.onChange( function () {
+                    console.log('current visualisation mode: ', globalData.curVisMode);
+                    document.getElementById('theSpinner').style.height = '100%';
+                    document.getElementById('theSpinner').style.visibility = 'visible';
+                    setTimeout(function (){
+                        if (globalData.curVisMode.Mode === 'High-Quality') {
+                            loader.renderPoints(globalData.cellData, true, 1)
+                        } else {
+                            loader.renderPoints(globalData.cellData, true, 0)
+                        }
+                    }, 1);
+
+                } );
+            }
 
 
             transFolder.add(liftUp, 'liftUp1').name("Transform_1");
