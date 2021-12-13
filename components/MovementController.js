@@ -22,7 +22,9 @@ MovementController.prototype = {
         let originalPos = camera.getAttribute('position');
         let originalPosStr = originalPos.x + ' ' + originalPos.y + ' ' + originalPos.z;
         let posStr = destination.x+ ' ' + destination.y + ' ' + destination.z;
+
         camera.setAttribute('animation', 'property: position; from: ' + originalPosStr + '; to: '+ posStr +'; dur: '+this.positionAnimationDur+'; easing: easeInOutSine');
+
     },
 
     moveThroughPath: function ( camera, container, pathList ) {
@@ -48,12 +50,36 @@ MovementController.prototype = {
 
         container.appendChild(pathEntity);
 
+        // This line can be deleted
         controlPanel.gui.close();
+
         document.getElementById('animationProgressBar').style.width = '0%';
         document.getElementById('animationProgressContainer').style.visibility = 'visible';
 
 
         let timer = setInterval(function (){
+
+            // TODO
+            if (globalData.stopMoveBtn) {
+                globalData.onMovement = false;
+                clearInterval(timer);
+                document.getElementById('animationProgressContainer').style.visibility = 'hidden';
+
+                try {
+                    pathEntity.remove();
+                } catch (e) {
+                    console.log('has been removed');
+                }
+
+                try {
+                    pathThinEntity.remove();
+                } catch (e) {
+                    console.log('has been removed');
+                }
+
+                $('#liveToast').toast('show');
+            }
+
             if (globalData.mcCounter >= globalData.mcLenOfPathList) {
                 globalData.onMovement = false;
 
@@ -61,13 +87,16 @@ MovementController.prototype = {
                 document.getElementById('animationProgressContainer').style.visibility = 'hidden';
 
                 // After the travel
-
-
-                pathThinEntity.remove();
+                try {
+                    pathThinEntity.remove();
+                } catch (e) {
+                    console.log('has been removed');
+                }
 
 
                 globalData.showTrajectory = true;
                 document.getElementById('trajectory').setAttribute('visible', ''+globalData.showTrajectory);
+
                 controlPanel.gui.open();
 
 
@@ -80,7 +109,11 @@ MovementController.prototype = {
             that.move(camera, container, that.getPosStr(pathList[globalData.mcCounter]));
 
             if (globalData.mcCounter === 1) {
-                pathEntity.remove();
+                try {
+                    pathEntity.remove();
+                } catch (e) {
+                    console.log('has been removed');
+                }
                 container.appendChild(pathThinEntity);
             }
 

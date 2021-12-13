@@ -169,7 +169,8 @@ ControlPanel.prototype = {
         };
         let stopAnimation = {
             stopAnimation: function () {
-                console.log('stop animation')
+                console.log('stop animation');
+                globalData.stopMoveBtn = true;
             },
         };
         if (globalData.inputPath) {
@@ -179,6 +180,8 @@ ControlPanel.prototype = {
                     let pathList = globalData.curAnimationPath[key].split(' ');
 
                     console.log('path list: ', pathList);
+
+                    globalData.stopMoveBtn = false;
 
                     try {
                         movementController.moveThroughPath(camera, container, pathList);
@@ -192,7 +195,6 @@ ControlPanel.prototype = {
             });
 
             defaultPathFolder.add(stopAnimation, 'stopAnimation').name('Stop');
-
         }
 
         let reset = {
@@ -322,8 +324,15 @@ ControlPanel.prototype = {
                         const idTemp = 'slice' + i
                         let targetImg = document.getElementById(idTemp);
                         let originalImgPos = targetImg.getAttribute('position');
-                        let originalImgPosStr = originalImgPos.x + ' ' + originalImgPos.y + ' ' + originalImgPos.z;
-                        let posImgStr = originalImgPos.x + ' ' + (Number(originalImgPos.y) - 200) + ' ' + (Number(originalImgPos.z) - 30);
+                        let originalImgPosStr = '';
+                        if (globalData.imagePositionCache[idTemp] !== undefined) {
+                            originalImgPosStr = globalData.imagePositionCache[idTemp];
+                        } else {
+                            originalImgPosStr = originalImgPos.x + ' ' + originalImgPos.y + ' ' + originalImgPos.z;
+                            globalData.imagePositionCache[idTemp] = originalImgPosStr;
+                        }
+                        let originalImgPosStrArray = originalImgPosStr.split(' ');
+                        let posImgStr = originalImgPosStrArray[0] + ' ' + (Number(originalImgPosStrArray[1]) - 200) + ' ' + (Number(originalImgPosStrArray[2]) - 30);
                         targetImg.setAttribute('animation', 'property: position; from: ' + originalImgPosStr + '; to: ' + posImgStr + '; dur: 500; easing: easeInOutSine')
                     }
                 }
@@ -372,7 +381,7 @@ ControlPanel.prototype = {
                         let targetImg = document.getElementById(idTemp);
                         let originalImgPos = targetImg.getAttribute('position');
                         let originalImgPosStr = originalImgPos.x + ' ' + originalImgPos.y + ' ' + originalImgPos.z;
-                        let posImgStr = originalImgPos.x+ ' ' + (Number(originalImgPos.y) + 200) + ' ' + (Number(originalImgPos.z) + 30);
+                        let posImgStr = globalData.imagePositionCache[idTemp];
                         targetImg.setAttribute('animation', 'property: position; from: ' + originalImgPosStr + '; to: '+ posImgStr +'; dur: 3000; easing: easeInOutSine')
                     }
                 }
@@ -408,9 +417,16 @@ ControlPanel.prototype = {
                         const idTemp = 'slice' + i
                         let targetImg = document.getElementById(idTemp);
                         let originalImgPos = targetImg.getAttribute('position');
-                        let originalImgPosStr = originalImgPos.x + ' ' + originalImgPos.y + ' ' + originalImgPos.z;
-                        let posImgStr = originalImgPos.x+ ' ' + (Number(originalImgPos.y) - 200) + ' ' + (Number(originalImgPos.z) - 30);
-                        targetImg.setAttribute('animation', 'property: position; from: ' + originalImgPosStr + '; to: '+ posImgStr +'; dur: 1000; easing: easeInOutSine')
+                        let originalImgPosStr = '';
+                        if (globalData.imagePositionCache[idTemp] !== undefined) {
+                            originalImgPosStr = globalData.imagePositionCache[idTemp];
+                        } else {
+                            originalImgPosStr = originalImgPos.x + ' ' + originalImgPos.y + ' ' + originalImgPos.z;
+                            globalData.imagePositionCache[idTemp] = originalImgPosStr;
+                        }
+                        let originalImgPosStrArray = originalImgPosStr.split(' ');
+                        let posImgStr = originalImgPosStrArray[0] + ' ' + (Number(originalImgPosStrArray[1]) - 200) + ' ' + (Number(originalImgPosStrArray[2]) - 30);
+                        targetImg.setAttribute('animation', 'property: position; from: ' + originalImgPosStr + '; to: ' + posImgStr + '; dur: 500; easing: easeInOutSine')
                     }
                 }
 
@@ -441,8 +457,8 @@ ControlPanel.prototype = {
                         let targetImg = document.getElementById(idTemp);
                         let originalImgPos = targetImg.getAttribute('position');
                         let originalImgPosStr = originalImgPos.x + ' ' + originalImgPos.y + ' ' + originalImgPos.z;
-                        let posImgStr = originalImgPos.x+ ' ' + (Number(originalImgPos.y) + 200) + ' ' + (Number(originalImgPos.z) + 30);
-                        targetImg.setAttribute('animation', 'property: position; from: ' + originalImgPosStr + '; to: '+ posImgStr +'; dur: 2000; easing: easeInOutSine')
+                        let posImgStr = globalData.imagePositionCache[idTemp];
+                        targetImg.setAttribute('animation', 'property: position; from: ' + originalImgPosStr + '; to: '+ posImgStr +'; dur: 3000; easing: easeInOutSine')
                     }
                 }
 

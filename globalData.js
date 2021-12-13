@@ -86,4 +86,6 @@ let globalData = {
     groupRenderPos: null,
     groupRenderColor: null,
 
+    stopMoveBtn: false,
+    imagePositionCache: {},
 };

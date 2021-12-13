@@ -141,7 +141,7 @@
         <div id="liveToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" data-delay="10000">
             <div class="d-flex">
                 <div class="toast-body">
-                    Flyover finished.
+                    Animation finished.
                 </div>
                 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
@@ -405,6 +405,10 @@
                         if (globalData.inputFile1Trans2 && globalData.cellData3D2 !== null) {
                             loader.uniteObjects(globalData.cellData3D2, globalData.cellData, globalData.curMarkerGene.Attribute)
                         }
+                    }
+
+                    if (target === 's4') {
+                        container.setAttribute('rotation', "0 -45 0");
                     }
 
                     document.getElementById('trajectory').setAttribute('visible', ''+globalData.showTrajectory);
