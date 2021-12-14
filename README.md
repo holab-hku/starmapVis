@@ -141,7 +141,3 @@ A summary of the control scheme for keyboard and voice control is included in th
 | click on toolbox (VR mode) | N\A | select |
 | reset toolbox (VR mode) | N\A | reset |
 | reset view (VR mode) | N\A | init |
-
-The control scheme for remote control is shown below.
-
-<a href="url"><img src="image/gamepad.png" align="left" alt="control scheme for remote control"></a>
