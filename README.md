@@ -1,5 +1,5 @@
-<a href="url"><img src="QRcodeAndLogo/StarmapVis.png" align="left" height="108" alt="starmap"></a>
-# starmapVis: A data story telling visualisation tool for single-cell data
+
+# StarmapVis: A data story telling visualisation tool for single-cell data
 Authors: Xiunan Fang, Shichao Ma, Yu Yao, Andrian Yang and Joshua W. K. Ho
 
 Contact: Joshua Ho (jwkho@hku.hk)
