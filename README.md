@@ -1,4 +1,4 @@
-<a href="url"><img src="QRcodeAndLogo/logo.png" align="left" height="108" alt="starmap"></a>
+<a href="url"><img src="QRcodeAndLogo/StarmapVis.png" align="left" height="108" alt="starmap"></a>
 # starmapVis: A data story telling visualisation tool for single-cell data
 Authors: Xiunan Fang, Shichao Ma, Yu Yao, Andrian Yang and Joshua W. K. Ho
 
@@ -7,7 +7,7 @@ Contact: Joshua Ho (jwkho@hku.hk)
 
 ## Synopsis
 
-<a href="https://holab-hku.github.io/starmapVR/"><img src="QRcodeAndLogo/QR_Code_StarMapVR.png" align="right" height="108" alt="starmap"></a>
+<a href="https://holab-hku.github.io/starmapVR/"><img src="QRcodeAndLogo//StarmapVis.png" align="right" height="108" alt="starmap"></a>
 StarmapVis enables an instance and interactive web visualisation for various single cell analysed results, including scatter plots with clustering information, connectivity network with trajectory and  cross-comparison among different coordinates. The clean and concise UI interface is designed for better user experience and also more suitable for scientific presentation. 
 
 starmap is a web-based VR-enabled tool which combines a 3D scatter plot with star plots (radar chart) to visualise hundreds of thousands of multivariate data points, such as single-cell expression data, imaging single cell data, spatial transcriptomic data and etc. starmap can be accessed from a desktop, laptop or a mobile device from the following link: [https://holab-hku.github.io/starmapVis/](https://holab-hku.github.io/starmapVis/), or the QR code. 
