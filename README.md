@@ -1,4 +1,3 @@
-
 # StarmapVis: A data story telling visualisation tool for single-cell data
 Authors: Xiunan Fang, Shichao Ma, Yu Yao, Andrian Yang and Joshua W. K. Ho
 

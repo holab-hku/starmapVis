@@ -382,7 +382,8 @@
                     img.setAttribute('id', 'slice'+(i+1));
                     img.setAttribute('height', '150');
                     img.setAttribute('width', '150');
-                    img.setAttribute('position', '75, 75, '+(customImgCList[i]*globalData.scaleUp - 5));
+
+                    img.setAttribute('position', '75, 75, '+(customImgCList[i] * globalData.scaleUp - 5));
                     img.setAttribute('rotation', '0 0 0');
 
                     container.appendChild(img);
@@ -397,7 +398,7 @@
                 $(document).ready(function() {
 
                     if (target === 'custom'){
-                        loader.renderPoints(globalData.cellData, false, 0, true);
+                        loader.renderPoints(globalData.cellData, true, 0, true);
                     }
 
                     if (globalData.inputFile1Trans && globalData.cellData3D !== null) {
@@ -514,7 +515,7 @@
                 if (img && imgC !== '') {
                     if (img.type === 'image/png') {
                         customImgList.push(img);
-                        customImgCList.push(imgC);
+                        customImgCList.push(parseInt(imgC));
                         globalData.numOfSlices = globalData.numOfSlices + 1;
                     }
                 }
