@@ -10,7 +10,7 @@ Contact: Joshua Ho (jwkho@hku.hk)
 StarmapVis enables interactive web-based visualisation for various single cell or spatial omic data, including three-dimensional scatter plots with cell type annotation, cellular developmental trajectory, mapping between spatial transcripomics and single cell omic data, and multi-sample comparison views. The intuitive user interface is designed to enhance user experience, especially for producing images or animation for scientific presentation. StarmapVis can be accessed from a desktop, laptop or a mobile device from the following link: [https://holab-hku.github.io/starmapVis/](https://holab-hku.github.io/starmapVis/), or the QR code. 
 ## Input data
 
-The upload page includes five options to let users upload different input files including 1. cell csv file, 2. trajectory csv file, 3. animation path information, 4. histology images (for spatial omic data) and 5. the transformed coordinates csv file. 
+The upload page includes five options to let users upload different input files including:
 
 1. The cell information csv file needs to contain a header row with the following column names – x, y, z and labels – corresponding to the 3D coordinates of points and the cell label (e.g. clusters, gene markers, pseudotime, etc.). 
 
