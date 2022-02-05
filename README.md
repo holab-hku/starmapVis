@@ -1,22 +1,21 @@
-# StarmapVis: A data story telling visualisation tool for single-cell data
+# StarmapVis: animated visual display of single cell and spatial omic data
 Authors: Xiunan Fang, Shichao Ma, Yu Yao, Andrian Yang and Joshua W. K. Ho
-
 Contact: Joshua Ho (jwkho@hku.hk)
 
 
 ## Synopsis
 
 <a href="https://holab-hku.github.io/starmapVR/"><img src="QRcodeAndLogo//StarmapVis.jpg" align="right" height="108" alt="starmap"></a>
-StarmapVis enables an instance and interactive web visualisation for various single cell analysed results, including scatter plots with clustering information, connectivity network with trajectory and  cross-comparison among different coordinates. The clean and concise UI interface is designed for better user experience and also more suitable for scientific presentation. StarmapVis can be accessed from a desktop, laptop or a mobile device from the following link: [https://holab-hku.github.io/starmapVis/](https://holab-hku.github.io/starmapVis/), or the QR code. 
+StarmapVis enables interactive web-based visualisation for various single cell or spatial omic data, including three-dimensional scatter plots with cell type annotation, cellular developmental trajectory, mapping between spatial transcripomics and single cell omic data, and multi-sample comparison views. The intuitive user interface is designed to enhance user experience, especially for producing images or animation for scientific presentation. StarmapVis can be accessed from a desktop, laptop or a mobile device from the following link: [https://holab-hku.github.io/starmapVis/](https://holab-hku.github.io/starmapVis/), or the QR code. 
 ## Input data
 
-The upload page includes five sections to let users upload different csv files and information including 1. cell csv file, 2. trajectory csv file, 3. animation path information, 4. histology images and 5. the transformed coordinates csv file. The cell information csv file needs to contain a header row with the following column names – x, y, z and labels – corresponding to the 3D coordinates of points and the cell label (e.g. clusters, gene markers, pseudotime, etc.). The trajectory information csv file contains the following column names – name, x, y, z, children and root – corresponding to the names and 3D coordinates of edges and the connectivity amongst these edges. The animation path information can be provided by inputting the list of names of edges separated by space in the corresponding section. The histology images can be uploaded by providing images in PNG format and specifying the coordinates of images in the image upload section. Finally, csv file which contains another set of coordinates of analysis can be provided in the last section if the user want to animate the transformation from 2D to 3D. Users can choose uploading a single cell csv file or a combination of several files and information to generate multiple kinds of visualization from a single-cell RNA-seq data to a narrative of spatial transcriptomic data.
+The upload page includes five options to let users upload different input files including 1. cell csv file, 2. trajectory csv file, 3. animation path information, 4. histology images (for spatial omic data) and 5. the transformed coordinates csv file. The cell information csv file needs to contain a header row with the following column names – x, y, z and labels – corresponding to the 3D coordinates of points and the cell label (e.g. clusters, gene markers, pseudotime, etc.). The trajectory information csv file contains the following column names – name, x, y, z, children and root – corresponding to the names and 3D coordinates of edges and the connectivity amongst these edges. The animation path information can be provided by inputting the list of names of edges separated by space in the corresponding section. The histology images can be uploaded by providing images in PNG format and specifying the coordinates of images in the image upload section. Finally, csv file which contains another set of coordinates of analysis can be provided in the last section if the user want to animate the transformation from 2D to 3D. Users can choose uploading a single cell csv file or a combination of several files and information to generate multiple kinds of visualization from a single-cell RNA-seq data to a narrative of spatial transcriptomic data.
 
 To see an example of input data, please see the sampleData folder which contains example datasets based on previously published single-cell RNA-seq data, flow cytometry data and spatial transcriptomic data.
 
-To easily visualize your data from single-cell RNA-seq data analysis platform, we provide the example scripts that can transform the Scanpy, Seurat, PAGA, Monocle3, Scaranoma results to the required input for StarmapVR.
+To easily visualize your data from other widely used single-cell analysis platforms, we provide the example scripts that can transform the Scanpy, Seurat, PAGA, Monocle3, Scaranoma results to the required input for StarmapVis.
 
-## Single-cell RNA-seq data visualisation from Scanpy
+## Scanpy
 
 ```sh
 def adataTostarmap(adata, cord, featureN, valuetoplot, result_path):
@@ -66,7 +65,7 @@ result_path = '~/write/pbmc3k_starmap.csv'
 adataTostarmap(adata, cord, featureN, valuetoplot, result_path)
 ```
 An example can be found in /Convert from Scanpy or Seurat/Convert from Scanpy.ipynb .
-## Single-cell RNA-seq data visualisation from Seurat
+## Seurat
 ```sh
 library(dplyr)
 library(Seurat)
@@ -90,7 +89,7 @@ pbmc_starmap <- bind_cols(pbmc_starmap, cluster)
 write.csv(pbmc_starmap,"filtered_gene_bc_matrices/output/pbmc_starmap.csv",row.names=F)
 ```
 An example can be found in /Convert from Scanpy or Seurat/Convert from Seurat.ipynb .
-## Visualisation of spatial transcriptomics data
+## Spatial transcriptomics data
 StarmapVR also accecpts spatial transcriptomics data processed by Scanpy.
 ```sh
 def adataTostarmap_spatial(adata, featureN, valuetoplot, result_path):
@@ -116,12 +115,12 @@ def adataTostarmap_spatial(adata, featureN, valuetoplot, result_path):
     adataStarmap.to_csv(result_path,index = None)
 ```
 Zip the csv file with the tissue image, StarmapVR can visualize the spatial trancriptomic data in spatial dimensions. An example can be found in /Convert from Scanpy or Seurat/Convert from Scanpy (spatial).ipynb .The csv file and zip file should add ".sql" before the file extention. The example data can be found in /sampleData/humanlymphnode_4096_data.sql.zip.
-## Visualisation of Image cytometry data
+## High-throghput imaging cytometry data
 For image cytometry data with actual cell image, user can zip their cell images(cell index as the image name) with the requiring csv file, the csv file and zip file should add ".qpi" before the file extention. An example file can be found in /sampleData/Multi-ATOM_105kimage_data.qpi.zip.
 
 ## Usage instructions
 
-starmap supports a number of input methods for interacting with the visualisation - keyboard, remote control and voice control. Note that voice control is available only in Google Chrome (desktop and mobile) as voice control utilises the SpeechRecognition API which is currently only supported by Chrome.
+starmapVis supports a number of input methods for interacting with the visualisation - keyboard, remote control and voice control. Note that voice control is available only in Google Chrome (desktop and mobile) as voice control utilises the SpeechRecognition API which is currently only supported by Chrome.
 
 A summary of the control scheme for keyboard and voice control is included in the table below.
 
