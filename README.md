@@ -1,5 +1,6 @@
 # StarmapVis: animated visual display of single cell and spatial omic data
 Authors: Xiunan Fang, Shichao Ma, Yu Yao, Andrian Yang and Joshua W. K. Ho
+
 Contact: Joshua Ho (jwkho@hku.hk)
 
 
@@ -9,7 +10,19 @@ Contact: Joshua Ho (jwkho@hku.hk)
 StarmapVis enables interactive web-based visualisation for various single cell or spatial omic data, including three-dimensional scatter plots with cell type annotation, cellular developmental trajectory, mapping between spatial transcripomics and single cell omic data, and multi-sample comparison views. The intuitive user interface is designed to enhance user experience, especially for producing images or animation for scientific presentation. StarmapVis can be accessed from a desktop, laptop or a mobile device from the following link: [https://holab-hku.github.io/starmapVis/](https://holab-hku.github.io/starmapVis/), or the QR code. 
 ## Input data
 
-The upload page includes five options to let users upload different input files including 1. cell csv file, 2. trajectory csv file, 3. animation path information, 4. histology images (for spatial omic data) and 5. the transformed coordinates csv file. The cell information csv file needs to contain a header row with the following column names – x, y, z and labels – corresponding to the 3D coordinates of points and the cell label (e.g. clusters, gene markers, pseudotime, etc.). The trajectory information csv file contains the following column names – name, x, y, z, children and root – corresponding to the names and 3D coordinates of edges and the connectivity amongst these edges. The animation path information can be provided by inputting the list of names of edges separated by space in the corresponding section. The histology images can be uploaded by providing images in PNG format and specifying the coordinates of images in the image upload section. Finally, csv file which contains another set of coordinates of analysis can be provided in the last section if the user want to animate the transformation from 2D to 3D. Users can choose uploading a single cell csv file or a combination of several files and information to generate multiple kinds of visualization from a single-cell RNA-seq data to a narrative of spatial transcriptomic data.
+The upload page includes five options to let users upload different input files including 1. cell csv file, 2. trajectory csv file, 3. animation path information, 4. histology images (for spatial omic data) and 5. the transformed coordinates csv file. 
+
+1. The cell information csv file needs to contain a header row with the following column names – x, y, z and labels – corresponding to the 3D coordinates of points and the cell label (e.g. clusters, gene markers, pseudotime, etc.). 
+
+2. The trajectory information csv file contains the following column names – name, x, y, z, children and root – corresponding to the names and 3D coordinates of edges and the connectivity amongst these edges. 
+
+3. The animation path information can be provided by inputting the list of names of edges separated by space in the corresponding section. 
+
+4. The histology images can be uploaded by providing images in PNG format and specifying the coordinates of images in the image upload section. 
+
+5. The csv file which contains another set of coordinates of analysis can be provided in the last section if the user want to animate the transformation from 2D to 3D. 
+
+Users can choose uploading a single cell csv file or a combination of several files and information to generate multiple kinds of visualization from a single-cell RNA-seq data to a narrative of spatial transcriptomic data.
 
 To see an example of input data, please see the sampleData folder which contains example datasets based on previously published single-cell RNA-seq data, flow cytometry data and spatial transcriptomic data.
 
