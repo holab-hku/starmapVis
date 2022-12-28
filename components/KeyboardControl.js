@@ -53,6 +53,31 @@ KeyboardControl.prototype = {
                 container.setAttribute('animation', "property: rotation; from: "+originStr+"; to: "+ rotate.x+' '+rotate.y+ ' '+rotate.z +"; dur: 150; easing: linear");
                 map = {};
             }
+
+            // Test for Rotation only
+            else if(map[88]) {
+                let camera = document.getElementById('theCamera');
+
+                let cameraPosition = camera.getAttribute("position");
+                let originPosition = new THREE.Vector3(0,0,0);
+                let dir = new THREE.Vector3();
+                dir.subVectors( originPosition, cameraPosition );//.normalize();
+                console.log(dir);
+                angle1 = Math.atan2(dir.y, dir.z);
+                angle2 = Math.atan2(dir.x, dir.z);
+
+                // TODO always look at 0,0,0
+                var newX = -(180 + THREE.Math.radToDeg(angle1));
+                var newY = 180 + THREE.Math.radToDeg(angle2);
+                console.log(newX, ' ||| ', newY);
+
+                let rotate = camera.getAttribute('rotation');
+                console.log(rotate);
+                const originStr = rotate.x + ' ' + rotate.y + ' ' + rotate.z;
+                camera.setAttribute('animation', "property: rotation; from: "+originStr+"; to: "+ newX +' '+ newY + ' '+ 0 +"; dur: 500; easing: easeInOutSine");
+                camera.components["look-controls"].pitchObject.rotation.x = THREE.Math.degToRad(newX);
+                camera.components["look-controls"].yawObject.rotation.y = THREE.Math.degToRad(newY);
+            }
         }
         this.onkeydownHandler = onkeydown.bind(this);
     },
