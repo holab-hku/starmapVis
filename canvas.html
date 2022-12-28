@@ -237,6 +237,45 @@
             location.href = "index.html";
         }
 
+        function MouseWheelHandler(e) {
+            // cross-browser wheel delta
+            var e = window.event || e; // old IE support
+
+            // grab the camera
+            var player = document.querySelector("a-camera")
+
+            // get the player rotation
+            var angle = player.getAttribute("rotation")
+            // calculate the angles
+            // the camera's theta == 0 is actually 90' in the clipspace
+            let theta = (angle.x * Math.PI / 180) + Math.PI / 2
+            let fi = angle.y * Math.PI / 180
+            let r = 2.5
+            // calculate the position shifts
+            let z = Math.sin(theta) * Math.cos(fi) * r
+            let x = Math.sin(theta) * Math.sin(fi) * r
+            let y = Math.cos(theta) * r
+
+            // update the position
+            var pos = player.getAttribute("position")
+
+            if (e.deltaY >= 0) {
+                console.log('Move forward by wheel scroll');
+                pos.x -= x;
+                pos.y -= y;
+                pos.z -= z;
+                player.setAttribute("position", pos);
+
+            } else {
+                console.log('Move backward by wheel scroll');
+                pos.x += x;
+                pos.y += y;
+                pos.z += z;
+                player.setAttribute("position", pos);
+            }
+            return false;
+        }
+
         function render () {
             spinner = document.getElementById('theSpinner');
             environment = document.createElement('a-entity');
@@ -358,12 +397,21 @@
                 })
 
 
-
                 let scene = document.createElement('a-scene');
                 scene.setAttribute('id', "scene");
                 scene.appendChild(environment);
                 scene.appendChild(container);
                 scene.appendChild(camera);
+
+                // add wheel scroll function
+                if (scene.addEventListener) {
+                    // IE9, Chrome, Safari, Opera
+                    scene.addEventListener("mousewheel", MouseWheelHandler, false);
+                    // Firefox
+                    scene.addEventListener("DOMMouseScroll", MouseWheelHandler, false);
+                }
+                // IE 6/7/8
+                else scene.attachEvent("onmousewheel", MouseWheelHandler);
 
                 let assets = document.createElement('a-assets');
                 scene.appendChild(assets);
