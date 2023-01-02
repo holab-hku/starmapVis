@@ -54,29 +54,18 @@ KeyboardControl.prototype = {
                 map = {};
             }
 
-            // Test for Rotation only
+            // Test for Rotation only: X
             else if(map[88]) {
-                let camera = document.getElementById('theCamera');
+                // let camera = document.getElementById('theCamera');
 
-                let cameraPosition = camera.getAttribute("position");
-                let originPosition = new THREE.Vector3(0,0,0);
-                let dir = new THREE.Vector3();
-                dir.subVectors( originPosition, cameraPosition );//.normalize();
-                console.log(dir);
-                angle1 = Math.atan2(dir.y, dir.z);
-                angle2 = Math.atan2(dir.x, dir.z);
+                let originalBox = document.createElement('a-box');
+                originalBox.setAttribute('id', 'target');
+                originalBox.setAttribute('visible', 'false');
+                document.getElementById('scene').appendChild(originalBox);
+                this.lookGreenBox();
 
-                // TODO always look at 0,0,0
-                var newX = -(180 + THREE.Math.radToDeg(angle1));
-                var newY = 180 + THREE.Math.radToDeg(angle2);
-                console.log(newX, ' ||| ', newY);
+                console.log(globalData);
 
-                let rotate = camera.getAttribute('rotation');
-                console.log(rotate);
-                const originStr = rotate.x + ' ' + rotate.y + ' ' + rotate.z;
-                camera.setAttribute('animation', "property: rotation; from: "+originStr+"; to: "+ newX +' '+ newY + ' '+ 0 +"; dur: 500; easing: easeInOutSine");
-                camera.components["look-controls"].pitchObject.rotation.x = THREE.Math.degToRad(newX);
-                camera.components["look-controls"].yawObject.rotation.y = THREE.Math.degToRad(newY);
             }
         }
         this.onkeydownHandler = onkeydown.bind(this);
@@ -88,6 +77,42 @@ KeyboardControl.prototype = {
         else{  document.removeEventListener( 'keydown', this.onkeydownHandler, false);
             console.log('keyboardDisabled');
         }
+    },
+
+    getVector : function (camera,targetObject) {
+        var entityPosition = new THREE.Vector3();
+        targetObject.object3D.getWorldPosition(entityPosition);
+
+        var cameraPosition = new THREE.Vector3();
+        camera.object3D.getWorldPosition(cameraPosition);
+
+        //Based on:  https://github.com/supermedium/superframe/blob/master/components/look-at/index.js
+        var vector = new THREE.Vector3(entityPosition.x, entityPosition.y, entityPosition.z);
+        vector.subVectors(cameraPosition, vector).add(cameraPosition);
+        return vector;
+    },
+
+    centerCamera : function (originStr,camera,vector) {
+        //Based on: https://codepen.io/wosevision/pen/JWRMyK
+        camera.object3D.lookAt(vector);
+        camera.object3D.updateMatrix();
+
+        //Based on: https://stackoverflow.com/questions/36809207/aframe-threejs-camera-manual-rotation
+        var rotation = camera.getAttribute('rotation');
+        camera.setAttribute('animation', "property: rotation; from: "+originStr+"; to: "+ rotation.x +' '+ rotation.y + ' '+ 0 +"; dur: 500; easing: easeInOutSine");
+        // console.log(rotation);
+        camera.components['look-controls'].pitchObject.rotation.x = THREE.Math.degToRad(rotation.x);
+        camera.components['look-controls'].yawObject.rotation.y = THREE.Math.degToRad(rotation.y);
+    },
+
+    lookGreenBox : function () {
+        var cameraEl = document.getElementById('theCamera');
+        let originalRotation = cameraEl.getAttribute('rotation');
+        const originStr = originalRotation.x + ' ' + originalRotation.y + ' ' + originalRotation.z;
+        cameraEl.setAttribute("look-controls", {enabled: false});
+        let pointTarget = this.getVector(cameraEl, document.getElementById('target'));
+        this.centerCamera(originStr, cameraEl, pointTarget);
+        cameraEl.setAttribute("look-controls", {enabled: true});
     }
 }
 

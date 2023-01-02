@@ -193,7 +193,7 @@
         const urlParams = new URLSearchParams(queryString);
         const target = urlParams.get('target');
 
-        let spinner, environment, sky, container, camera, cursor, axis, compass, loader, keyboard;
+        let spinner, environment, sky, container, camera, cursor, axis, compass, loader, keyboard, targetObj;
         let movementController, controlPanel, loader2, minimap, uploadF1, uploadF2, uploadModal, uploadF3;
 
         let customImgList = [];
@@ -284,6 +284,12 @@
 
             container = document.createElement('a-entity');
             container.setAttribute('position', '0 0 0');
+
+            targetObj = document.createElement('a-box');
+            targetObj.setAttribute('position', '0 0 0');
+            targetObj.setAttribute('visible', 'false');
+            targetObj.setAttribute('id', 'target');
+            container.appendChild(targetObj);
 
             camera = document.createElement('a-camera');
             camera.setAttribute('id', 'theCamera');
@@ -401,6 +407,12 @@
                 scene.setAttribute('id', "scene");
                 scene.appendChild(environment);
                 scene.appendChild(container);
+
+                // let cameraWrapper = document.createElement('a-box');
+                // let lookAtPos = new THREE.Vector3(0,0,0);
+                // cameraWrapper.appendChild(camera);
+                // cameraWrapper.setAttribute('look-at', lookAtPos);
+                // console.log(cameraWrapper);
                 scene.appendChild(camera);
 
                 // add wheel scroll function
