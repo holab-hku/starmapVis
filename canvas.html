@@ -169,6 +169,18 @@
         </div>
     </div>
 
+    <div class="d-flex justify-content-center align-items-center w-100" style="z-index: 5">
+        <div id="tipToast" class="toast border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false" style="background-color: white">
+            <div class="toast-header">
+                <strong class="me-auto">Tips</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" onclick="$('#tipToast').toast('hide');"></button>
+            </div>
+            <div class="toast-body">
+                Use [W][A][S][D] to move around in the 3D space and arrow keys to rotate the model.
+            </div>
+        </div>
+    </div>
+
 
 
 
@@ -277,6 +289,7 @@
         }
 
         function render () {
+
             spinner = document.getElementById('theSpinner');
             environment = document.createElement('a-entity');
             sky = document.createElement('a-sky');
@@ -478,6 +491,8 @@
                     // load the control panel
                     controlPanel = new ControlPanel();
                     controlPanel.init();
+
+                    $('#tipToast').toast('show');
 
 
                 });
