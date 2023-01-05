@@ -169,14 +169,13 @@
         </div>
     </div>
 
-    <div class="d-flex justify-content-center align-items-center w-100" style="z-index: 5">
-        <div id="tipToast" class="toast border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false" style="background-color: white">
-            <div class="toast-header">
-                <strong class="me-auto">Tips</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" onclick="$('#tipToast').toast('hide');"></button>
-            </div>
-            <div class="toast-body">
-                Use [W][A][S][D] to move around in the 3D space and arrow keys to rotate the model.
+    <div class="position-fixed top-0 left-0 p-3" style="z-index: 5">
+        <div id="tipToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" data-delay="10000">
+            <div class="d-flex">
+                <div class="toast-body">
+                    Use [W][A][S][D] to move around in the 3D space and arrow keys to rotate the model.
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
         </div>
     </div>
@@ -628,6 +627,10 @@
 
         function backIndex() {
             location.href = "index.html";
+        }
+
+        function closeTip() {
+            console.log('Close button is pressed');
         }
 
         $(document).ready(function () {
