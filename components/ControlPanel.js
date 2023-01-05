@@ -94,12 +94,22 @@ ControlPanel.prototype = {
 
         // let geneMarkerFolder = this.gui.addFolder('MarkerGene', '#FFFFFF');
 
+        let searchAttribute = {
+            searchAttribute : function () {
+                console.log('search attribute pop-up window');
+                $('#theModal').modal('toggle');
+            }
+        };
+
         const changeGeneMarker = this.gui.add( globalData.curMarkerGene, 'Attribute' ).options( globalData.markerGeneList );
 
 
+
+        this.gui.add(searchAttribute, 'searchAttribute').name(globalData.curMarkerGene.Attribute + " [Click to change] ");
+
         changeGeneMarker.onChange( function () {
 
-            console.log('gene marker: ', globalData.curMarkerGene);
+            console.log('gene marker: ', globalData.curMarkerGene.Attribute);
             document.getElementById('theSpinner').style.height = '100%';
             document.getElementById('theSpinner').style.visibility = 'visible';
 
