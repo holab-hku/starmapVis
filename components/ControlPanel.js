@@ -3,27 +3,8 @@ let ControlPanel = function( ) {
 }
 
 ControlPanel.prototype = {
-    init: function ( ) {
 
-        // if (globalData.inputFile1Trans === true || globalData.numOfSlices > 0) {
-        //     const changeVisMode = this.gui.add( globalData.curVisMode, 'VisualisationMode' ).options( globalData.visModeList );
-        //
-        //     changeVisMode.onChange( function () {
-        //         console.log('current visualisation mode: ', globalData.curVisMode);
-        //         document.getElementById('theSpinner').style.height = '100%';
-        //         document.getElementById('theSpinner').style.visibility = 'visible';
-        //
-        //         setTimeout(function (){
-        //             if (globalData.curVisMode.VisualisationMode === 'High-Performance') {
-        //                 loader.renderPoints(globalData.cellData, true, 1)
-        //             } else {
-        //                 loader.renderPoints(globalData.cellData, true, 0)
-        //             }
-        //         }, 1);
-        //
-        //     } );
-        //
-        // }
+    init: function ( ) {
 
         this.gui.add(globalData, 'showData' ).name( "Data" ).listen( ).onChange( function ( ) {
             console.log('show Data: ', globalData.showData);
@@ -94,12 +75,26 @@ ControlPanel.prototype = {
 
         // let geneMarkerFolder = this.gui.addFolder('MarkerGene', '#FFFFFF');
 
-        const changeGeneMarker = this.gui.add( globalData.curMarkerGene, 'Attribute' ).options( globalData.markerGeneList );
+        let searchAttribute = {
+            searchAttribute : function () {
+                console.log('search attribute pop-up window');
+                $('#theSearchModal').modal('toggle');
+                keyboard.enableKeyboardControl(false);
+                autocomplete(document.getElementById("myInput"), globalData.markerGeneList);
+            }
+        };
 
+        let attributeFolder = this.gui.addFolder('Attribute', '#FFFFFF');
+
+        const changeGeneMarker = attributeFolder.add( globalData.curMarkerGene, 'Attribute' ).options( globalData.markerGeneList );
+
+        attributeFolder.add(searchAttribute, 'searchAttribute').name("Search");
+
+        attributeFolder.open();
 
         changeGeneMarker.onChange( function () {
 
-            console.log('gene marker: ', globalData.curMarkerGene);
+            console.log('gene marker: ', globalData.curMarkerGene.Attribute);
             document.getElementById('theSpinner').style.height = '100%';
             document.getElementById('theSpinner').style.visibility = 'visible';
 
@@ -173,6 +168,29 @@ ControlPanel.prototype = {
                 globalData.stopMoveBtn = true;
             },
         };
+
+        if (globalData.numOfSlices === 0) {
+            let stare = "30 30 30"
+            if (target === 's2') {
+                stare = "75 75 75"
+            }
+            let i = 0;
+            let lap =  {
+                lap: function(){
+                    console.log(globalData.lapPath[target].length);
+                    if (i >= globalData.lapPath[target].length - 1) {
+                        i = 0;
+                    } else {
+                        i++;
+                    }
+                    let d = globalData.lapPath[target][i].split(" ");
+                    let destination = new THREE.Vector3(d[0], d[1], d[2]);
+                    movementController.move(camera, container, destination, false, stare, 0, 1200, 1000);
+                }
+            };
+            this.gui.add(lap, 'lap').name("Lap");
+        };
+
         if (globalData.inputPath) {
             let defaultPathFolder = this.gui.addFolder('Animation', '#FFFFFF');
             Object.keys(globalData.curAnimationPath).forEach(function(key) {
@@ -473,6 +491,61 @@ ControlPanel.prototype = {
 
 
 
+        // TODO from current point to the
+        function transform_slider(dataObj, status, slider_pos) {
+            let percentage = slider_pos / 100;
+            globalData.cellData.forEach(element => {
+                let origin = document.getElementById(element[globalData.idStr]);
+                let originalPos = origin.getAttribute('position');
+                let originalPosStr = originalPos.x + ' ' + originalPos.y + ' ' + originalPos.z;
+                loader.getObjectFromID(dataObj, element[globalData.idStr], globalData.idStr).then(
+                    target => {
+                        let targetStr = target.x*globalData.scaleUp*percentage + originalPos.x*(1-percentage)
+                            + ' '
+                            + target.y*globalData.scaleUp*percentage + originalPos.y*(1-percentage)
+                            + ' '
+                            + target.z*globalData.scaleUp*percentage + originalPos.z*(1-percentage);
+                        origin.setAttribute('animation', 'property: position; from: ' + originalPosStr + '; to: '+ targetStr +'; dur: 500; easing: linear');
+                    },
+                    reject => {
+                        let targetStr = originalPos.x + ' ' + (Number(originalPos.y) - 200) + ' ' + (Number(originalPos.z) - 30);
+                        origin.setAttribute('animation', 'property: position; from: ' + originalPosStr + '; to: '+ targetStr +'; dur: 1000; easing: easeInOutSine');
+                    }
+                )
+            });
+            if (globalData.inputSlice) {
+                for (let i = 1; i < globalData.numOfSlices+1; i++) {
+                    const idTemp = 'slice' + i
+                    let targetImg = document.getElementById(idTemp);
+                    let originalImgPos = targetImg.getAttribute('position');
+                    let originalImgPosStr = '';
+                    if (globalData.imagePositionCache[idTemp] !== undefined) {
+                        originalImgPosStr = globalData.imagePositionCache[idTemp];
+                    } else {
+                        originalImgPosStr = originalImgPos.x + ' ' + originalImgPos.y + ' ' + originalImgPos.z;
+                        globalData.imagePositionCache[idTemp] = originalImgPosStr;
+                    }
+                    let originalImgPosStrArray = originalImgPosStr.split(' ');
+                    let posImgStr = originalImgPosStrArray[0] + ' ' + (Number(originalImgPosStrArray[1]) - 200*percentage) + ' ' + (Number(originalImgPosStrArray[2]) - 30*percentage);
+                    targetImg.setAttribute('animation', 'property: position; from: ' + originalImgPosStr + '; to: ' + posImgStr + '; dur: 500; easing: linear')
+                }
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if (globalData.inputFile1Trans) {
             let transFolder = this.gui.addFolder('Transformation', '#FFFFFF');
 
@@ -495,8 +568,25 @@ ControlPanel.prototype = {
 
 
             transFolder.add(liftUp, 'liftUp1').name("Transform_1");
+            let animation = function() {
+                this.slider = 0;
+                globalData.sliderInt = 0;
+            };
+            let ani = new animation();
+            transFolder.add(ani, 'slider', 0, 100).listen( ).onChange( function ( ) {
+                console.log(Math.round(ani.slider));
+                transform_slider(globalData.cellData3D, 1, ani.slider);
+            });
+
             if (globalData.inputFile1Trans2 && target !== 's3') {
                 transFolder.add(liftUp,'liftUp2').name("Transform_2");
+                let animation2 = function() {
+                    this.slider = 0;
+                };
+                let ani = new animation2();
+                transFolder.add(ani, 'slider', 0, 100).listen( ).onChange( function ( ) {
+                    console.log(ani.slider);
+                });
             }
 
 

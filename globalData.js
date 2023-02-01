@@ -43,6 +43,10 @@ let globalData = {
             Path_1: 'Slice1 Slice2 Slice3 Slice4 Slice1 Slice2 Slice3 Slice4',
         }
     },
+    lapPath: {
+        s1: ['0 0 250', '250 0 250', '250 0 0', '250 0 -250', '0 0 -250', '-250 0 -250', '-250 0 0', '-250 0 250'],
+        s2: ['0 75 250', '200 75 250', '200 75 0', '200 75 -250', '0 75 -250', '-100 75 -250', '-100 75 0', '-100 75 250'],
+    },
     mcCounter: 0,
     mcLenOfPathList: 0,
     onMovement: false,
