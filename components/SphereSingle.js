@@ -30,7 +30,7 @@ AFRAME.registerComponent('spheresingle', {
         }
 
         this.material = new THREE.PointsMaterial({
-            size: size,
+            size: 40,
             vertexColors: THREE.VertexColors,
             alphaTest: 0.5,
             transparent: true,

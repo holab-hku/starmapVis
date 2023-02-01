@@ -12,6 +12,8 @@ let globalData = {
     showCompass: true,
     showTrajectory: true,
     showColormap: true,
+    showLinkage: false,
+    showLinkage2: false,
     hasInputPath: true,
     visModeList: ['Default', 'High-Quality'],
     curVisMode: { Mode: 'Default' },
@@ -23,6 +25,8 @@ let globalData = {
     // for the movement
     destinationCheckpoint: {},
     doTheMovement: false,
+
+    justLiftUp: false,
 
     curAnimationPath: {},
     sampleAnimationPath: {

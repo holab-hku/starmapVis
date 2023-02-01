@@ -206,66 +206,34 @@ Loader.prototype = {
                 if (Math.round(colorIndex) > (numOfColorCode-1)) {colorIndex = (numOfColorCode-1)}
                 let colorStr = globalData.curUsingColormap[Math.round(colorIndex)];
 
-                // let color = new THREE.Color(Number('0x'+colorStr.slice(-6)));
-                let sphereSingle = document.createElement('a-entity');
-                sphereSingle.setAttribute('id', element[globalData.idStr]);
-
+                let aSphere = document.createElement('a-sphere');
+                aSphere.setAttribute('id', element[globalData.idStr]);
                 if (colorStr) {
-                    color = new THREE.Color(Number('0x'+colorStr.slice(-6)));
+                    aSphere.setAttribute('color', colorStr);
+                    aSphere.setAttribute('roughness', '0.8');
                     if (isStr) {
                         if (element[curMarkerGene] === 'None') {
-                            sphereSingle.setAttribute('visible', 'false');
+                            aSphere.setAttribute('visible', 'false');
                         } else {
                             globalData.categoricalColorDict[element[curMarkerGene]] = colorStr;
                         }
                     }
+                    aSphere.setAttribute('radius', '0.7');
                 } else {
-                    sphereSingle.setAttribute('visible', 'false');
+                    aSphere.setAttribute('visible', 'false');
                 }
-
                 if (globalData.curStatus === 1) {
                     loader.getObjectFromID(globalData.cellData3D, element[globalData.idStr], globalData.idStr).then(target => {
-                        sphereSingle.setAttribute('spheresingle', {position: [target.x*globalData.scaleUp, target.y*globalData.scaleUp, target.z*globalData.scaleUp], color:[color.r, color.g, color.b]});
+                        aSphere.setAttribute('position', target.x*globalData.scaleUp + ' ' + target.y*globalData.scaleUp + ' ' + target.z*globalData.scaleUp);
                     }, reject => {console.log(reject)})
                 } else if (globalData.curStatus === 2) {
                     loader.getObjectFromID(globalData.cellData3D2, element[globalData.idStr], globalData.idStr).then(target => {
-                        sphereSingle.setAttribute('spheresingle', {position: [target.x*globalData.scaleUp, target.y*globalData.scaleUp, target.z*globalData.scaleUp], color:[color.r, color.g, color.b]});
+                        aSphere.setAttribute('position', target.x*globalData.scaleUp + ' ' + target.y*globalData.scaleUp + ' ' + target.z*globalData.scaleUp);
                     }, reject => {console.log(reject)})
                 } else {
-                    sphereSingle.setAttribute('spheresingle', {position: [element.x*globalData.scaleUp, element.y*globalData.scaleUp, element.z*globalData.scaleUp], color:[color.r, color.g, color.b]});
+                    aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + element.y*globalData.scaleUp + ' ' + element.z*globalData.scaleUp);
                 }
-
-                this.innerContainer.appendChild(sphereSingle);
-
-
-                // let aSphere = document.createElement('a-sphere');
-                // aSphere.setAttribute('id', element[globalData.idStr]);
-                // if (colorStr) {
-                //     aSphere.setAttribute('color', colorStr);
-                //     aSphere.setAttribute('roughness', '0.8');
-                //     if (isStr) {
-                //         if (element[curMarkerGene] === 'None') {
-                //             aSphere.setAttribute('visible', 'false');
-                //         } else {
-                //             globalData.categoricalColorDict[element[curMarkerGene]] = colorStr;
-                //         }
-                //     }
-                //     aSphere.setAttribute('radius', '0.7');
-                // } else {
-                //     aSphere.setAttribute('visible', 'false');
-                // }
-                // if (globalData.curStatus === 1) {
-                //     loader.getObjectFromID(globalData.cellData3D, element[globalData.idStr], globalData.idStr).then(target => {
-                //         aSphere.setAttribute('position', target.x*globalData.scaleUp + ' ' + target.y*globalData.scaleUp + ' ' + target.z*globalData.scaleUp);
-                //     }, reject => {console.log(reject)})
-                // } else if (globalData.curStatus === 2) {
-                //     loader.getObjectFromID(globalData.cellData3D2, element[globalData.idStr], globalData.idStr).then(target => {
-                //         aSphere.setAttribute('position', target.x*globalData.scaleUp + ' ' + target.y*globalData.scaleUp + ' ' + target.z*globalData.scaleUp);
-                //     }, reject => {console.log(reject)})
-                // } else {
-                //     aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + element.y*globalData.scaleUp + ' ' + element.z*globalData.scaleUp);
-                // }
-                // this.innerContainer.appendChild(aSphere);
+                this.innerContainer.appendChild(aSphere);
 
 
             });
