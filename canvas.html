@@ -618,9 +618,11 @@
 
                 $(document).ready(function() {
 
-                    if (target === 'custom'){
-                        loader.renderPoints(globalData.cellData, true, 0, true);
-                    }
+                    // todo
+                    // if (target === 'custom' || target === 's1' || target === 's2'){
+                    //     loader.renderPoints(globalData.cellData, true, 0, true);
+                    // }
+                    loader.renderPoints(globalData.cellData, true, 0, true);
 
                     if (globalData.inputFile1Trans && globalData.cellData3D !== null) {
                         loader.uniteObjects(globalData.cellData3D, globalData.cellData, globalData.curMarkerGene.Attribute)
@@ -835,6 +837,9 @@
         });
 
 
+        document.querySelector('a-scene').addEventListener('enter-vr', function () {
+            console.log("ENTERED VR");
+        });
 
     </script>
 
