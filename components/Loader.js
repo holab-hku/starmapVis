@@ -89,12 +89,6 @@ Loader.prototype = {
         })
     },
 
-
-
-
-
-
-
     renderPoints: function( data, flag = false , visMode = 0, changeMG = false){
 
         let numOfColorCode = globalData.colormapInfo[globalData.curColormap.Colourmap].num;
@@ -211,6 +205,7 @@ Loader.prototype = {
                 }
                 if (Math.round(colorIndex) > (numOfColorCode-1)) {colorIndex = (numOfColorCode-1)}
                 let colorStr = globalData.curUsingColormap[Math.round(colorIndex)];
+
                 let aSphere = document.createElement('a-sphere');
                 aSphere.setAttribute('id', element[globalData.idStr]);
                 if (colorStr) {
@@ -227,7 +222,6 @@ Loader.prototype = {
                 } else {
                     aSphere.setAttribute('visible', 'false');
                 }
-
                 if (globalData.curStatus === 1) {
                     loader.getObjectFromID(globalData.cellData3D, element[globalData.idStr], globalData.idStr).then(target => {
                         aSphere.setAttribute('position', target.x*globalData.scaleUp + ' ' + target.y*globalData.scaleUp + ' ' + target.z*globalData.scaleUp);
@@ -239,8 +233,9 @@ Loader.prototype = {
                 } else {
                     aSphere.setAttribute('position', element.x*globalData.scaleUp + ' ' + element.y*globalData.scaleUp + ' ' + element.z*globalData.scaleUp);
                 }
-
                 this.innerContainer.appendChild(aSphere);
+
+
             });
 
 
@@ -261,9 +256,7 @@ Loader.prototype = {
             data.forEach(element => {
                 let colorIndex;
                 if (isStr) {
-
                     colorIndex = strToNumDict[element[curMarkerGene]] * featureNorm;
-
                 } else {
                     if (featureMin < 0) {
                         colorIndex = (element[curMarkerGene] - featureMin) * featureNorm;
@@ -274,22 +267,16 @@ Loader.prototype = {
                 if (Math.round(colorIndex) > (numOfColorCode-1)) {colorIndex = (numOfColorCode-1)}
                 let colorStr = globalData.curUsingColormap[Math.round(colorIndex)];
                 if (colorStr) {
-
                     let color = new THREE.Color(Number('0x'+colorStr.slice(-6)));
-
                     if (isStr) {
-
                         globalData.categoricalColorDict[element[curMarkerGene]] = colorStr;
-
                         if (!colors.hasOwnProperty(element[curMarkerGene])) {
                             colors[element[curMarkerGene]] = [];
                         }
                         colors[element[curMarkerGene]].push(color.r, color.g, color.b);
-
                     } else {
                         colors.push(color.r, color.g, color.b);
                     }
-
                     if (globalData.curStatus === 1) {
                         loader.getObjectFromID(globalData.cellData3D, element[globalData.idStr], globalData.idStr).then(object => {
                             if (isStr) {
@@ -300,7 +287,6 @@ Loader.prototype = {
                             } else {
                                 positions.push(object.x*globalData.scaleUp, object.y*globalData.scaleUp, object.z*globalData.scaleUp);
                             }
-
                         }, reject => {console.log(reject)})
                     } else if (globalData.curStatus === 2) {
                         loader.getObjectFromID(globalData.cellData3D2, element[globalData.idStr], globalData.idStr).then(object => {

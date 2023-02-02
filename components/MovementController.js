@@ -10,7 +10,8 @@ let MovementController = function( ) {
 
 MovementController.prototype = {
 
-    move: function( camera, container, destination ){
+    // TODO if there are images => another attribute
+    move: function( camera, container, destination, lookAtDestination = true, stare = '0 0 0', moveTO = 500, rotateTO = 0, moveDur = this.positionAnimationDur ){
         console.log('move to: ', destination);
         // Rotate the container to 0 0 0
         let modelRotation = container.getAttribute('rotation');
@@ -23,7 +24,18 @@ MovementController.prototype = {
         let originalPosStr = originalPos.x + ' ' + originalPos.y + ' ' + originalPos.z;
         let posStr = destination.x+ ' ' + destination.y + ' ' + destination.z;
 
-        camera.setAttribute('animation', 'property: position; from: ' + originalPosStr + '; to: '+ posStr +'; dur: '+this.positionAnimationDur+'; easing: easeInOutSine');
+
+        if (lookAtDestination) {
+            document.getElementById('target').setAttribute('position', posStr);
+        } else {
+            document.getElementById('target').setAttribute('position', stare);
+        }
+
+
+
+
+        setTimeout(() => {camera.setAttribute('animation', 'property: position; from: ' + originalPosStr + '; to: '+ posStr +'; dur: '+moveDur+'; easing: easeInOutSine');}, moveTO);
+        setTimeout(() => {keyboard.lookGreenBox();}, rotateTO);
 
     },
 
@@ -36,9 +48,9 @@ MovementController.prototype = {
         let that = this
 
         if (target === 's4') {
-            that.move(camera, container, {x:100,y:250,z:550});
+            that.move(camera, container, {x:100,y:250,z:550}, false);
         } else {
-            that.move(camera, container, {x:0,y:100,z:200});
+            that.move(camera, container, {x:0,y:100,z:200}, false);
         }
 
 
