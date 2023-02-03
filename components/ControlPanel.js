@@ -3,27 +3,8 @@ let ControlPanel = function( ) {
 }
 
 ControlPanel.prototype = {
-    init: function ( ) {
 
-        // if (globalData.inputFile1Trans === true || globalData.numOfSlices > 0) {
-        //     const changeVisMode = this.gui.add( globalData.curVisMode, 'VisualisationMode' ).options( globalData.visModeList );
-        //
-        //     changeVisMode.onChange( function () {
-        //         console.log('current visualisation mode: ', globalData.curVisMode);
-        //         document.getElementById('theSpinner').style.height = '100%';
-        //         document.getElementById('theSpinner').style.visibility = 'visible';
-        //
-        //         setTimeout(function (){
-        //             if (globalData.curVisMode.VisualisationMode === 'High-Performance') {
-        //                 loader.renderPoints(globalData.cellData, true, 1)
-        //             } else {
-        //                 loader.renderPoints(globalData.cellData, true, 0)
-        //             }
-        //         }, 1);
-        //
-        //     } );
-        //
-        // }
+    init: function ( ) {
 
         this.gui.add(globalData, 'showData' ).name( "Data" ).listen( ).onChange( function ( ) {
             console.log('show Data: ', globalData.showData);
@@ -94,12 +75,26 @@ ControlPanel.prototype = {
 
         // let geneMarkerFolder = this.gui.addFolder('MarkerGene', '#FFFFFF');
 
-        const changeGeneMarker = this.gui.add( globalData.curMarkerGene, 'Attribute' ).options( globalData.markerGeneList );
+        let searchAttribute = {
+            searchAttribute : function () {
+                console.log('search attribute pop-up window');
+                $('#theSearchModal').modal('toggle');
+                keyboard.enableKeyboardControl(false);
+                autocomplete(document.getElementById("myInput"), globalData.markerGeneList);
+            }
+        };
 
+        let attributeFolder = this.gui.addFolder('Attribute', '#FFFFFF');
+
+        const changeGeneMarker = attributeFolder.add( globalData.curMarkerGene, 'Attribute' ).options( globalData.markerGeneList );
+
+        attributeFolder.add(searchAttribute, 'searchAttribute').name("Search");
+
+        attributeFolder.open();
 
         changeGeneMarker.onChange( function () {
 
-            console.log('gene marker: ', globalData.curMarkerGene);
+            console.log('gene marker: ', globalData.curMarkerGene.Attribute);
             document.getElementById('theSpinner').style.height = '100%';
             document.getElementById('theSpinner').style.visibility = 'visible';
 
@@ -116,7 +111,7 @@ ControlPanel.prototype = {
         // geneMarkerFolder.open();
 
 
-        if (globalData.inputFile2) {
+        if (globalData.inputFile2 && target !== 's3' && target !== 's4') {
             let trajectoryFolder = this.gui.addFolder('Trajectory', '#FFFFFF');
             trajectoryFolder.add(globalData, 'showTrajectory' ).name( "Trajectory" ).listen( ).onChange( function ( ) {
                 console.log('show the trajectory: ', globalData.showTrajectory);
@@ -173,7 +168,30 @@ ControlPanel.prototype = {
                 globalData.stopMoveBtn = true;
             },
         };
-        if (globalData.inputPath) {
+
+        if (globalData.numOfSlices === 0) {
+            let stare = "30 30 30"
+            if (target === 's2') {
+                stare = "75 75 75"
+            }
+            let i = 0;
+            let lap =  {
+                lap: function(){
+                    console.log(globalData.lapPath[target].length);
+                    if (i >= globalData.lapPath[target].length - 1) {
+                        i = 0;
+                    } else {
+                        i++;
+                    }
+                    let d = globalData.lapPath[target][i].split(" ");
+                    let destination = new THREE.Vector3(d[0], d[1], d[2]);
+                    movementController.move(camera, container, destination, false, stare, 0, 1200, 1000);
+                }
+            };
+            this.gui.add(lap, 'lap').name("Lap");
+        };
+
+        if (globalData.inputPath && target !== 's3' && target !== 's4') {
             let defaultPathFolder = this.gui.addFolder('Animation', '#FFFFFF');
             Object.keys(globalData.curAnimationPath).forEach(function(key) {
                 defaultPathFolder.add(animationWithPath, 'animationWithPath').name( key ).listen( ).onChange( function ( ) {
@@ -263,6 +281,9 @@ ControlPanel.prototype = {
                     }
                 }
 
+                // TODO add history trajectory
+
+
             },
 
             liftUp2: function () {
@@ -319,23 +340,23 @@ ControlPanel.prototype = {
                     createjs.Tween.get(target.scale).to({x: 1, y: 1, z: 1}, 1000);
                 }
 
-                if (globalData.inputSlice) {
-                    for (let i = 1; i < globalData.numOfSlices + 1; i++) {
-                        const idTemp = 'slice' + i
-                        let targetImg = document.getElementById(idTemp);
-                        let originalImgPos = targetImg.getAttribute('position');
-                        let originalImgPosStr = '';
-                        if (globalData.imagePositionCache[idTemp] !== undefined) {
-                            originalImgPosStr = globalData.imagePositionCache[idTemp];
-                        } else {
-                            originalImgPosStr = originalImgPos.x + ' ' + originalImgPos.y + ' ' + originalImgPos.z;
-                            globalData.imagePositionCache[idTemp] = originalImgPosStr;
-                        }
-                        let originalImgPosStrArray = originalImgPosStr.split(' ');
-                        let posImgStr = originalImgPosStrArray[0] + ' ' + (Number(originalImgPosStrArray[1]) - 200) + ' ' + (Number(originalImgPosStrArray[2]) - 30);
-                        targetImg.setAttribute('animation', 'property: position; from: ' + originalImgPosStr + '; to: ' + posImgStr + '; dur: 500; easing: easeInOutSine')
-                    }
-                }
+                // if (globalData.inputSlice) {
+                //     for (let i = 1; i < globalData.numOfSlices + 1; i++) {
+                //         const idTemp = 'slice' + i
+                //         let targetImg = document.getElementById(idTemp);
+                //         let originalImgPos = targetImg.getAttribute('position');
+                //         let originalImgPosStr = '';
+                //         if (globalData.imagePositionCache[idTemp] !== undefined) {
+                //             originalImgPosStr = globalData.imagePositionCache[idTemp];
+                //         } else {
+                //             originalImgPosStr = originalImgPos.x + ' ' + originalImgPos.y + ' ' + originalImgPos.z;
+                //             globalData.imagePositionCache[idTemp] = originalImgPosStr;
+                //         }
+                //         let originalImgPosStrArray = originalImgPosStr.split(' ');
+                //         let posImgStr = originalImgPosStrArray[0] + ' ' + (Number(originalImgPosStrArray[1]) - 200) + ' ' + (Number(originalImgPosStrArray[2]) - 30);
+                //         targetImg.setAttribute('animation', 'property: position; from: ' + originalImgPosStr + '; to: ' + posImgStr + '; dur: 500; easing: easeInOutSine')
+                //     }
+                // }
 
                 if (status === 1) {
                     globalData.curStatus = 1;
@@ -345,6 +366,11 @@ ControlPanel.prototype = {
 
             } else {
                 console.log('From 3D to 2D');
+                if (document.getElementById('lineConnection') != null) {
+                    container.removeChild(document.getElementById('lineConnection'));
+                }
+                globalData.showLinkage = false;
+
                 globalData.startFrom2D = true;
 
                 let target = document.getElementById('cellData').object3D;
@@ -375,16 +401,16 @@ ControlPanel.prototype = {
                     createjs.Tween.get(target.scale).to({x: 1, y: 1, z: 1}, 1000);
                 }
 
-                if (globalData.inputSlice) {
-                    for (let i = 1; i < globalData.numOfSlices+1; i++) {
-                        const idTemp = 'slice' + i
-                        let targetImg = document.getElementById(idTemp);
-                        let originalImgPos = targetImg.getAttribute('position');
-                        let originalImgPosStr = originalImgPos.x + ' ' + originalImgPos.y + ' ' + originalImgPos.z;
-                        let posImgStr = globalData.imagePositionCache[idTemp];
-                        targetImg.setAttribute('animation', 'property: position; from: ' + originalImgPosStr + '; to: '+ posImgStr +'; dur: 3000; easing: easeInOutSine')
-                    }
-                }
+                // if (globalData.inputSlice) {
+                //     for (let i = 1; i < globalData.numOfSlices+1; i++) {
+                //         const idTemp = 'slice' + i
+                //         let targetImg = document.getElementById(idTemp);
+                //         let originalImgPos = targetImg.getAttribute('position');
+                //         let originalImgPosStr = originalImgPos.x + ' ' + originalImgPos.y + ' ' + originalImgPos.z;
+                //         let posImgStr = globalData.imagePositionCache[idTemp];
+                //         targetImg.setAttribute('animation', 'property: position; from: ' + originalImgPosStr + '; to: '+ posImgStr +'; dur: 3000; easing: easeInOutSine')
+                //     }
+                // }
 
                 globalData.curStatus = 0;
 
@@ -412,23 +438,7 @@ ControlPanel.prototype = {
                         }
                     )
                 });
-                if (globalData.inputSlice) {
-                    for (let i = 1; i < globalData.numOfSlices+1; i++) {
-                        const idTemp = 'slice' + i
-                        let targetImg = document.getElementById(idTemp);
-                        let originalImgPos = targetImg.getAttribute('position');
-                        let originalImgPosStr = '';
-                        if (globalData.imagePositionCache[idTemp] !== undefined) {
-                            originalImgPosStr = globalData.imagePositionCache[idTemp];
-                        } else {
-                            originalImgPosStr = originalImgPos.x + ' ' + originalImgPos.y + ' ' + originalImgPos.z;
-                            globalData.imagePositionCache[idTemp] = originalImgPosStr;
-                        }
-                        let originalImgPosStrArray = originalImgPosStr.split(' ');
-                        let posImgStr = originalImgPosStrArray[0] + ' ' + (Number(originalImgPosStrArray[1]) - 200) + ' ' + (Number(originalImgPosStrArray[2]) - 30);
-                        targetImg.setAttribute('animation', 'property: position; from: ' + originalImgPosStr + '; to: ' + posImgStr + '; dur: 500; easing: easeInOutSine')
-                    }
-                }
+
 
                 if (status === 1) {
                     globalData.curStatus = 1;
@@ -439,6 +449,11 @@ ControlPanel.prototype = {
 
             } else {
                 console.log('From 3D to 2D');
+                if (document.getElementById('lineConnection') != null) {
+                    container.removeChild(document.getElementById('lineConnection'));
+                }
+                globalData.showLinkage = false;
+
                 globalData.startFrom2D = true;
                 globalData.cellData.forEach(element => {
                     let origin = document.getElementById(element[globalData.idStr]);
@@ -451,16 +466,6 @@ ControlPanel.prototype = {
                         }
                     )
                 });
-                if (globalData.inputSlice) {
-                    for (let i = 1; i < globalData.numOfSlices+1; i++) {
-                        const idTemp = 'slice' + i
-                        let targetImg = document.getElementById(idTemp);
-                        let originalImgPos = targetImg.getAttribute('position');
-                        let originalImgPosStr = originalImgPos.x + ' ' + originalImgPos.y + ' ' + originalImgPos.z;
-                        let posImgStr = globalData.imagePositionCache[idTemp];
-                        targetImg.setAttribute('animation', 'property: position; from: ' + originalImgPosStr + '; to: '+ posImgStr +'; dur: 3000; easing: easeInOutSine')
-                    }
-                }
 
 
                 globalData.curStatus = 0;
@@ -469,6 +474,61 @@ ControlPanel.prototype = {
             }
 
         }
+
+
+
+
+        // TODO from current point to the
+        // function transform_slider(dataObj, status, slider_pos) {
+        //     let percentage = slider_pos / 100;
+        //     globalData.cellData.forEach(element => {
+        //         let origin = document.getElementById(element[globalData.idStr]);
+        //         let originalPos = origin.getAttribute('position');
+        //         let originalPosStr = originalPos.x + ' ' + originalPos.y + ' ' + originalPos.z;
+        //         loader.getObjectFromID(dataObj, element[globalData.idStr], globalData.idStr).then(
+        //             target => {
+        //                 let targetStr = target.x*globalData.scaleUp*percentage + originalPos.x*(1-percentage)
+        //                     + ' '
+        //                     + target.y*globalData.scaleUp*percentage + originalPos.y*(1-percentage)
+        //                     + ' '
+        //                     + target.z*globalData.scaleUp*percentage + originalPos.z*(1-percentage);
+        //                 origin.setAttribute('animation', 'property: position; from: ' + originalPosStr + '; to: '+ targetStr +'; dur: 500; easing: linear');
+        //             },
+        //             reject => {
+        //                 let targetStr = originalPos.x + ' ' + (Number(originalPos.y) - 200) + ' ' + (Number(originalPos.z) - 30);
+        //                 origin.setAttribute('animation', 'property: position; from: ' + originalPosStr + '; to: '+ targetStr +'; dur: 1000; easing: easeInOutSine');
+        //             }
+        //         )
+        //     });
+        //     if (globalData.inputSlice) {
+        //         for (let i = 1; i < globalData.numOfSlices+1; i++) {
+        //             const idTemp = 'slice' + i
+        //             let targetImg = document.getElementById(idTemp);
+        //             let originalImgPos = targetImg.getAttribute('position');
+        //             let originalImgPosStr = '';
+        //             if (globalData.imagePositionCache[idTemp] !== undefined) {
+        //                 originalImgPosStr = globalData.imagePositionCache[idTemp];
+        //             } else {
+        //                 originalImgPosStr = originalImgPos.x + ' ' + originalImgPos.y + ' ' + originalImgPos.z;
+        //                 globalData.imagePositionCache[idTemp] = originalImgPosStr;
+        //             }
+        //             let originalImgPosStrArray = originalImgPosStr.split(' ');
+        //             let posImgStr = originalImgPosStrArray[0] + ' ' + (Number(originalImgPosStrArray[1]) - 200*percentage) + ' ' + (Number(originalImgPosStrArray[2]) - 30*percentage);
+        //             targetImg.setAttribute('animation', 'property: position; from: ' + originalImgPosStr + '; to: ' + posImgStr + '; dur: 500; easing: linear')
+        //         }
+        //     }
+        // }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -495,10 +555,56 @@ ControlPanel.prototype = {
 
 
             transFolder.add(liftUp, 'liftUp1').name("Transform_1");
+
             if (globalData.inputFile1Trans2 && target !== 's3') {
                 transFolder.add(liftUp,'liftUp2').name("Transform_2");
             }
 
+            transFolder.add(globalData, 'showLinkage' ).name( "Connection" ).listen( ).onChange( function ( ) {
+
+                if (globalData.curStatus === 0) {
+                    alert("You can only check the trajectory after the transformation.");
+                    globalData.showLinkage = false;
+                } else {
+                    let endData
+                    if (globalData.curStatus === 1) {
+                        endData = globalData.cellData3D;
+                    } else if (globalData.curStatus === 2) {
+                        endData = globalData.cellData3D2;
+                    }
+                    if (document.getElementById('lineConnection') === null) {
+                        let lineConnectionContainer = document.createElement( 'a-entity' );
+                        lineConnectionContainer.setAttribute('id', 'lineConnection');
+                        for (let i = 0; i < endData.length; i++) {
+                            if (endData[i][globalData.curMarkerGene.Attribute] !== "None" && Math.random() < 0.05) {
+                                let path = document.createElement('a-entity');
+
+                                // todo get same id start point
+                                const startPoint = globalData.cellData[i].x*globalData.scaleUp + ' ' + globalData.cellData[i].y*globalData.scaleUp + ' ' + globalData.cellData[i].z*globalData.scaleUp;
+
+                                endPoint = endData[i].x*globalData.scaleUp + ' ' + endData[i].y*globalData.scaleUp + ' ' + endData[i].z*globalData.scaleUp;
+                                path.setAttribute('meshline', "lineWidth: 0.4; path: "+startPoint+", "+endPoint+"; color: #212F3C");
+                                lineConnectionContainer.appendChild(path);
+                            }
+                        }
+
+                        container.appendChild(lineConnectionContainer);
+
+                    } else {
+                        container.removeChild(document.getElementById('lineConnection'));
+                        // document.getElementById('lineConnection').setAttribute('visible', ''+globalData.showLinkage);
+                    }
+                }
+
+
+
+
+
+
+
+
+
+            });
 
 
             transFolder.open();

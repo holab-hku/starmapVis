@@ -1,7 +1,7 @@
-AFRAME.registerComponent('spheregroup', {
+AFRAME.registerComponent('spheresingle', {
     schema: {
-        positionList: {type: 'array', default: []},
-        colorList: {type: 'array', default: []},
+        position: {type: 'array', default: []},
+        color: {type: 'array', default: []},
     },
 
     multiple: true,
@@ -17,8 +17,8 @@ AFRAME.registerComponent('spheregroup', {
 
         // Create geometry.
         this.geometry = new THREE.BufferGeometry();
-        this.geometry.setAttribute('position', new THREE.Float32BufferAttribute(data.positionList, 3));
-        this.geometry.setAttribute('color', new THREE.Float32BufferAttribute(data.colorList, 3));
+        this.geometry.setAttribute('position', new THREE.Float32BufferAttribute(data.position, 3));
+        this.geometry.setAttribute('color', new THREE.Float32BufferAttribute(data.color, 3));
 
         this.geometry.computeBoundingSphere();
 
@@ -30,7 +30,7 @@ AFRAME.registerComponent('spheregroup', {
         }
 
         this.material = new THREE.PointsMaterial({
-            size: size,
+            size: 40,
             vertexColors: THREE.VertexColors,
             alphaTest: 0.5,
             transparent: true,
